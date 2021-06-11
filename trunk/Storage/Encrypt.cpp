@@ -631,7 +631,7 @@ bool MyEncryptFile(
                 if (!CryptGenKey(hCryptProv, AT_KEYEXCHANGE, CRYPT_EXPORTABLE, &hXchgKey)) {
                     MyHandleError(
                         TEXT("Could not create "
-                             "a user public key.\n"),
+                        "a user public key.\n"),
                         GetLastError());
                     goto Exit_MyEncryptFile;
                 }
@@ -783,7 +783,7 @@ bool MyEncryptFile(
 
     fReturn = true;
 
-Exit_MyEncryptFile:
+    Exit_MyEncryptFile:
     // Close files.
     if (hSourceFile) {
         CloseHandle(hSourceFile);
@@ -1054,7 +1054,7 @@ bool MyDecryptFile(LPTSTR pszSourceFile, LPTSTR pszDestinationFile, LPTSTR pszPa
 
     fReturn = true;
 
-Exit_MyDecryptFile:
+    Exit_MyDecryptFile:
 
     // Free the file read buffer.
     if (pbBuffer) {
@@ -1625,23 +1625,23 @@ PCCERT_CONTEXT GetSignerCert(HCERTSTORE hCertStore)
 
     while (fMore &&
            (pCertContext = CertFindCertificateInStore(
-               hCertStore,           // Handle of the store to be searched.
-               0,                    // Encoding type. Not used for this search.
-               0,                    // dwFindFlags. Special find criteria.
-                                     // Not used in this search.
-               CERT_FIND_PROPERTY,   // Find type. Determines the kind of  
-                                     // search to be done. In this case, search 
-                                     // for certificates that have a specific 
-                                     // extended property.
-               &PropId,              // pvFindPara. Gives the specific 
-                                     // value searched for, here the identifier
-                                     // of an extended property.
-               pCertContext)))       // pCertContext is NULL for the 
-                                     // first call to the function. 
-                                     // If the function were being called
-                                     // in a loop, after the first call,
-                                     // pCertContext would be the certificate
-                                     // returned by the previous call.
+           hCertStore,           // Handle of the store to be searched.
+           0,                    // Encoding type. Not used for this search.
+           0,                    // dwFindFlags. Special find criteria.
+                                 // Not used in this search.
+           CERT_FIND_PROPERTY,   // Find type. Determines the kind of  
+                                 // search to be done. In this case, search 
+                                 // for certificates that have a specific 
+                                 // extended property.
+           &PropId,              // pvFindPara. Gives the specific 
+                                 // value searched for, here the identifier
+                                 // of an extended property.
+           pCertContext)))       // pCertContext is NULL for the 
+                                 // first call to the function. 
+                                 // If the function were being called
+                                 // in a loop, after the first call,
+                                 // pCertContext would be the certificate
+                                 // returned by the previous call.
     {
         // For simplicity, this code only searches for the first occurrence of an AT_SIGNATURE key. 
         // In many situations, a search would also look for a specific subject name as well as the key type.

@@ -92,9 +92,9 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/getsignercert?redirecte
 
         // Get the key information structure.
         if (!(CertGetCertificateContextProperty(pCertContext,
-                                                CERT_KEY_PROV_INFO_PROP_ID,
-                                                pKeyInfo,
-                                                &dwSize))) {
+            CERT_KEY_PROV_INFO_PROP_ID,
+            pKeyInfo,
+            &dwSize))) {
             MyHandleError("The second call to the function failed.");
         }
 
@@ -298,7 +298,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-worki
         NULL,              // pvReserved
         pbHash,            // pbHash
         &cbHash            // pcbHash
-    )) {
+        )) {
         printf("Call to CryptCreateKeyIdentifierFromCSP succeeded.\n");
     } else {
         MyHandleError("A key identifier was not created");
@@ -327,7 +327,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-worki
         NULL,                       // in- pwszComputerName
         NULL,                       // Reserved
         pData                       // in- pointer to a CRYPT_KEY_PROV_INFO.
-    )) {
+        )) {
         printf("A property is set on the key identifier.\n");
     } else {
         MyHandleError("Setting the property failed.");
@@ -342,7 +342,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-worki
         NULL,                       // in, optional- pvReserved
         NULL,                       // out- pvData
         &cbData                     // in, out- pcbData
-    )) {
+        )) {
         printf("First call to get property succeeded.\n");
     } else {
         MyHandleError("Call 1 to CryptGetKeyIdentifierProperty failed.");
@@ -364,7 +364,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-worki
         NULL,                       // Reserved
         pData,                      // pData
         &cbData                     // pcbData
-    )) {
+        )) {
         printf("The property has been retrieved.\n");
     } else {
         MyHandleError("Second call failed.");
@@ -390,7 +390,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-worki
         NULL,                     // Reserved
         pvArg,                    // in, optional- Pointer to the pass-through argument
         (PFN_CRYPT_ENUM_KEYID_PROP)pfnEnum// in- Callback function.
-    )) {
+        )) {
         printf("The function call succeeded.\n");
     } else {
         MyHandleError("Call to CryptEnumKeyIdentifierProperties failed.");
@@ -506,11 +506,11 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-creat
     while (pCertContext = CertEnumCertificatesInStore(hCertStore, pCertContext)) {
         // Get and display the name of subject of the certificate.
         if (CertGetNameString(pCertContext,
-                              CERT_NAME_SIMPLE_DISPLAY_TYPE,
-                              0,
-                              NULL,
-                              pszNameString,
-                              128)) {
+            CERT_NAME_SIMPLE_DISPLAY_TYPE,
+            0,
+            NULL,
+            pszNameString,
+            128)) {
             printf("\nCertificate for %ls found.\n", pszNameString);
         } else {
             MyHandleError("CertGetName failed.");
@@ -898,15 +898,14 @@ Code for these functions is included with the sample.
 https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-asn1-encoding-and-decoding
 */
 {
-    //   Declare and initialize local variables.
-    const char * Cert_Sub_Name = "Test User Name";
+    const char * Cert_Sub_Name = "Test User Name";//   Declare and initialize local variables.
 
     // Initialize a single RDN structure.
     CERT_RDN_ATTR rgNameAttr =
     {
-       (LPSTR)szOID_COMMON_NAME,                // the OID
+       (LPSTR)szOID_COMMON_NAME,         // the OID
        CERT_RDN_PRINTABLE_STRING,        // type of string
-       (DWORD)strlen(Cert_Sub_Name) + 1,   // string length including the terminating null character
+       (DWORD)strlen(Cert_Sub_Name) + 1, // string length including the terminating null character
        (BYTE *)Cert_Sub_Name             // pointer to the string
     };
 
@@ -925,11 +924,11 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-asn1-
     };
 
     //  Declare additional variables.
-    CERT_NAME_INFO * pDecodeName;  // point variable to hold the address of the decoded buffer
+    CERT_NAME_INFO * pDecodeName; // point variable to hold the address of the decoded buffer
     DWORD cbEncoded;              // variable to hold the length of the encoded string
     DWORD cbDecoded;              // variable to hold the length of the decoded buffer
-    BYTE * pbEncoded;              // variable to hold a pointer to the encoded buffer
-    BYTE * pbDecoded;              // variable to hold a pointer to the decoded buffer
+    BYTE * pbEncoded;             // variable to hold a pointer to the encoded buffer
+    BYTE * pbDecoded;             // variable to hold a pointer to the decoded buffer
     LPSTR sz;
 
     //    Allocate memory for a large buffer.
@@ -1146,7 +1145,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-using
         0,                  // dwFlags
         NULL,               // no additional parameters are to be passed to the callback function.
         EnumInfoCallback    // name of the callback function to be called for each OID enumerated.
-    ))) {
+        ))) {
         printf("Enumeration of algorithm OIDs did not complete.\n");
     }
 
@@ -1580,7 +1579,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/modifying-key-container
     }
     printf("Modified default ACLs on container.\n");
 
-CommonReturn:
+    CommonReturn:
     if (hProv) {
         CryptReleaseContext(hProv, 0);
     }
@@ -1638,7 +1637,7 @@ Generates a signature and a key exchange key.
 
     fRet = TRUE;
 
-CommonReturn:
+    CommonReturn:
 
     if (hSigKey) {
         CryptDestroyKey(hSigKey);
@@ -1684,7 +1683,7 @@ Retrieves the security descriptor for the specified provider.
 
     return psd;
 
-Error_Occurred:
+    Error_Occurred:
     // An error occurred, so if memory was allocated, free it.
     if (psd) {
         LocalFree(psd);
@@ -1740,12 +1739,12 @@ Modifies the DACL for the key storage folder for the specified provider.
     PACL pNewACL = NULL;
 
     while (!LookupAccountName(NULL,
-                              TEXT("LocalService"),
-                              pSid,
-                              &cbSid,
-                              szDomainName,
-                              &cbDomainName,
-                              &SidType)) {
+           TEXT("LocalService"),
+           pSid,
+           &cbSid,
+           szDomainName,
+           &cbDomainName,
+           &SidType)) {
         if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
             pSid = LocalAlloc(LPTR, cbSid);
             szDomainName = (LPTSTR)LocalAlloc(LPTR, (cbDomainName * sizeof(TCHAR)));
@@ -1813,7 +1812,7 @@ Modifies the DACL for the key storage folder for the specified provider.
         goto CommonReturn;
     }
 
-CommonReturn:
+    CommonReturn:
 
     if (pSid) {
         LocalFree(pSid);
@@ -1939,14 +1938,14 @@ https://docs.microsoft.com/zh-CN/troubleshoot/windows/win32/get-information-auth
 
     ZeroMemory(&ProgPubInfo, sizeof(ProgPubInfo));
     __try {
-# ifdef UNICODE
+        # ifdef UNICODE
         lstrcpynW(szFileName, argv[1], MAX_PATH);
-#else
+        #else
         if (mbstowcs(szFileName, argv[1], MAX_PATH) == -1) {
             printf("Unable to convert to unicode.\n");
             __leave;
         }
-#endif
+        #endif
 
         // Get message handle and store handle from the signed file.
         fResult = CryptQueryObject(CERT_QUERY_OBJECT_FILE,
@@ -2091,11 +2090,11 @@ BOOL PrintCertificateInfo(PCCERT_CONTEXT pCertContext)
 
         // Get Issuer name size.
         if (!(dwData = CertGetNameString(pCertContext,
-                                         CERT_NAME_SIMPLE_DISPLAY_TYPE,
-                                         CERT_NAME_ISSUER_FLAG,
-                                         NULL,
-                                         NULL,
-                                         0))) {
+            CERT_NAME_SIMPLE_DISPLAY_TYPE,
+            CERT_NAME_ISSUER_FLAG,
+            NULL,
+            NULL,
+            0))) {
             _tprintf(_T("CertGetNameString failed.\n"));
             __leave;
         }
@@ -2109,11 +2108,11 @@ BOOL PrintCertificateInfo(PCCERT_CONTEXT pCertContext)
 
         // Get Issuer name.
         if (!(CertGetNameString(pCertContext,
-                                CERT_NAME_SIMPLE_DISPLAY_TYPE,
-                                CERT_NAME_ISSUER_FLAG,
-                                NULL,
-                                szName,
-                                dwData))) {
+            CERT_NAME_SIMPLE_DISPLAY_TYPE,
+            CERT_NAME_ISSUER_FLAG,
+            NULL,
+            szName,
+            dwData))) {
             _tprintf(_T("CertGetNameString failed.\n"));
             __leave;
         }
@@ -2125,11 +2124,11 @@ BOOL PrintCertificateInfo(PCCERT_CONTEXT pCertContext)
 
         // Get Subject name size.
         if (!(dwData = CertGetNameString(pCertContext,
-                                         CERT_NAME_SIMPLE_DISPLAY_TYPE,
-                                         0,
-                                         NULL,
-                                         NULL,
-                                         0))) {
+            CERT_NAME_SIMPLE_DISPLAY_TYPE,
+            0,
+            NULL,
+            NULL,
+            0))) {
             _tprintf(_T("CertGetNameString failed.\n"));
             __leave;
         }
@@ -2143,11 +2142,11 @@ BOOL PrintCertificateInfo(PCCERT_CONTEXT pCertContext)
 
         // Get subject name.
         if (!(CertGetNameString(pCertContext,
-                                CERT_NAME_SIMPLE_DISPLAY_TYPE,
-                                0,
-                                NULL,
-                                szName,
-                                dwData))) {
+            CERT_NAME_SIMPLE_DISPLAY_TYPE,
+            0,
+            NULL,
+            szName,
+            dwData))) {
             _tprintf(_T("CertGetNameString failed.\n"));
             __leave;
         }
@@ -2480,7 +2479,7 @@ Verifies all embedded signatures of a file
         wprintf(L"Success!\n");
     }
 
-Cleanup:
+    Cleanup:
 
     // Caller must call WinVerifyTrust with WTD_STATEACTION_CLOSE to free memory allocate by WinVerifyTrust
     if (WintrustCalled != false) {
@@ -2515,19 +2514,19 @@ Looks up a file by hash in the system catalogs.
         SigningPolicy.dwInfoChoice = CERT_STRONG_SIGN_OID_INFO_CHOICE;
         SigningPolicy.pszOID = (LPSTR)szOID_CERT_STRONG_SIGN_OS_CURRENT;
         if (!CryptCATAdminAcquireContext2(&CatAdminHandle,
-                                          NULL,
-                                          BCRYPT_SHA256_ALGORITHM,
-                                          &SigningPolicy,
-                                          0)) {
+            NULL,
+            BCRYPT_SHA256_ALGORITHM,
+            &SigningPolicy,
+            0)) {
             Error = GetLastError();
             goto Cleanup;
         }
     } else {
         if (!CryptCATAdminAcquireContext2(&CatAdminHandle,
-                                          NULL,
-                                          BCRYPT_SHA256_ALGORITHM,
-                                          NULL,
-                                          0)) {
+            NULL,
+            BCRYPT_SHA256_ALGORITHM,
+            NULL,
+            0)) {
             Error = GetLastError();
             goto Cleanup;
         }
@@ -2535,10 +2534,10 @@ Looks up a file by hash in the system catalogs.
 
     // Get size of hash to be used
     if (!CryptCATAdminCalcHashFromFileHandle2(CatAdminHandle,
-                                              FileHandle,
-                                              &HashLength,
-                                              NULL,
-                                              NULL)) {
+        FileHandle,
+        &HashLength,
+        NULL,
+        NULL)) {
         Error = GetLastError();
         goto Cleanup;
     }
@@ -2551,10 +2550,10 @@ Looks up a file by hash in the system catalogs.
 
     // Generate hash for a give file
     if (!CryptCATAdminCalcHashFromFileHandle2(CatAdminHandle,
-                                              FileHandle,
-                                              &HashLength,
-                                              HashData,
-                                              NULL)) {
+        FileHandle,
+        &HashLength,
+        HashData,
+        NULL)) {
         Error = GetLastError();
         goto Cleanup;
     }
@@ -2590,7 +2589,7 @@ Looks up a file by hash in the system catalogs.
         wprintf(L"Hash was not found in any catalogs.\n");
     }
 
-Cleanup:
+    Cleanup:
 
     if (CatAdminHandle != NULL) {
         if (CatInfoHandle != NULL) {
@@ -2647,19 +2646,19 @@ Looks up a file by hash in the system catalogs.
         SigningPolicy.dwInfoChoice = CERT_STRONG_SIGN_OID_INFO_CHOICE;
         SigningPolicy.pszOID = (LPSTR)szOID_CERT_STRONG_SIGN_OS_CURRENT;
         if (!CryptCATAdminAcquireContext2(&CatAdminHandle,
-                                          NULL,
-                                          BCRYPT_SHA256_ALGORITHM,
-                                          &SigningPolicy,
-                                          0)) {
+            NULL,
+            BCRYPT_SHA256_ALGORITHM,
+            &SigningPolicy,
+            0)) {
             Error = GetLastError();
             goto Cleanup;
         }
     } else {
         if (!CryptCATAdminAcquireContext2(&CatAdminHandle,
-                                          NULL,
-                                          BCRYPT_SHA256_ALGORITHM,
-                                          NULL,
-                                          0)) {
+            NULL,
+            BCRYPT_SHA256_ALGORITHM,
+            NULL,
+            0)) {
             Error = GetLastError();
             goto Cleanup;
         }
@@ -2667,10 +2666,10 @@ Looks up a file by hash in the system catalogs.
 
     // Get size of hash to be used
     if (!CryptCATAdminCalcHashFromFileHandle2(CatAdminHandle,
-                                              FileHandle,
-                                              &HashLength,
-                                              NULL,
-                                              NULL)) {
+        FileHandle,
+        &HashLength,
+        NULL,
+        NULL)) {
         Error = GetLastError();
         goto Cleanup;
     }
@@ -2683,10 +2682,10 @@ Looks up a file by hash in the system catalogs.
 
     // Generate hash for a give file
     if (!CryptCATAdminCalcHashFromFileHandle2(CatAdminHandle,
-                                              FileHandle,
-                                              &HashLength,
-                                              HashData,
-                                              NULL)) {
+        FileHandle,
+        &HashLength,
+        HashData,
+        NULL)) {
         Error = GetLastError();
         goto Cleanup;
     }
@@ -2723,7 +2722,7 @@ Looks up a file by hash in the system catalogs.
         wprintf(L"Hash was not found in any catalogs.\n");
     }
 
-Cleanup:
+    Cleanup:
 
     if (CatAdminHandle != NULL) {
         if (CatInfoHandle != NULL) {
@@ -2805,7 +2804,7 @@ Windows-classic-samples\Samples\Security\CodeSigning
         Error = ERROR_INVALID_PARAMETER;
     }
 
-Cleanup:
+    Cleanup:
 
     if (FileHandle != INVALID_HANDLE_VALUE) {
         CloseHandle(FileHandle);
@@ -3045,9 +3044,9 @@ https://docs.microsoft.com/zh-cn/archive/blogs/winsdk/how-to-read-a-certificate-
         _tprintf(_T("CertAddCertificateContextToStore... "));
 
         if (!CertAddCertificateContextToStore(hStoreHandle,
-                                              pCertContext,
-                                              CERT_STORE_ADD_REPLACE_EXISTING,
-                                              0)) {
+            pCertContext,
+            CERT_STORE_ADD_REPLACE_EXISTING,
+            0)) {
             _tprintf(_T("CertAddCertificateContextToStore failed: 0x%x\n"), GetLastError());
             return 0;
         }
