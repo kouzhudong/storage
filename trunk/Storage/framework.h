@@ -6,6 +6,8 @@
 #define _WIN32_DCOM
 #define STRICT
 
+#pragma warning(disable:28251)
+
 // Windows 头文件
 #include <Winsock2.h>
 #include <windows.h>
