@@ -36,7 +36,7 @@ int _cdecl main(_In_ int argc, _In_reads_(argc) CHAR * argv[])
     }
 
     //SignatureVerification(Args, (PCWSTR*)Arglist);
-    RemoveFileZoneIdentifier(Args, Arglist);
+    //RemoveFileZoneIdentifier(Args, Arglist);
 
     //GetAdaptersAddressesInfo(argc, argv);
 
@@ -47,6 +47,8 @@ int _cdecl main(_In_ int argc, _In_reads_(argc) CHAR * argv[])
 
     //TCHAR ImageFilePath[MAX_PATH] = {0};
     //GetImageFilePath(ImageFilePath, ARRAYSIZE(ImageFilePath));
+
+    ASN();
 
     LocalFree(Arglist);
 }

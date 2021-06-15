@@ -883,7 +883,9 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-makin
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-void ASN(void)
+EXTERN_C
+__declspec(dllexport)
+void WINAPI ASN(void)
 /*
 Example C Program: ASN.1 Encoding and Decoding
 05/31/2018

@@ -69,8 +69,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-using
     // Declare and initialize variables. This includes getting a pointer 
     // to the message to be encrypted. This code creates a message
     // and gets a pointer to it. In reality, the message content 
-    // usually exists somewhere and a pointer to the message is 
-    // passed to the application. 
+    // usually exists somewhere and a pointer to the message is passed to the application. 
 
     BYTE * pbContent = (BYTE *)"Security is our business.";// The message
     DWORD cbContent = strlen((char *)pbContent) + 1;// Size of message
@@ -204,11 +203,10 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-using
 } // End of main
 
 
-BOOL DecryptMessage(
-    BYTE * pbEncryptedBlob,
-    DWORD cbEncryptedBlob,
-    HCRYPTPROV hCryptProv,
-    HCERTSTORE hStoreHandle
+BOOL DecryptMessage(BYTE * pbEncryptedBlob,
+                    DWORD cbEncryptedBlob,
+                    HCRYPTPROV hCryptProv,
+                    HCERTSTORE hStoreHandle
 )
 //  Define the function DecryptMessage.
 
@@ -232,8 +230,7 @@ BOOL DecryptMessage(
     // passed as parameters along with a CSP and an open store handle.
 
     // View the encrypted BLOB.
-    // Call a function, ByteToStr, to convert the byte BLOB to ASCII
-    // hexadecimal format. 
+    // Call a function, ByteToStr, to convert the byte BLOB to ASCII hexadecimal format. 
 
     ByteToStr(cbEncryptedBlob, pbEncryptedBlob, EncryptedString);
 
@@ -300,10 +297,10 @@ BOOL DecryptMessage(
 }  // End of DecryptMessage
 
 
-// GetRecipientCert enumerates the certificates in a store and finds
-// the first certificate that has an AT_EXCHANGE key. If a  
-// certificate is found, a pointer to that certificate is returned.  
 PCCERT_CONTEXT GetRecipientCert(HCERTSTORE hCertStore)
+// GetRecipientCert enumerates the certificates in a store and finds
+// the first certificate that has an AT_EXCHANGE key.  
+// If a certificate is found, a pointer to that certificate is returned. 
 // Parameter passed in: 
 // hCertStore, the handle of the store to be searched. 
 {
@@ -325,18 +322,13 @@ PCCERT_CONTEXT GetRecipientCert(HCERTSTORE hCertStore)
         CERT_FIND_PROPERTY,
         // Find type. Determines the kind of search 
         // to be done. In this case, search for 
-        // certificates that have a specific 
-        // extended property. 
+        // certificates that have a specific extended property. 
         &PropId,    // pvFindPara. Gives the specific 
-                    // value searched for, here the identifier 
-                    // of an extended property. 
+                    // value searched for, here the identifier of an extended property. 
         pCertContext)))
-        // pCertContext is NULL for the  
-        // first call to the function. 
-        // If the function were being called 
-        // in a loop, after the first call 
-        // pCertContext would be the pointer 
-        // returned by the previous call. 
+        // pCertContext is NULL for the first call to the function. 
+        // If the function were being called in a loop, after the first call 
+        // pCertContext would be the pointer returned by the previous call. 
     {
         // For simplicity, this code only searches 
         // for the first occurrence of an AT_KEYEXCHANGE key. 
@@ -538,11 +530,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encry
 }
 
 
-bool MyEncryptFile(
-    LPTSTR pszSourceFile,
-    LPTSTR pszDestinationFile,
-    LPTSTR pszPassword
-)
+bool MyEncryptFile(LPTSTR pszSourceFile, LPTSTR pszDestinationFile, LPTSTR pszPassword)
 // Code for the function MyEncryptFile called by main.
 // Parameters passed are:
 //  pszSource, the name of the input, a plaintext file.
@@ -629,17 +617,13 @@ bool MyEncryptFile(
             if (NTE_NO_KEY == GetLastError()) {
                 // No exchange key exists. Try to create one.
                 if (!CryptGenKey(hCryptProv, AT_KEYEXCHANGE, CRYPT_EXPORTABLE, &hXchgKey)) {
-                    MyHandleError(
-                        TEXT("Could not create "
-                        "a user public key.\n"),
-                        GetLastError());
+                    MyHandleError(TEXT("Could not create "
+                                  "a user public key.\n"), GetLastError());
                     goto Exit_MyEncryptFile;
                 }
             } else {
-                MyHandleError(
-                    TEXT("User public key is not available and may ")
-                    TEXT("not exist.\n"),
-                    GetLastError());
+                MyHandleError(TEXT("User public key is not available and may ")
+                              TEXT("not exist.\n"), GetLastError());
                 goto Exit_MyEncryptFile;
             }
         }
@@ -690,9 +674,8 @@ bool MyEncryptFile(
             MyHandleError(TEXT("Error writing header.\n"), GetLastError());
             goto Exit_MyEncryptFile;
         } else {
-            _tprintf(
-                TEXT("The key BLOB has been written to the ")
-                TEXT("file. \n"));
+            _tprintf(TEXT("The key BLOB has been written to the ")
+                     TEXT("file. \n"));
         }
 
         // Free memory.
@@ -720,9 +703,8 @@ bool MyEncryptFile(
 
         // Derive a session key from the hash object. 
         if (CryptDeriveKey(hCryptProv, ENCRYPT_ALGORITHM, hHash, KEYLENGTH, &hKey)) {
-            _tprintf(
-                TEXT("An encryption key is derived from the ")
-                TEXT("password hash. \n"));
+            _tprintf(TEXT("An encryption key is derived from the ")
+                     TEXT("password hash. \n"));
         } else {
             MyHandleError(TEXT("Error during CryptDeriveKey!\n"), GetLastError());
             goto Exit_MyEncryptFile;
@@ -1193,17 +1175,12 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/alternate-code-for-enco
 
     // Open the MY system certificate store.
     if (hStoreHandle = CertOpenStore(
-        CERT_STORE_PROV_SYSTEM, // The system store will be a 
-                                // virtual store.
-        0,                      // Encoding type not needed with 
-                                // this PROV.
+        CERT_STORE_PROV_SYSTEM, // The system store will be a virtual store.
+        0,                      // Encoding type not needed with this PROV.
         NULL,                   // Accept the default HCRYPTPROV. 
-        CERT_SYSTEM_STORE_CURRENT_USER,
-        // Set the system store location in the
-        // registry.
+        CERT_SYSTEM_STORE_CURRENT_USER, // Set the system store location in the registry.
         L"MY"))                 // Other predefined system stores 
-                                // could have been used,
-                                // including trust, CA, or root.
+                                // could have been used, including trust, CA, or root.
     {
         printf("Opened the MY system store. \n");
     } else {
@@ -1356,10 +1333,8 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/alternate-code-for-enco
         hMsg,                    // Handle to the message
         CMSG_CONTENT_PARAM,      // Parameter type
         0,                       // Index
-        NULL,                    // Address for returned 
-                                 // information
-        &cbDecoded))             // Size of the returned 
-                                 // information
+        NULL,                    // Address for returned information
+        &cbDecoded))             // Size of the returned information
     {
         printf("The message to be decoded is %d bytes long. \n", cbDecoded);
     } else {
@@ -1398,15 +1373,12 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/alternate-code-for-enco
         hStoreHandle,
         MY_ENCODING_TYPE,            // Use X509_ASN_ENCODING.
         0,                           // No dwFlags needed. 
-        CERT_FIND_SUBJECT_STR,       // Find a certificate with a
-                                     // subject that matches the string
+        CERT_FIND_SUBJECT_STR,       // Find a certificate with a subject that matches the string
                                      // in the next parameter.
         L"Full Test Cert",           // The Unicode string to be found
                                      // in a certificate's subject.
-        NULL))                       // NULL for the first call to the
-                                     // function. In all subsequent
-                                     // calls, it is the last pointer
-                                     // returned by the function.
+        NULL))                       // NULL for the first call to the function. In all subsequent
+                                     // calls, it is the last pointer returned by the function.
     {
         printf("The desired certificate was found. \n");
     } else {
@@ -1548,10 +1520,8 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/alternate-code-for-enco
         hMsg,                         // Handle to the message
         CMSG_SIGNER_UNAUTH_ATTR_PARAM,// Parameter type
         0,                            // Index
-        NULL,                         // Address for returned 
-                                      // information
-        &cbCountersignerInfo))        // Size of returned 
-                                      // information
+        NULL,                         // Address for returned information
+        &cbCountersignerInfo))        // Size of returned information
     {
         printf("The length of the countersigner's information is "
                "retrieved. \n");
@@ -1571,10 +1541,8 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/alternate-code-for-enco
         hMsg,                           // Handle to the message
         CMSG_SIGNER_UNAUTH_ATTR_PARAM,  // Parameter type
         0,                              // Index
-        pCountersignerInfo,             // Address for returned 
-                                        // information
-        &cbCountersignerInfo))          // Size of the returned 
-                                        // information
+        pCountersignerInfo,             // Address for returned information
+        &cbCountersignerInfo))          // Size of the returned information
     {
         printf("Countersigner information retrieved. \n");
     } else {
@@ -1631,15 +1599,12 @@ PCCERT_CONTEXT GetSignerCert(HCERTSTORE hCertStore)
                                  // Not used in this search.
            CERT_FIND_PROPERTY,   // Find type. Determines the kind of  
                                  // search to be done. In this case, search 
-                                 // for certificates that have a specific 
-                                 // extended property.
+                                 // for certificates that have a specific extended property.
            &PropId,              // pvFindPara. Gives the specific 
-                                 // value searched for, here the identifier
-                                 // of an extended property.
+                                 // value searched for, here the identifier of an extended property.
            pCertContext)))       // pCertContext is NULL for the 
                                  // first call to the function. 
-                                 // If the function were being called
-                                 // in a loop, after the first call,
+                                 // If the function were being called in a loop, after the first call,
                                  // pCertContext would be the certificate
                                  // returned by the previous call.
     {
@@ -1890,11 +1855,9 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
         hStoreHandle,
         MY_ENCODING_TYPE,            // use X509_ASN_ENCODING
         0,                           // no dwFlags needed
-        CERT_FIND_SUBJECT_STR,       // find a certificate with a
-                                     // subject that matches the 
+        CERT_FIND_SUBJECT_STR,       // find a certificate with a subject that matches the 
                                      // string in the next parameter
-        pswzRecipientName,           // the Unicode string to be found
-                                     // in a certificate's subject
+        pswzRecipientName,           // the Unicode string to be found in a certificate's subject
         NULL))                       // NULL for the first call to the function
                                      // in all subsequent calls, it is the last pointer
                                      // returned by the function
@@ -1913,7 +1876,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
     // Initialize the symmetric-encryption algorithm identifier structure.
 
     ContentEncryptAlgSize = sizeof(ContentEncryptAlgorithm);
-    memset(&ContentEncryptAlgorithm, 0, ContentEncryptAlgSize);               // initialize to zero
+    memset(&ContentEncryptAlgorithm, 0, ContentEncryptAlgSize);// initialize to zero
 
     // Initialize the necessary members. This particular OID does not
     // need any parameters. Some OIDs, however, will require that the other members be initialized.
@@ -1944,7 +1907,6 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
     }
 
     // Allocate memory for the encoded BLOB.
-
     if (pbEncodedBlob = (BYTE *)malloc(cbEncodedBlob)) {
         printf("Memory has been allocated for the BLOB. \n");
     } else {
@@ -1982,8 +1944,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
         hMsg,                  // handle to the message
         CMSG_CONTENT_PARAM,    // parameter type
         0,                     // index
-        pbEncodedBlob,         // pointer to the enveloped,
-                               // signed data BLOB
+        pbEncodedBlob,         // pointer to the enveloped, signed data BLOB
         &cbEncodedBlob))       // size of the BLOB
     {
         printf("Enveloped message encoded successfully. \n");

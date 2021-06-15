@@ -114,8 +114,7 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/finding-the-owner-of-a-f
         DWORD dwErrorCode = 0;
         dwErrorCode = GetLastError();
         if (dwErrorCode == ERROR_NONE_MAPPED)
-            _tprintf(TEXT
-            ("Account owner not found for specified SID.\n"));
+            _tprintf(TEXT("Account owner not found for specified SID.\n"));
         else
             _tprintf(TEXT("Error in LookupAccountSid.\n"));
         return -1;
@@ -164,10 +163,10 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/taking-object-ownership-
 
     // Create a SID for the BUILTIN\Administrators group.
     if (!AllocateAndInitializeSid(&SIDAuthNT, 2,
-                                  SECURITY_BUILTIN_DOMAIN_RID,
-                                  DOMAIN_ALIAS_RID_ADMINS,
-                                  0, 0, 0, 0, 0, 0,
-                                  &pSIDAdmin)) {
+        SECURITY_BUILTIN_DOMAIN_RID,
+        DOMAIN_ALIAS_RID_ADMINS,
+        0, 0, 0, 0, 0, 0,
+        &pSIDAdmin)) {
         printf("AllocateAndInitializeSid (Admin) error %u\n", GetLastError());
         goto Cleanup;
     }
@@ -266,7 +265,7 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/taking-object-ownership-
         printf("Second SetNamedSecurityInfo call failed: %u\n", dwRes);
     }
 
-Cleanup:
+    Cleanup:
 
     if (pSIDAdmin)
         FreeSid(pSIDAdmin);
@@ -363,7 +362,7 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/modifying-the-acls-of-an
         goto Cleanup;
     }
 
-Cleanup:
+    Cleanup:
 
     if (pSD != NULL)
         LocalFree((HLOCAL)pSD);
@@ -430,7 +429,7 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/verifying-client-access-
         goto Cleanup;
     }
 
-Cleanup:
+    Cleanup:
 
     RevertToSelf();
 
@@ -506,12 +505,10 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/qualifying-access-with-b
 
     //  Create the AzAuthorizationStore object.
     hr = CoCreateInstance(
-        /*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
-        __uuidof(AzAuthorizationStore),
+        __uuidof(AzAuthorizationStore),/*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
         NULL,
         CLSCTX_ALL,
-        /*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
-        __uuidof(IAzAuthorizationStore),
+        __uuidof(IAzAuthorizationStore),/*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
         (void **)&pStore);
     if (!(SUCCEEDED(hr)))
         MyHandleError("Could not create AzAuthorizationStore object.");
@@ -713,12 +710,10 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/establishing-a-client-co
 
     //  Create the AzAuthorizationStore object.
     hr = CoCreateInstance(
-        /*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
-        __uuidof(AzAuthorizationStore),
+        __uuidof(AzAuthorizationStore),/*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
         NULL,
         CLSCTX_ALL,
-        /*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
-        __uuidof(IAzAuthorizationStore),
+        __uuidof(IAzAuthorizationStore),/*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
         (void **)&pStore);
     if (!(SUCCEEDED(hr)))
         MyHandleError("Could not create AzAuthorizationStore object.");
@@ -786,12 +781,10 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/creating-an-authorizatio
 
     //  Create the AzAuthorizationStore object.
     hr = CoCreateInstance(
-        /*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
-        __uuidof(AzAuthorizationStore),
+        __uuidof(AzAuthorizationStore),/*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
         NULL,
         CLSCTX_ALL,
-        /*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
-        __uuidof(IAzAuthorizationStore),
+        __uuidof(IAzAuthorizationStore),/*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
         (void **)&pStore);
     if (!(SUCCEEDED(hr)))
         MyHandleError("Could not create AzAuthorizationStore object.");
@@ -853,12 +846,10 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/creating-an-authorizatio
 
     //  Create the AzAuthorizationStore object.
     hr = CoCreateInstance(
-        /*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
-        __uuidof(AzAuthorizationStore),
+        __uuidof(AzAuthorizationStore),/*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
         NULL,
         CLSCTX_ALL,
-        /*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
-        __uuidof(IAzAuthorizationStore),
+        __uuidof(IAzAuthorizationStore),/*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
         (void **)&pStore);
     if (!(SUCCEEDED(hr)))
         MyHandleError("Could not create AzAuthorizationStore object.");
@@ -914,12 +905,10 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/creating-an-authorizatio
 
     //  Create the AzAuthorizationStore object.
     hr = CoCreateInstance(
-        /*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
-        __uuidof(AzAuthorizationStore),
+        __uuidof(AzAuthorizationStore),/*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
         NULL,
         CLSCTX_ALL,
-        /*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
-        __uuidof(IAzAuthorizationStore),
+        __uuidof(IAzAuthorizationStore),/*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
         (void **)&pStore);
     if (!(SUCCEEDED(hr)))
         MyHandleError("Could not create AzAuthorizationStore object.");
@@ -976,12 +965,10 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/creating-an-application-
 
     //  Create the AzAuthorizationStore object.
     hr = CoCreateInstance(
-        /*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
-        __uuidof(AzAuthorizationStore),
+        __uuidof(AzAuthorizationStore),/*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
         NULL,
         CLSCTX_ALL,
-        /*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
-        __uuidof(IAzAuthorizationStore),
+        __uuidof(IAzAuthorizationStore),/*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
         (void **)&pStore);
     if (!(SUCCEEDED(hr)))
         MyHandleError("Could not create AzAuthorizationStore object.");
@@ -1054,12 +1041,10 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/defining-operations-in-c
 
     //  Create the AzAuthorizationStore object.
     hr = CoCreateInstance(
-        /*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
-        __uuidof(AzAuthorizationStore),
+        __uuidof(AzAuthorizationStore),/*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
         NULL,
         CLSCTX_ALL,
-        /*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
-        __uuidof(IAzAuthorizationStore),
+        __uuidof(IAzAuthorizationStore),/*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
         (void **)&pStore);
     if (!(SUCCEEDED(hr)))
         MyHandleError("Could not create AzAuthorizationStore object.");
@@ -1239,12 +1224,10 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/grouping-operations-into
 
     //  Create the AzAuthorizationStore object.
     hr = CoCreateInstance(
-        /*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
-        __uuidof(AzAuthorizationStore),
+        __uuidof(AzAuthorizationStore),/*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
         NULL,
         CLSCTX_ALL,
-        /*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
-        __uuidof(IAzAuthorizationStore),
+        __uuidof(IAzAuthorizationStore),/*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
         (void **)&pStore);
     if (!(SUCCEEDED(hr)))
         MyHandleError("Could not create AzAuthorizationStore object.");
@@ -1351,12 +1334,10 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/grouping-tasks-into-role
 
     //  Create the AzAuthorizationStore object.
     hr = CoCreateInstance(
-        /*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
-        __uuidof(AzAuthorizationStore),
+        __uuidof(AzAuthorizationStore),/*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
         NULL,
         CLSCTX_ALL,
-        /*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
-        __uuidof(IAzAuthorizationStore),
+        __uuidof(IAzAuthorizationStore),/*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
         (void **)&pStore);
     if (!(SUCCEEDED(hr)))
         MyHandleError("Could not create AzAuthorizationStore object.");
@@ -1455,7 +1436,7 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/grouping-tasks-into-role
 void CreatingBasicGroup(void)
 /*
 Creating a Basic Group
-A basic application group is defined by the members included in the Members and 
+A basic application group is defined by the members included in the Members and
 NonMembers properties of the IAzApplicationGroup object that represents the group.
 Users and groups listed in the Members property are included in the application group,
 and users and groups listed in the NonMembers property are excluded from the application group.
@@ -1481,12 +1462,10 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/defining-groups-of-users
 
     //  Create the AzAuthorizationStore object.
     hr = CoCreateInstance(
-        /*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
-        __uuidof(AzAuthorizationStore),
+        __uuidof(AzAuthorizationStore),/*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
         NULL,
         CLSCTX_ALL,
-        /*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
-        __uuidof(IAzAuthorizationStore),
+        __uuidof(IAzAuthorizationStore),/*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
         (void **)&pStore);
     if (!(SUCCEEDED(hr)))
         MyHandleError("Could not create AzAuthorizationStore object.");
@@ -1557,12 +1536,10 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/defining-groups-of-users
 
     //  Create the AzAuthorizationStore object.
     hr = CoCreateInstance(
-        /*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
-        __uuidof(AzAuthorizationStore),
+        __uuidof(AzAuthorizationStore),/*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
         NULL,
         CLSCTX_ALL,
-        /*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
-        __uuidof(IAzAuthorizationStore),
+        __uuidof(IAzAuthorizationStore),/*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
         (void **)&pStore);
     if (!(SUCCEEDED(hr)))
         MyHandleError("Could not create AzAuthorizationStore object.");
@@ -1619,17 +1596,17 @@ Adding Users to an Application Group in C++
 05/31/2018
 
 In Authorization Manager, an application group is a group of users and user groups.
-An application group can contain other application groups, so groups of users can be nested. 
+An application group can contain other application groups, so groups of users can be nested.
 An application group is represented by an IAzApplicationGroup object.
 
-To allow members of an application group to perform a task or set of tasks, 
+To allow members of an application group to perform a task or set of tasks,
 assign that application group to a role that contains those tasks.
 Roles are represented by IAzRole objects.
 
-The following example shows how to create an application group, add a user as a member of the application group, 
+The following example shows how to create an application group, add a user as a member of the application group,
 and assign the application group to an existing role.
 The example assumes that there is an existing XML policy store named MyStore.xml in the root directory of drive C,
-that this store contains an application named Expense, 
+that this store contains an application named Expense,
 and that this application contains a role named Expense Administrator.
 
 https://docs.microsoft.com/en-us/windows/win32/secauthz/adding-users-to-an-application-group-in-c--
@@ -1653,12 +1630,10 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/adding-users-to-an-appli
 
     //  Create the AzAuthorizationStore object.
     hr = CoCreateInstance(
-        /*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
-        __uuidof(AzAuthorizationStore),
+        __uuidof(AzAuthorizationStore),/*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
         NULL,
         CLSCTX_ALL,
-        /*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
-        __uuidof(IAzAuthorizationStore),
+        __uuidof(IAzAuthorizationStore),/*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
         (void **)&pStore);
     if (!(SUCCEEDED(hr)))
         MyHandleError("Could not create AzAuthorizationStore object.");
@@ -1789,12 +1764,10 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/delegating-the-defining-
 
     //  Create the AzAuthorizationStore object.
     hr = CoCreateInstance(
-        /*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
-        __uuidof(AzAuthorizationStore),
+        __uuidof(AzAuthorizationStore),/*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
         NULL,
         CLSCTX_ALL,
-        /*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
-        __uuidof(IAzAuthorizationStore),
+        __uuidof(IAzAuthorizationStore),/*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
         (void **)&pStore);
     if (!(SUCCEEDED(hr)))
         MyHandleError("Could not create AzAuthorizationStore object.");
@@ -1889,12 +1862,10 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/verifying-client-access-
 
     //  Create the AzAuthorizationStore object.
     hr = CoCreateInstance(
-        /*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
-        __uuidof(AzAuthorizationStore),
+        __uuidof(AzAuthorizationStore),/*"b2bcff59-a757-4b0b-a1bc-ea69981da69e"*/
         NULL,
         CLSCTX_ALL,
-        /*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
-        __uuidof(IAzAuthorizationStore),
+        __uuidof(IAzAuthorizationStore),/*"edbd9ca9-9b82-4f6a-9e8b-98301e450f14"*/
         (void **)&pStore);
     if (!(SUCCEEDED(hr)))
         MyHandleError("Could not create AzAuthorizationStore object.");
@@ -2453,7 +2424,7 @@ It uses that security descriptor to check access for the client specified by the
 https://docs.microsoft.com/zh-cn/windows/win32/secauthz/checking-access-with-authz-api
 */
 {
-#define MY_MAX 4096
+    #define MY_MAX 4096
     PSECURITY_DESCRIPTOR    pSecurityDescriptor = NULL;
     ULONG                    cbSecurityDescriptorSize = 0;
     AUTHZ_ACCESS_REQUEST    Request;
@@ -2524,7 +2495,7 @@ The previous access check was performed in the example in Checking Access with A
 https://docs.microsoft.com/zh-cn/windows/win32/secauthz/caching-access-checks
 */
 {
-#define MY_MAX 4096
+    #define MY_MAX 4096
     PSECURITY_DESCRIPTOR                pSecurityDescriptor = NULL;
     ULONG                                cbSecurityDescriptorSize = 0;
     AUTHZ_ACCESS_REQUEST                Request;
@@ -2586,12 +2557,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/secauthz/caching-access-checks
     }
 
     //Call AuthzCachedAccessCheck with the cached result from the previous call.
-    if (!AuthzCachedAccessCheck(
-        0,
-        hCached,
-        &Request,
-        NULL,
-        pCachedReply)) {
+    if (!AuthzCachedAccessCheck(0, hCached, &Request, NULL, pCachedReply)) {
         printf_s("AuthzCachedAccessCheck failed with %d\n", GetLastError());
         LocalFree(pSecurityDescriptor);
         AuthzFreeHandle(hCached);

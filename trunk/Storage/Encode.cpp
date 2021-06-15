@@ -660,10 +660,8 @@ void DecodeMessage(PCRYPT_DATA_BLOB pEncodedBlob, LPWSTR pwszSignerName)
         MY_ENCODING_TYPE,      // encoding type
         0,                     // flags
         0,                     // use the default message type
-                               // the message type is 
-                               // listed in the message header
-        NULL,                  // cryptographic provider 
-                               // use NULL for the default provider
+                               // the message type is listed in the message header
+        NULL,                  // cryptographic provider use NULL for the default provider
         NULL,                  // recipient information
         NULL))                 // stream information
     {
@@ -724,8 +722,7 @@ void DecodeMessage(PCRYPT_DATA_BLOB pEncodedBlob, LPWSTR pwszSignerName)
         CMSG_SIGNER_CERT_INFO_PARAM,  // parameter type
         0,                            // index
         NULL,
-        &cbSignerCertInfo))           // size of the returned 
-                                      // information
+        &cbSignerCertInfo))           // size of the returned information
     {
         printf("%d bytes needed for the buffer.\n", cbSignerCertInfo);
     } else {
@@ -742,10 +739,8 @@ void DecodeMessage(PCRYPT_DATA_BLOB pEncodedBlob, LPWSTR pwszSignerName)
         hMsg,                         // handle to the message
         CMSG_SIGNER_CERT_INFO_PARAM,  // parameter type
         0,                            // index
-        pSignerCertInfo,              // address for returned 
-                                      // information
-        &cbSignerCertInfo)))          // size of the returned 
-                                      // information
+        pSignerCertInfo,              // address for returned information
+        &cbSignerCertInfo)))          // size of the returned information
     {
         MyHandleError("Verify SIGNER_CERT_INFO #2 failed");
     }
@@ -788,11 +783,7 @@ void DecodeMessage(PCRYPT_DATA_BLOB pEncodedBlob, LPWSTR pwszSignerName)
     }
 
     // Use the CERT_INFO from the signer certificate to verify the signature.
-    if (CryptMsgControl(
-        hMsg,
-        0,
-        CMSG_CTRL_VERIFY_SIGNATURE,
-        pSignerCertContext->pCertInfo)) {
+    if (CryptMsgControl(hMsg, 0, CMSG_CTRL_VERIFY_SIGNATURE, pSignerCertContext->pCertInfo)) {
         printf("Verify signature succeeded. \n");
     } else {
         printf("The signature was not verified. \n");
@@ -923,17 +914,13 @@ void EncodeMessageWithStream(LPWSTR pwszSignerName)
     DWORD dwKeySpec;
 
     // Open the My system certificate store.
-    if (!(hStoreHandle = CertOpenStore(
-        // The system store will be a virtual store.
-        CERT_STORE_PROV_SYSTEM,
-        // Encoding type not needed with this PROV.
-        0,
-        // Accept the default HCRYPTPROV. 
-        NULL,
+    if (!(hStoreHandle = CertOpenStore(        
+        CERT_STORE_PROV_SYSTEM,// The system store will be a virtual store.        
+        0,// Encoding type not needed with this PROV.        
+        NULL,// Accept the default HCRYPTPROV. 
         CERT_SYSTEM_STORE_CURRENT_USER,
         // Set the system store location in the registry. Other 
-        // predefined system stores could have been used, including 
-        // trust, Ca, or root.
+        // predefined system stores could have been used, including trust, Ca, or root.
         L"MY"))) {
         MyHandleError(L"Could not open the MY system store.");
     }
@@ -965,13 +952,7 @@ void EncodeMessageWithStream(LPWSTR pwszSignerName)
     // Initialize the CMSG_SIGNER_ENCODE_INFO structure.
 
     // Get a handle to a cryptographic provider. 
-    if (!(CryptAcquireCertificatePrivateKey(
-        pSignerCert,
-        0,
-        NULL,
-        &hCryptProv,
-        &dwKeySpec,
-        NULL))) {
+    if (!(CryptAcquireCertificatePrivateKey(pSignerCert, 0, NULL, &hCryptProv, &dwKeySpec, NULL))) {
         DWORD dwError = GetLastError();
         if (NTE_BAD_PUBLIC_KEY == dwError) {
             printf("NTE_BAD_PUBLIC_KEY\n");
@@ -1083,8 +1064,7 @@ void DecodeMessageWithStream()
         MY_ENCODING_TYPE,   // encoding type
         0,                  // flags
         0,                  // message type (get from message)
-        NULL,               // cryptographic provider
-                            // use NULL for the default provider
+        NULL,               // cryptographic provider use NULL for the default provider
         NULL,               // recipient information
         &stStreamInfo2)))   // stream information
     {
@@ -1109,12 +1089,7 @@ void DecodeMessageWithStream()
     DWORD cbBytesRead;
     BOOL lastCall = FALSE;
 
-    while (ReadFile(
-        hInMsgFile,
-        pbEncodedBlob,
-        cbBytesToRead,
-        &cbBytesRead,
-        NULL)) {
+    while (ReadFile(hInMsgFile, pbEncodedBlob, cbBytesToRead, &cbBytesRead, NULL)) {
         if (cbBytesRead < cbBytesToRead) {
             lastCall = TRUE;
         }
@@ -1171,10 +1146,9 @@ void ShowBytes(BYTE * s, DWORD len);
 // Declare local functions SignAndEncrypt, DecryptAndVerify, and WriteSignedAndEncryptedBlob.
 // These functions are defined after main.
 
-BYTE * SignAndEncrypt(
-    const BYTE * pbToBeSignedAndEncrypted,
-    DWORD          cbToBeSignedAndEncrypted,
-    DWORD * pcbSignedAndEncryptedBlob);
+BYTE * SignAndEncrypt(const BYTE * pbToBeSignedAndEncrypted,
+                      DWORD          cbToBeSignedAndEncrypted,
+                      DWORD * pcbSignedAndEncryptedBlob);
 
 BYTE * DecryptAndVerify(BYTE * pbSignedAndEncryptedBlob, DWORD  cbSignedAndEncryptedBlob);
 
@@ -1268,9 +1242,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-sendi
     ShowBytes(pbSignedAndEncryptedBlob, cbSignedAndEncryptedBlob / 4);
 
     // Open a file and write the signed and encrypted message to the file.
-    WriteSignedAndEncryptedBlob(
-        cbSignedAndEncryptedBlob,
-        pbSignedAndEncryptedBlob);
+    WriteSignedAndEncryptedBlob(cbSignedAndEncryptedBlob, pbSignedAndEncryptedBlob);
 
     // Call the local function DecryptAndVerify.
     // This function decrypts and displays the 
@@ -1285,10 +1257,9 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-sendi
 } // End Main.
 
 
-BYTE * SignAndEncrypt(
-    const BYTE * pbToBeSignedAndEncrypted,
-    DWORD cbToBeSignedAndEncrypted,
-    DWORD * pcbSignedAndEncryptedBlob
+BYTE * SignAndEncrypt(const BYTE * pbToBeSignedAndEncrypted,
+                      DWORD cbToBeSignedAndEncrypted,
+                      DWORD * pcbSignedAndEncryptedBlob
 )
 // Begin definition of the SignAndEncrypt function.
 {
@@ -1348,10 +1319,8 @@ BYTE * SignAndEncrypt(
         NULL,
         pszNameString,
         MAX_NAME) > 1) {
-        _tprintf(
-            TEXT("The SIMPLE_DISPLAY_TYPE message signer's name is ")
-            TEXT("%s \n"),
-            pszNameString);
+        _tprintf(TEXT("The SIMPLE_DISPLAY_TYPE message signer's name is ")
+                 TEXT("%s \n"), pszNameString);
     } else {
         MyHandleError(TEXT("Getting the name of the signer failed.\n"));
     }
@@ -1362,13 +1331,7 @@ BYTE * SignAndEncrypt(
         MyHandleError(TEXT("Getting the name of the signer failed.\n"));
     }
 
-    if (!(CryptAcquireCertificatePrivateKey(
-        pSignerCertContext,
-        0,
-        NULL,
-        &hCryptProv,
-        &dwKeySpec,
-        NULL))) {
+    if (!(CryptAcquireCertificatePrivateKey(pSignerCertContext, 0, NULL, &hCryptProv, &dwKeySpec, NULL))) {
         MyHandleError(TEXT("CryptAcquireCertificatePrivateKey.\n"));
     }
 
@@ -2154,13 +2117,7 @@ bool CosignMessage(CRYPT_DATA_BLOB * pSignedMessageBlob, CRYPT_DATA_BLOB * pCosi
     }
 
     // Open a message for decoding.
-    if (!(hMsg = CryptMsgOpenToDecode(
-        MY_ENCODING_TYPE,
-        0,
-        0,
-        NULL,
-        NULL,
-        NULL))) {
+    if (!(hMsg = CryptMsgOpenToDecode(MY_ENCODING_TYPE, 0, 0, NULL, NULL, NULL))) {
         MyHandleError(TEXT("CryptMsgOpenToDecode failed."));
         goto exit_CosignMessage;
     }
@@ -2489,13 +2446,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
     // Initialize the CMSG_SIGNER_ENCODE_INFO structure.
 
     // Get a handle to a cryptographic provider. 
-    if (!(CryptAcquireCertificatePrivateKey(
-        pSignerCert,
-        0,
-        NULL,
-        &hCryptProv,
-        &dwKeySpec,
-        NULL))) {
+    if (!(CryptAcquireCertificatePrivateKey(pSignerCert, 0, NULL, &hCryptProv, &dwKeySpec, NULL))) {
         MyHandleError("CryptAcquireContext failed.");
     }
 
@@ -2526,13 +2477,12 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
     SignedMsgEncodeInfo.rgCertEncoded = SignerCertBlobArray;
 
     // Get the size of the encoded message BLOB.
-    cbEncodedBlob = CryptMsgCalculateEncodedLength(
-        MY_ENCODING_TYPE,
-        0,
-        CMSG_SIGNED,
-        &SignedMsgEncodeInfo,
-        NULL,
-        cbContent);
+    cbEncodedBlob = CryptMsgCalculateEncodedLength(MY_ENCODING_TYPE,
+                                                   0,
+                                                   CMSG_SIGNED,
+                                                   &SignedMsgEncodeInfo,
+                                                   NULL,
+                                                   cbContent);
     if (!cbEncodedBlob) {
         MyHandleError("Getting cbEncodedBlob length failed.");
     }
@@ -2544,33 +2494,18 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
     }
 
     // Open a message to encode.
-    hMsg = CryptMsgOpenToEncode(
-        MY_ENCODING_TYPE,
-        0,
-        CMSG_SIGNED,
-        &SignedMsgEncodeInfo,
-        NULL,
-        NULL);
+    hMsg = CryptMsgOpenToEncode(MY_ENCODING_TYPE, 0, CMSG_SIGNED, &SignedMsgEncodeInfo, NULL, NULL);
     if (!hMsg) {
         MyHandleError("OpenToEncode failed.");
     }
 
     // Update the message with the data.
-    if (!(CryptMsgUpdate(
-        hMsg,
-        pbContent,
-        cbContent,
-        TRUE))) {
+    if (!(CryptMsgUpdate(hMsg, pbContent, cbContent, TRUE))) {
         MyHandleError("CryptMsgUpdate failed.");
     }
 
     // Get the resulting message.
-    if (CryptMsgGetParam(
-        hMsg,
-        CMSG_CONTENT_PARAM,
-        0,
-        pbEncodedBlob,
-        &cbEncodedBlob)) {
+    if (CryptMsgGetParam(hMsg, CMSG_CONTENT_PARAM, 0, pbEncodedBlob, &cbEncodedBlob)) {
         printf("Message successfully signed.\n");
     } else {
         MyHandleError("CryptMsgGetParam failed.");
@@ -2595,33 +2530,18 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
     // of the message, where the counter-signature is verified.
 
     // Open a message for decoding.
-    hMsg = CryptMsgOpenToDecode(
-        MY_ENCODING_TYPE,
-        0,
-        0,
-        NULL,
-        NULL,
-        NULL);
+    hMsg = CryptMsgOpenToDecode(MY_ENCODING_TYPE, 0, 0, NULL, NULL, NULL);
     if (!hMsg) {
         MyHandleError("CryptOpenToDecode failed.");
     }
 
     // Update the message with the encoded BLOB.
-    if (!(CryptMsgUpdate(
-        hMsg,
-        pbEncodedBlob,
-        cbEncodedBlob,
-        TRUE))) {
+    if (!(CryptMsgUpdate(hMsg, pbEncodedBlob, cbEncodedBlob, TRUE))) {
         MyHandleError("Decode CryptMsgUpdate failed.");
     }
 
     // Get the size of the message.
-    if (CryptMsgGetParam(
-        hMsg,
-        CMSG_CONTENT_PARAM,
-        0,
-        NULL,
-        &cbDecoded)) {
+    if (CryptMsgGetParam(hMsg, CMSG_CONTENT_PARAM, 0, NULL, &cbDecoded)) {
         printf("The message is %d bytes long.\n", cbDecoded);
     } else {
         MyHandleError("Decode CMSG_CONTENT_PARAM failed.");
@@ -2634,12 +2554,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
     }
 
     // Copy the message to the buffer.
-    if (CryptMsgGetParam(
-        hMsg,
-        CMSG_CONTENT_PARAM,
-        0,
-        pbDecoded,
-        &cbDecoded)) {
+    if (CryptMsgGetParam(hMsg, CMSG_CONTENT_PARAM, 0, pbDecoded, &cbDecoded)) {
         printf("The successfully decoded message is -> ");
         printf("%s\n", pbDecoded);
     } else {
@@ -2722,13 +2637,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
     }
 
     // Initialize the CMSG_SIGNER_ENCODE_INFO structure.
-    if (!(CryptAcquireCertificatePrivateKey(
-        pCntrSigCert,
-        0,
-        NULL,
-        &hCryptProv,
-        &dwKeySpec,
-        NULL))) {
+    if (!(CryptAcquireCertificatePrivateKey(pCntrSigCert, 0, NULL, &hCryptProv, &dwKeySpec, NULL))) {
         MyHandleError("CryptAcquireContext failed.");
     }
 
@@ -2750,12 +2659,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
 
     // Get a pointer to the new, countersigned message BLOB.
     // Get the size of memory required.
-    if (CryptMsgGetParam(
-        hMsg,
-        CMSG_ENCODED_MESSAGE,
-        0,
-        NULL,
-        &cbEncodedBlob)) {
+    if (CryptMsgGetParam(hMsg, CMSG_ENCODED_MESSAGE, 0, NULL, &cbEncodedBlob)) {
         printf("The size of the encoded BLOB is %d.\n", cbEncodedBlob);
     } else {
         MyHandleError("Sizing of cbSignerInfo failed.");
@@ -2770,48 +2674,30 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
     }
 
     // Get the new message encoded BLOB.
-    if (CryptMsgGetParam(
-        hMsg,
-        CMSG_ENCODED_MESSAGE,
-        0,
-        pbEncodedBlob,
-        &cbEncodedBlob)) {
+    if (CryptMsgGetParam(hMsg, CMSG_ENCODED_MESSAGE, 0, pbEncodedBlob, &cbEncodedBlob)) {
         printf("The message is complete. \n");
     } else {
         MyHandleError("Getting pbEncodedBlob failed.");
     }
-
-    //  The message is complete. Close the handle.
-    CryptMsgClose(hMsg);
+    
+    CryptMsgClose(hMsg);//  The message is complete. Close the handle.
 
     // Verify the countersignature.
     // Assume that the countersigned message 
     // went back to the originator, 
     // where, again, it will be decoded.
 
-    // Before verifying the countersignature, 
-    // the message must first
-    // be decoded.
+    // Before verifying the countersignature, the message must first be decoded.
 
     // Open a message for decoding.
-    if (hMsg = CryptMsgOpenToDecode(
-        MY_ENCODING_TYPE,
-        0,
-        0,
-        0,
-        NULL,
-        NULL)) {
+    if (hMsg = CryptMsgOpenToDecode(MY_ENCODING_TYPE, 0, 0, 0, NULL, NULL)) {
         printf("The message to decode has been opened.\n");
     } else {
         MyHandleError("CryptMsgOpenToDecode failed.");
     }
 
     // Update the message with the encoded BLOB.
-    if (CryptMsgUpdate(
-        hMsg,
-        pbEncodedBlob,
-        cbEncodedBlob,
-        TRUE)) {
+    if (CryptMsgUpdate(hMsg, pbEncodedBlob, cbEncodedBlob, TRUE)) {
         printf("The message to decode has been updated.\n");
     } else {
         MyHandleError("Updating the countersignature message " \
@@ -2822,12 +2708,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
 
     // Retrieve the signer information from the message.
     // Get the size of memory required.
-    if (CryptMsgGetParam(
-        hMsg,
-        CMSG_ENCODED_SIGNER,
-        0,
-        NULL,
-        &cbSignerInfo)) {
+    if (CryptMsgGetParam(hMsg, CMSG_ENCODED_SIGNER, 0, NULL, &cbSignerInfo)) {
         printf("Signer information is %d bytes.\n", cbSignerInfo);
     } else {
         MyHandleError("Sizing of cbSignerInfo failed.");
@@ -2944,8 +2825,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
     // Declare and initialize variables. This includes getting a pointer 
     // to the message content. This sample program creates the message 
     // content and gets a pointer to it. In most situations, 
-    // the content will exist somewhere and a pointer to it
-    // will get passed to the application. 
+    // the content will exist somewhere and a pointer to it will get passed to the application. 
 
     HCRYPTMSG hMsg;
     BYTE * pbContent;     // a byte pointer to the message
@@ -3034,8 +2914,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
     // in a stand-alone program if the message 
     // to be decoded and its size were input. 
     // The encoded message BLOB and its length could be read 
-    // from a disk file or could be extracted from an email message 
-    // or other input source.
+    // from a disk file or could be extracted from an email message or other input source.
 
     // Open a message for decoding.
     if (hMsg = CryptMsgOpenToDecode(
@@ -3073,10 +2952,8 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
         hMsg,                  // handle to the message
         CMSG_CONTENT_PARAM,    // parameter type
         0,                     // index
-        NULL,                  // address for returned 
-                               // information
-        &cbDecoded))           // size of the returned
-                               // information
+        NULL,                  // address for returned information
+        &cbDecoded))           // size of the returned information
     {
         printf("The decoded message size is %d. \n", cbDecoded);
     } else {
@@ -3095,10 +2972,8 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
         hMsg,                  // handle to the message
         CMSG_CONTENT_PARAM,    // parameter type
         0,                     // index
-        pbDecoded,             // address for returned 
-                               // information
-        &cbDecoded))           // size of the returned 
-                               // information
+        pbDecoded,             // address for returned information
+        &cbDecoded))           // size of the returned information
     {
         printf("The message is %s.\n", (LPSTR)pbDecoded);
     } else {

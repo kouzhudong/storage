@@ -14,6 +14,9 @@
 #define UNICODE
 #endif
 
+#pragma warning(disable:28251)
+#pragma warning(disable:28301)
+
 #include <Winsock2.h>
 #include <windows.h>
 #include <strsafe.h>
@@ -163,6 +166,8 @@ int WINAPI CppShellKnownFolders(int argc, _TCHAR * argv[]);
 void WINAPI GetImageFilePath(_Out_ LPWSTR ImageFilePath, _In_ DWORD nSize);
 
 LONG WINAPI VerifyEmbeddedSignatureEx(LPCWSTR pwszSourceFile);
+
+void WINAPI ASN(void);
 
 int WINAPI SignatureVerification(_In_ unsigned int argc, _In_reads_(argc) PCWSTR wargv[]);
 
