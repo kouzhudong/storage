@@ -89,13 +89,11 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-listi
 {
     // Copyright (C) Microsoft.  All rights reserved.
     // This program lists all of the certificates in a system certificate
-    // store and all of the property identifier numbers of those 
-    // certificates. It also demonstrates the use of two
-    // UI functions. One, CryptUIDlgSelectCertificateFromStore, 
-    // displays the certificates in a store
-    // and allows the user to select one of them, 
-    // The other, CryptUIDlgViewContext,
-    // displays the contents of a single certificate.
+    // store and all of the property identifier numbers of those certificates. 
+    // It also demonstrates the use of two UI functions.
+    // One, CryptUIDlgSelectCertificateFromStore, 
+    // displays the certificates in a store and allows the user to select one of them, 
+    // The other, CryptUIDlgViewContext, displays the contents of a single certificate.
 
     // Declare and initialize variables.
     HCERTSTORE       hCertStore;
@@ -106,8 +104,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-listi
     DWORD            cbData;
     DWORD            dwPropId = 0;
     // Zero must be used on the first
-    // call to the function. After that,
-    // the last returned property identifier is passed.
+    // call to the function. After that, the last returned property identifier is passed.
 
 //  Begin processing and Get the name of the system certificate store 
 //  to be enumerated. Output here is to stderr so that the program  
@@ -139,13 +136,12 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-listi
             MyHandleError("UI failed.");
         }
 
-        if (CertGetNameStringA(
-            pCertContext,
-            CERT_NAME_SIMPLE_DISPLAY_TYPE,
-            0,
-            NULL,
-            pszNameString,
-            128)) {
+        if (CertGetNameStringA(pCertContext,
+                               CERT_NAME_SIMPLE_DISPLAY_TYPE,
+                               0,
+                               NULL,
+                               pszNameString,
+                               128)) {
             printf("\nCertificate for %s \n", pszNameString);
         } else
             fprintf(stderr, "CertGetName failed. \n");
@@ -287,11 +283,8 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-listi
                 MyHandleError("Call #2 failed.");
             }
 
-            // Show the results.
-            printf("The Property Content is %d \n", pvData);
-
-            // Free the certificate context property memory.
-            free(pvData);
+            printf("The Property Content is %d \n", pvData);// Show the results.            
+            free(pvData);// Free the certificate context property memory.
         }  // End inner while.
     } // End outer while.
 
@@ -311,7 +304,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-listi
     CertFreeCertificateContext(pCertContext);
     CertCloseStore(hCertStore, 0);
     printf("The function completed successfully. \n");
-} // End of main.
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -325,7 +318,8 @@ Example C Program: Deleting Certificates from a Certificate Store
 The following example lists the certificates in a system certificate store,
 displaying the name of the subject of each certificate,
 and it allows the user to choose to delete any certificates from the store.
-The example gets the name of the certificate store from the user and thus can be used to maintain the contents of any system certificate store.
+The example gets the name of the certificate store from the user and
+thus can be used to maintain the contents of any system certificate store.
 
 This example illustrates the following tasks and CryptoAPI functions:
 
@@ -340,7 +334,8 @@ Deleting a certificate from a store using CertDeleteCertificateFromStore.
 Closing a certificate store using CertCloseStore.
 This example gets the name of a system certificate store from the user,
 opens that store, and goes through the certificates in that store.
-For each certificate, the name of the certificate's subject is displayed and the user is given an option to delete that certificate.
+For each certificate, the name of the certificate's subject is displayed and
+the user is given an option to delete that certificate.
 
 https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-deleting-certificates-from-a-certificate-store
 */
@@ -382,27 +377,24 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-delet
                        // on all subsequent calls, it is the last pointer returned by the function
     {
         // Get and display the name of the subject of the certificate.
-        if (CertGetNameStringA(
-            pCertContext,
-            CERT_NAME_SIMPLE_DISPLAY_TYPE,
-            0,
-            NULL,
-            pszNameString,
-            128)) {
+        if (CertGetNameStringA(pCertContext,
+                               CERT_NAME_SIMPLE_DISPLAY_TYPE,
+                               0,
+                               NULL,
+                               pszNameString,
+                               128)) {
             printf("\nCertificate for %s \n", pszNameString);
         } else {
             MyHandleError("CertGetName failed.");
         }
 
         // Check to determine whether the issuer and the subject are the same.
-        if (CertCompareCertificateName(
-            MY_ENCODING_TYPE,
-            &(pCertContext->pCertInfo->Issuer),
-            &(pCertContext->pCertInfo->Subject))) {
+        if (CertCompareCertificateName(MY_ENCODING_TYPE,
+                                       &(pCertContext->pCertInfo->Issuer),
+                                       &(pCertContext->pCertInfo->Subject))) {
             printf("The certificate subject and issuer are the same.\n");
         } else {
-            printf("The certificate subject and issuer "
-                   "are not the same.\n");
+            printf("The certificate subject and issuer are not the same.\n");
         }
 
         // Determine whether this certificate's public key matches 
@@ -415,25 +407,23 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-delet
                 printf("This certificate has a different public key.\n");
             }
 
-        // Reset the old key.
-        pOldPubKey = pNewPubKey;
+        pOldPubKey = pNewPubKey;// Reset the old key.
 
         // Determine whether this certificate is to be deleted. 
         printf("Would you like to delete this certificate? (y/n) ");
         fResponse = getchar();
         if (fResponse == 'y') {
-            // Create a duplicate pointer to the certificate to be 
-            // deleted. In this way, the original pointer is not freed 
+            // Create a duplicate pointer to the certificate to be deleted. 
+            // In this way, the original pointer is not freed 
             // when the certificate is deleted from the store 
-            // and the enumeration of the certificates in the store can
-            // continue. If the original pointer is used, after the 
+            // and the enumeration of the certificates in the store can continue.
+            // If the original pointer is used, after the 
             // certificate is deleted, the enumeration loop stops.
 
             if (pDupCertContext = CertDuplicateCertificateContext(pCertContext)) {
                 printf("A duplicate pointer was created. Continue. \n");
             } else {
-                MyHandleError("Duplication of the certificate "
-                              "pointer failed.");
+                MyHandleError("Duplication of the certificate pointer failed.");
             }
 
             // Compare the pCertInfo members of the two certificates to determine whether they are identical.
@@ -451,14 +441,13 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-delet
             }
         } // end if
 
-        // Clear the input buffer.
-        x = getchar();
+        x = getchar();// Clear the input buffer.
     } // end while
 
     // Clean up.
     CertCloseStore(hStoreHandle, 0);
     printf("The program ran to completion successfully. \n");
-} // end main
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -469,7 +458,8 @@ void CertificateStoreOperations(void)
 Example C Program: Certificate Store Operations
 2018/05/31
 
-The following example demonstrates a number of common certificate store operations as well as the following tasks and CryptoAPI functions:
+The following example demonstrates a number of common certificate store operations as well as the following tasks and
+CryptoAPI functions:
 
 Opening and closing memory and system stores using CertOpenStore and CertCloseStore.
 Duplicating an open store using CertDuplicateStore.
@@ -591,8 +581,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-certi
         NULL)) {
         printf("Certificate added to the memory store. \n");
     } else {
-        MyHandleError("Could not add the certificate "
-                      "to the memory store.");
+        MyHandleError("Could not add the certificate to the memory store.");
     }
 
     // Find a different certificate in the My store, and add to it a link to the memory store.
@@ -625,8 +614,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-certi
         NULL)) {
         printf("Certificate link added to the memory store. \n");
     } else {
-        MyHandleError("Could not add the certificate link to the "
-                      "memory store.");
+        MyHandleError("Could not add the certificate link to the memory store.");
     }
 
     // Find the first certificate in the memory store.
@@ -644,8 +632,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-certi
                                      // In all subsequent calls, it is the last pointer
                                      // returned by the function
     {
-        printf("The desired certificate was found in the "
-               "memory store. \n");
+        printf("The desired certificate was found in the memory store. \n");
     } else {
         printf("Certificate not in the memory store.\n");
     }
@@ -757,7 +744,6 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-certi
     }
 
     // Clean up memory and end.
-
     if (pDesiredCert)
         CertFreeCertificateContext(pDesiredCert);
     if (hMemoryStore)
@@ -768,7 +754,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-certi
         CloseHandle(hStoreFileHandle);
     printf("All of the stores and files are closed. \n");
     return;
-} // end main
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -787,10 +773,13 @@ void SerializingCertificates(void)
 Example C Program: Serializing Certificates
 2018/05/31
 
-The following example demonstrates serializing a certificate context and its properties into a form that can be stored in a file,
+The following example demonstrates serializing a certificate context and
+its properties into a form that can be stored in a file,
 sent with an email message, or otherwise transmitted to another user.
-The example also shows how the serialized certificate can be changed back into a certificate and added to a certificate store.
-The same process works also with CRLs and CTLs using CertSerializeCRLStoreElement and CertSerializeCTLStoreElement.
+The example also shows how the serialized certificate can be changed back into a certificate and
+added to a certificate store.
+The same process works also with CRLs and CTLs using CertSerializeCRLStoreElement and
+CertSerializeCTLStoreElement.
 
 This example illustrates the following tasks and CryptoAPI functions:
 
@@ -798,8 +787,10 @@ Opening a system certificate store using CertOpenSystemStore.
 Opening a certificate store using CertOpenStore.
 Retrieving a certificate from a store using CertEnumCertificatesInStore.
 Getting the name of the certificate's subject using CertGetNameString.
-Creating a serialized form of a certificate context and its properties using CertSerializeCertificateStoreElement.
-Creating a new certificate from a serialized string and adding it into a certificate store using CertAddSerializedElementToStore.
+Creating a serialized form of a certificate context and
+its properties using CertSerializeCertificateStoreElement.
+Creating a new certificate from a serialized string and
+adding it into a certificate store using CertAddSerializedElementToStore.
 Using CertAddEncodedCertificateToStore to create a new certificate from the encoded portion of an existing certificate.
 Using CertCloseStore to close a certificate store.
 
@@ -835,8 +826,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-seria
     if (pCertContext = CertEnumCertificatesInStore(hSystemStore, pCertContext)) {
         printf("A certificate is available. Continue.\n");
     } else {
-        MyHandleError("No certificate available. "
-                      "The store may be empty.");
+        MyHandleError("No certificate available. The store may be empty.");
     }
 
     //  Find and print the name of the subject of the certificate just retrieved.
@@ -855,8 +845,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-seria
     {
         printf("The length of the serialized string is %d.\n", cbElement);
     } else {
-        MyHandleError("Finding the length of the serialized "
-                      "element failed.");
+        MyHandleError("Finding the length of the serialized element failed.");
     }
 
     // Allocate memory for the serialized element.
@@ -892,7 +881,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-seria
         CERT_STORE_CERTIFICATE_CONTEXT_FLAG,
         NULL,
         NULL
-        )) {
+    )) {
         printf("The new certificate is added to the second store.\n");
     } else {
         MyHandleError("The new element was not added to a store.");
@@ -904,31 +893,28 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-seria
     if (pCertContext = CertEnumCertificatesInStore(hSystemStore, pCertContext)) {
         printf("Another certificate is available. Continue.\n");
     } else {
-        MyHandleError("No certificate is available. "
-                      "The store may be empty.");
+        MyHandleError("No certificate is available. The store may be empty.");
     }
 
     //  Find and print the name of the subject of the certificate just retrieved.
-    if (CertGetNameStringA(
-        pCertContext,
-        CERT_NAME_SIMPLE_DISPLAY_TYPE,
-        0,
-        NULL,
-        pszNameString,
-        128)) {
+    if (CertGetNameStringA(pCertContext,
+                           CERT_NAME_SIMPLE_DISPLAY_TYPE,
+                           0,
+                           NULL,
+                           pszNameString,
+                           128)) {
         printf("Certificate for %s has been retrieved.\n", pszNameString);
     } else {
         printf("CertGetName failed. \n");
     }
 
     //  Create a new certificate from the encoded portion of pCertContext and add it to the file-based store.
-    if (CertAddEncodedCertificateToStore(
-        hFileStore,
-        MY_ENCODING_TYPE,
-        pCertContext->pbCertEncoded,
-        pCertContext->cbCertEncoded,
-        CERT_STORE_ADD_USE_EXISTING,
-        NULL)) {
+    if (CertAddEncodedCertificateToStore(hFileStore,
+                                         MY_ENCODING_TYPE,
+                                         pCertContext->pbCertEncoded,
+                                         pCertContext->cbCertEncoded,
+                                         CERT_STORE_ADD_USE_EXISTING,
+                                         NULL)) {
         printf("Another certificate is added to the file store.\n");
     } else {
         MyHandleError("The new certificate was not added to the file store.");
@@ -939,7 +925,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-seria
     CertCloseStore(hSystemStore, 0);
     CertCloseStore(hFileStore, 0);
     printf("The program ran without error to the end.\n");
-} // End of main
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -962,7 +948,8 @@ void GettingAndSettingCertificateProperties(void)
 Example C Program: Getting and Setting Certificate Properties
 2018/05/31
 
-The following example gets and sets certificate properties, and illustrates the following tasks and CryptoAPI functions.
+The following example gets and sets certificate properties,
+and illustrates the following tasks and CryptoAPI functions.
 
 Opening a system store by using CertOpenSystemStore.
 Using CertEnumCertificatesInStore to list all of the certificates in the open store.
@@ -1034,11 +1021,10 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-getti
             printf("Would you like to set the display name ?");
             scanf_s("%c%c", &fResponse, &fExtra);
             if (fResponse == 'y') {
-                if (CertSetCertificateContextProperty(
-                    pCertContext,
-                    CERT_FRIENDLY_NAME_PROP_ID,
-                    0,
-                    &Friendly_Name_Blob)) {
+                if (CertSetCertificateContextProperty(pCertContext,
+                                                      CERT_FRIENDLY_NAME_PROP_ID,
+                                                      0,
+                                                      &Friendly_Name_Blob)) {
                     printf("A name has been set.\n");
                 } else {
                     printf("The display name was not set.\n");
@@ -1252,12 +1238,11 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-conve
     PCCERT_CONTEXT pCertContext;
 
     // Begin Processing by opening a certificate store.
-    if (!(hCertStore = CertOpenStore(
-        CERT_STORE_PROV_SYSTEM,
-        MY_ENCODING_TYPE,
-        NULL,
-        CERT_SYSTEM_STORE_CURRENT_USER,
-        L"MY"))) {
+    if (!(hCertStore = CertOpenStore(CERT_STORE_PROV_SYSTEM,
+                                     MY_ENCODING_TYPE,
+                                     NULL,
+                                     CERT_SYSTEM_STORE_CURRENT_USER,
+                                     L"MY"))) {
         MyHandleError(TEXT("The MY system store did not open."));
     }
 
@@ -1293,13 +1278,12 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-conve
 
         //        Get and display 
         //        the name of Issuer of the certificate.
-        if (!(cbSize = CertGetNameString(
-            pCertContext,
-            CERT_NAME_SIMPLE_DISPLAY_TYPE,
-            CERT_NAME_ISSUER_FLAG,
-            NULL,
-            NULL,
-            0))) {
+        if (!(cbSize = CertGetNameString(pCertContext,
+                                         CERT_NAME_SIMPLE_DISPLAY_TYPE,
+                                         CERT_NAME_ISSUER_FLAG,
+                                         NULL,
+                                         NULL,
+                                         0))) {
             MyHandleError(TEXT("CertGetName 1 failed."));
         }
 
@@ -1307,34 +1291,29 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-conve
             MyHandleError(TEXT("Memory allocation failed."));
         }
 
-        if (CertGetNameString(
-            pCertContext,
-            CERT_NAME_SIMPLE_DISPLAY_TYPE,
-            CERT_NAME_ISSUER_FLAG,
-            NULL,
-            pszName,
-            cbSize)) {
+        if (CertGetNameString(pCertContext,
+                              CERT_NAME_SIMPLE_DISPLAY_TYPE,
+                              CERT_NAME_ISSUER_FLAG,
+                              NULL,
+                              pszName,
+                              cbSize)) {
             _tprintf(TEXT("Issuer  -> %s.\n"), pszName);
             free(pszName);//       Free the memory allocated for the string.
         } else {
             MyHandleError(TEXT("CertGetName failed."));
         }
 
-        //       Convert the subject name to an ASN.1 encoded
-        //       string and print the octets in that string.
+        //       Convert the subject name to an ASN.1 encoded string and print the octets in that string.
 
         //       First : Get the number of bytes that must be allocated for the string.
-        cbSize = CertNameToStr(
-            pCertContext->dwCertEncodingType,
-            &(pCertContext->pCertInfo->Subject),
-            MY_STRING_TYPE,
-            NULL,
-            0);
-
+        cbSize = CertNameToStr(pCertContext->dwCertEncodingType,
+                               &(pCertContext->pCertInfo->Subject),
+                               MY_STRING_TYPE,
+                               NULL,
+                               0);
         //  The function CertNameToStr returns the number of bytes needed for a string to hold the
-        //  converted name, including the null terminator. 
-        //  If it returns one, the name is an empty string.
-        if (1 == cbSize) {
+        //  converted name, including the null terminator.         
+        if (1 == cbSize) {//  If it returns one, the name is an empty string.
             MyHandleError(TEXT("Subject name is an empty string."));
         }
 
@@ -1345,17 +1324,13 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-conve
         }
 
         //       Call the function again to get the string. 
-        cbSize = CertNameToStr(
-            pCertContext->dwCertEncodingType,
-            &(pCertContext->pCertInfo->Subject),
-            MY_STRING_TYPE,
-            pszString,
-            cbSize);
-
-        //  The function CertNameToStr returns the number
-        //  of bytes in the string, including the null terminator.
-        //  If it returns 1, the name is an empty string.
-        if (1 == cbSize) {
+        cbSize = CertNameToStr(pCertContext->dwCertEncodingType,
+                               &(pCertContext->pCertInfo->Subject),
+                               MY_STRING_TYPE,
+                               pszString,
+                               cbSize);
+        //  The function CertNameToStr returns the number of bytes in the string, including the null terminator.        
+        if (1 == cbSize) {//  If it returns 1, the name is an empty string.
             MyHandleError(TEXT("Subject name is an empty string."));
         }
 
@@ -1368,7 +1343,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-conve
             NULL,
             NULL,        // NULL to get the number of bytes needed for the buffer.          
             &cbSize,     // Pointer to a DWORD to hold the number of bytes needed for the buffer
-            NULL)))     // Optional address of a pointer to old the location for an error in the input string.
+            NULL)))      // Optional address of a pointer to old the location for an error in the input string.
         {
             MyHandleError(TEXT("Could not get the length of the BLOB."));
         }
@@ -1378,14 +1353,13 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-conve
         }
         blobEncodedName.cbData = cbSize;
 
-        if (CertStrToName(
-            MY_ENCODING_TYPE,
-            pszString,
-            MY_STRING_TYPE,
-            NULL,
-            blobEncodedName.pbData,
-            &blobEncodedName.cbData,
-            NULL)) {
+        if (CertStrToName(MY_ENCODING_TYPE,
+                          pszString,
+                          MY_STRING_TYPE,
+                          NULL,
+                          blobEncodedName.pbData,
+                          &blobEncodedName.cbData,
+                          NULL)) {
             _tprintf(TEXT("CertStrToName created the BLOB.\n"));
         } else {
             MyHandleError(TEXT("Could not create the BLOB."));
@@ -1395,8 +1369,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-conve
         free(blobEncodedName.pbData);
         free(pszString);
 
-        //       Pause before information on the next certificate is displayed.
-        Local_wait();
+        Local_wait();//       Pause before information on the next certificate is displayed.
     } // End of while loop
 
     _tprintf(TEXT("\nThere are no more certificates in the store. \n"));
@@ -1414,7 +1387,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-conve
              TEXT("without error.\n"));
 
     Local_wait();
-} // End of main
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1430,12 +1403,6 @@ Example C Program: Registering Physical and System Certificate Stores
 Example C Program: Setting and Getting Certificate Store Properties
 Example C Program: Listing System and Physical Stores
 */
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1483,8 +1450,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-colle
     // Copyright (C) Microsoft.  All rights reserved.
     // Declare and initialize variables.
 
-    HCERTSTORE  hCollectionStore;           // Collection store 
-                                            // handle
+    HCERTSTORE  hCollectionStore;           // Collection store handle
     HCERTSTORE  hSystemStore;               // System store handle
     HCERTSTORE  hMemoryStore;               // Memory store handle
     PCCERT_CONTEXT  pDesiredCert = NULL;    // Set to NULL for the first call to CertFindCertificateInStore
@@ -1492,11 +1458,9 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-colle
     LPCWSTR pszFileName = L"TestStor.sto";    // Output file name
     SECURITY_ATTRIBUTES sa;                 // for DACL
     LPCWSTR pswzFirstCert = L"Insert_cert_subject_name1";
-    // Subject of the first 
-    // certificate
+    // Subject of the first certificate
     LPCWSTR pswzSecondCert = L"Insert_cert_subject_name2";
-    // Subject of the second
-    // certificate
+    // Subject of the second certificate
 
 // Open a collection certificate store.
     if (hCollectionStore = CertOpenStore(
@@ -1569,14 +1533,12 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-colle
         NULL)) {
         printf("Certificate added to the memory store. \n");
     } else {
-        MyHandleError("Could not add the certificate to the "
-                      "memory store.");
+        MyHandleError("Could not add the certificate to the memory store.");
     }
 
     //  Add the memory store as a sibling to the collection store. 
-    //  All certificates in the memory store will now be available in
-    //  the collection store. Any new certificates added to the memory 
-    //  store will also be available in the collection store.
+    //  All certificates in the memory store will now be available in the collection store.
+    //  Any new certificates added to the memory store will also be available in the collection store.
     if (CertAddStoreToCollection(
         hCollectionStore,
         hMemoryStore,
@@ -1588,8 +1550,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-colle
     {
         printf("The memory store is added to the collection store.\n");
     } else {
-        MyHandleError("The memory store was not added "
-                      "to the collection.");
+        MyHandleError("The memory store was not added to the collection.");
     }
 
     //  Find a different certificate in the My store, and add, to the memory store, a link to that certificate.
@@ -1618,8 +1579,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-colle
         NULL)) {
         printf("%S link added to the memory store. \n", pswzSecondCert);
     } else {
-        MyHandleError("Could not add the certificate link to the "
-                      "memory store.");
+        MyHandleError("Could not add the certificate link to the memory store.");
     }
 
     // Find the first certificate in the memory store.
@@ -1635,11 +1595,9 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-colle
         NULL))                       // NULL is used so that the search will begin at the 
                                      // beginning of the certificate store
     {
-        printf("The %S certificate was found in the "
-               "memory store. \n", pswzFirstCert);
+        printf("The %S certificate was found in the memory store. \n", pswzFirstCert);
     } else {
-        printf("The %S certificate was not in the "
-               "memory store.\n", pswzFirstCert);
+        printf("The %S certificate was not in the memory store.\n", pswzFirstCert);
     }
 
     //  Find that same certificate in the collection store.
@@ -1689,14 +1647,13 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-colle
     // lpSecurityDescriptor member.
     // if CreateMyDACL(&sa) fails, call MyHandleError("CreateMyDACL failed.")
 
-    if (hStoreFileHandle = CreateFile(
-        pszFileName,             // File path
-        GENERIC_WRITE,           // Access mode
-        0,                       // Share mode
-        &sa,                     // Security 
-        CREATE_ALWAYS,           // How to create the file
-        FILE_ATTRIBUTE_NORMAL,   // File attributes
-        NULL))                   // File template
+    if (hStoreFileHandle = CreateFile(pszFileName,             // File path
+                                      GENERIC_WRITE,           // Access mode
+                                      0,                       // Share mode
+                                      &sa,                     // Security 
+                                      CREATE_ALWAYS,           // How to create the file
+                                      FILE_ATTRIBUTE_NORMAL,   // File attributes
+                                      NULL))                   // File template
     {
         printf("Created a new file on disk. \n");
     } else {
@@ -1806,7 +1763,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-colle
         CertCloseStore(hMemoryStore, CERT_CLOSE_STORE_CHECK_FLAG);
 
     printf("All of the stores and files are closed. \n");
-} // End of main
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1898,7 +1855,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-regis
             printf("The system store was not unregistered.\n");
         }
     }
-}  // end main
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1939,9 +1896,11 @@ Save the certificate store as a PKCS #7 message to a file using CertSaveStore.
 Save the certificate store to a memory BLOB using CertSaveStore.
 Determine the number of signers of the PKCS #7 message using CryptGetMessageSignercount.
 Open a certificate store from a PKCS #7 message in memory using CryptGetMessageCertificates.
-Initialize the CRYPT_ALGORITHM_IDENTIFIER and CRYPT_HASH_MESSAGE_PARA data structures needed to hash the message
+Initialize the CRYPT_ALGORITHM_IDENTIFIER and
+CRYPT_HASH_MESSAGE_PARA data structures needed to hash the message
 Hash and encode the message using CryptHashMessage.
-Determine whether changes have been made to an open certificate store and synchronizing the store if needed using CertControlStore.
+Determine whether changes have been made to an open certificate store and
+synchronizing the store if needed using CertControlStore.
 Closing a certificate store using CertCloseStore with the CERT_CLOSE_STORE_FORCE_FLAG.
 
 https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-setting-and-getting-certificate-store-properties
@@ -1949,47 +1908,37 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-setti
 {
     // Declare and initialize variables.
     HCERTSTORE hCertStore;     // Original certificate store
-    HCERTSTORE hNewStore;      // Store to be created 
-                               // from a PKCS #7 message  
+    HCERTSTORE hNewStore;      // Store to be created from a PKCS #7 message  
     HANDLE     hEvent;
     void * pvData;
     DWORD cbData;
     DWORD dwSignerCount;
     CRYPT_DATA_BLOB Property_Name_Blob;   // BLOB to hold store property
-    CRYPT_DATA_BLOB Save_Store_Blob;      // BLOB to hold the PKCS #7 
-                                          // message
-    CRYPT_HASH_MESSAGE_PARA      HashPara;  // Data structure used
-                                            // to hash a message
+    CRYPT_DATA_BLOB Save_Store_Blob;      // BLOB to hold the PKCS #7 message
+    CRYPT_HASH_MESSAGE_PARA      HashPara;  // Data structure used to hash a message
     const BYTE * rgpbToBeHashed[1];
     DWORD                        rgcbToBeHashed[1];
-    // Arrays of messages to be
-    // hashed
-    BYTE * pbHashedBlob;
-
-    DWORD                        cbHashedBlob;
-    // Length of the hash BLOB
-    CRYPT_ALGORITHM_IDENTIFIER   AlgId;     // Data structure to hold the
-                                            // hash algorithm identifier
+    BYTE * pbHashedBlob;// Arrays of messages to be hashed
+    DWORD                        cbHashedBlob;// Length of the hash BLOB    
+    CRYPT_ALGORITHM_IDENTIFIER   AlgId;     // Data structure to hold the hash algorithm identifier
     BOOL                        fSignal;
 
     // Initialize an event.
-    if (hEvent = CreateEvent(
-        NULL,
-        FALSE,          // Manual reset is FALSE.
-        FALSE,          // The initial state of the event is FALSE.
-        NULL)) {
+    if (hEvent = CreateEvent(NULL,
+                             FALSE,          // Manual reset is FALSE.
+                             FALSE,          // The initial state of the event is FALSE.
+                             NULL)) {
         printf("An event has been created.\n");
     } else {
         MyHandleError("The event was not created.");
     }
 
     // Open the MY certificate store. 
-    if (hCertStore = CertOpenStore(
-        CERT_STORE_PROV_SYSTEM,
-        0,
-        NULL,
-        CERT_SYSTEM_STORE_CURRENT_USER,
-        L"MY")) {
+    if (hCertStore = CertOpenStore(CERT_STORE_PROV_SYSTEM,
+                                   0,
+                                   NULL,
+                                   CERT_SYSTEM_STORE_CURRENT_USER,
+                                   L"MY")) {
         printf("The MY store is open.\n");
     } else {
         MyHandleError("The MY store did not open.");
@@ -2001,11 +1950,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-setti
     Property_Name_Blob.cbData = (wcslen((LPWSTR)Property_Name_Blob.pbData) + 1) * sizeof(WCHAR);
 
     // Set the store's localized name property.
-    if (CertSetStoreProperty(
-        hCertStore,
-        CERT_STORE_LOCALIZED_NAME_PROP_ID,
-        0,
-        &Property_Name_Blob)) {
+    if (CertSetStoreProperty(hCertStore, CERT_STORE_LOCALIZED_NAME_PROP_ID, 0, &Property_Name_Blob)) {
         printf("The name of the store has been set. Continue. \n");
     } else {
         MyHandleError("Setting the store's localized name failed.");
@@ -2038,17 +1983,15 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-setti
     //   Find and print the predefined localized name for the MY store.
     //   Note that changing the localized store name property does not 
     //   change the predefined localized store name.
-    printf("The predefined localized name of the MY "
-           "store is still %S.\n", CryptFindLocalizedName(L"my"));
+    printf("The predefined localized name of the MY store is still %S.\n", CryptFindLocalizedName(L"my"));
 
     // Save the store to a PKCS #7 message in a file.
-    if (CertSaveStore(
-        hCertStore,
-        MY_ENCODING_TYPE,
-        CERT_STORE_SAVE_AS_PKCS7,
-        CERT_STORE_SAVE_TO_FILENAME_A,
-        (void *)"pkcsseven.dat",
-        0)) {
+    if (CertSaveStore(hCertStore,
+                      MY_ENCODING_TYPE,
+                      CERT_STORE_SAVE_AS_PKCS7,
+                      CERT_STORE_SAVE_TO_FILENAME_A,
+                      (void *)"pkcsseven.dat",
+                      0)) {
         printf("The store has been saved to a PKCS #7 message file.\n");
     } else {
         MyHandleError("The store has not been saved.");
@@ -2058,13 +2001,12 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-setti
     // Initialize the BLOB.
     Save_Store_Blob.cbData = 0;
     Save_Store_Blob.pbData = NULL;
-    if (CertSaveStore(
-        hCertStore,
-        MY_ENCODING_TYPE,
-        CERT_STORE_SAVE_AS_PKCS7,
-        CERT_STORE_SAVE_TO_MEMORY,
-        (void *)&Save_Store_Blob,
-        0)) {
+    if (CertSaveStore(hCertStore,
+                      MY_ENCODING_TYPE,
+                      CERT_STORE_SAVE_AS_PKCS7,
+                      CERT_STORE_SAVE_TO_MEMORY,
+                      (void *)&Save_Store_Blob,
+                      0)) {
         printf("The store length, %d, has been determined.\n", Save_Store_Blob.cbData);
     } else {
         MyHandleError("The store length could not be determined.");
@@ -2076,35 +2018,32 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-setti
         MyHandleError("Memory allocation failure.");
     }
 
-    if (CertSaveStore(
-        hCertStore,
-        MY_ENCODING_TYPE,
-        CERT_STORE_SAVE_AS_PKCS7,
-        CERT_STORE_SAVE_TO_MEMORY,
-        (void *)&Save_Store_Blob,
-        0)) {
+    if (CertSaveStore(hCertStore,
+                      MY_ENCODING_TYPE,
+                      CERT_STORE_SAVE_AS_PKCS7,
+                      CERT_STORE_SAVE_TO_MEMORY,
+                      (void *)&Save_Store_Blob,
+                      0)) {
         printf("The store has been saved to memory.\n");
     } else {
         MyHandleError("The store was not saved to memory.");
     }
 
     //  Retrieve the number of signers of the PKCS #7 message.
-    if (dwSignerCount = CryptGetMessageSignerCount(
-        MY_ENCODING_TYPE,
-        Save_Store_Blob.pbData,
-        Save_Store_Blob.cbData)) {
+    if (dwSignerCount = CryptGetMessageSignerCount(MY_ENCODING_TYPE,
+                                                   Save_Store_Blob.pbData,
+                                                   Save_Store_Blob.cbData)) {
         printf("The number of signers is %d.\n", dwSignerCount);
     } else {
         printf("The number of signers is zero or could not be found.\n");
     }
 
     //   Open a certificate store from the PKCS #7 message stored to memory.
-    if (hNewStore = CryptGetMessageCertificates(
-        MY_ENCODING_TYPE,
-        NULL,
-        0,
-        Save_Store_Blob.pbData,
-        Save_Store_Blob.cbData)) {
+    if (hNewStore = CryptGetMessageCertificates(MY_ENCODING_TYPE,
+                                                NULL,
+                                                0,
+                                                Save_Store_Blob.pbData,
+                                                Save_Store_Blob.cbData)) {
         printf("A new store has been opened from a PKCS #7.\n");
     } else {
         MyHandleError("Opening the store from the PKCS #7 message failed.");
@@ -2127,16 +2066,15 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-setti
     HashPara.pvHashAuxInfo = NULL;
 
     // Calculate the size of the hashed and encoded message. 
-    if (CryptHashMessage(
-        &HashPara,
-        FALSE,
-        1,
-        rgpbToBeHashed,
-        rgcbToBeHashed,
-        NULL,
-        &cbHashedBlob,
-        NULL,
-        NULL)) {
+    if (CryptHashMessage(&HashPara,
+                         FALSE,
+                         1,
+                         rgpbToBeHashed,
+                         rgcbToBeHashed,
+                         NULL,
+                         &cbHashedBlob,
+                         NULL,
+                         NULL)) {
         printf("The size of the hashed, encoded message is %d.\n", cbHashedBlob);
     } else {
         MyHandleError("The size of the hash could not be determined.");
@@ -2150,16 +2088,15 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-setti
     };
 
     // Hash and encode the message.
-    if (CryptHashMessage(
-        &HashPara,
-        FALSE,
-        1,
-        rgpbToBeHashed,
-        rgcbToBeHashed,
-        pbHashedBlob,
-        &cbHashedBlob,
-        NULL,
-        NULL)) {
+    if (CryptHashMessage(&HashPara,
+                         FALSE,
+                         1,
+                         rgpbToBeHashed,
+                         rgcbToBeHashed,
+                         pbHashedBlob,
+                         &cbHashedBlob,
+                         NULL,
+                         NULL)) {
         printf("The message has been hashed and encoded.\n");
     } else {
         MyHandleError("The message was not hashed. ");
@@ -2206,15 +2143,13 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-setti
 
     if (pvData)
         free(pvData);
-    if (CertCloseStore(
-        hCertStore,
-        CERT_CLOSE_STORE_FORCE_FLAG)) {
+    if (CertCloseStore(hCertStore, CERT_CLOSE_STORE_FORCE_FLAG)) {
         printf("The store has been closed. \n");
     } else {
         MyHandleError("The store could not be closed.");
     }
     printf("The program ran to completion without error. \n");
-}  // End main
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2321,15 +2256,13 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-listi
     } else {
         MyHandleError("Enumeration of physical stores failed.");
     }
-}    //   End of main
+}
 
 
 static BOOL GetSystemName(const void * pvSystemStore,
                           DWORD dwFlags,
                           PENUM_ARG pEnumArg,
-                          LPCWSTR * ppwszSystemName
-)
-//   Define function GetSystemName.
+                          LPCWSTR * ppwszSystemName)
 {
     // Declare local variables.
     *ppwszSystemName = NULL;
@@ -2386,13 +2319,13 @@ static BOOL WINAPI EnumPhyCallback(
 }
 
 
-static BOOL WINAPI EnumSysCallback(
-    const void * pvSystemStore,
-    DWORD dwFlags,
-    PCERT_SYSTEM_STORE_INFO pStoreInfo,
-    void * pvReserved,
-    void * pvArg)
-    //  Begin callback process.
+static BOOL WINAPI EnumSysCallback(const void * pvSystemStore,
+                                   DWORD dwFlags,
+                                   PCERT_SYSTEM_STORE_INFO pStoreInfo,
+                                   void * pvReserved,
+                                   void * pvArg
+)
+//  Begin callback process.
 {
     //  Declare and initialize local variables.
     PENUM_ARG pEnumArg = (PENUM_ARG)pvArg;
@@ -2442,8 +2375,7 @@ static BOOL WINAPI EnumLocCallback(LPCWSTR pwszStoreLocation, DWORD dwFlags, voi
 
     // Break if more than 5 lines have been printed.
     if (linecount++ > 5) {
-        printf("Enumeration of store locations: "
-               "Press Enter to continue.");
+        printf("Enumeration of store locations: Press Enter to continue.");
         scanf_s("%c", &x);
         linecount = 0;
     }

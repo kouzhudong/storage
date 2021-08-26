@@ -42,14 +42,13 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/finding-the-owner-of-a-f
     PSECURITY_DESCRIPTOR pSD = NULL;
 
     // Get the handle of the file object.
-    hFile = CreateFile(
-        TEXT("myfile.txt"),
-        GENERIC_READ,
-        FILE_SHARE_READ,
-        NULL,
-        OPEN_EXISTING,
-        FILE_ATTRIBUTE_NORMAL,
-        NULL);
+    hFile = CreateFile(TEXT("myfile.txt"),
+                       GENERIC_READ,
+                       FILE_SHARE_READ,
+                       NULL,
+                       OPEN_EXISTING,
+                       FILE_ATTRIBUTE_NORMAL,
+                       NULL);
     if (hFile == INVALID_HANDLE_VALUE) {// Check GetLastError for CreateFile error code.
         DWORD dwErrorCode = 0;
         dwErrorCode = GetLastError();
@@ -58,15 +57,14 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/finding-the-owner-of-a-f
     }
 
     // Get the owner SID of the file.
-    dwRtnCode = GetSecurityInfo(
-        hFile,
-        SE_FILE_OBJECT,
-        OWNER_SECURITY_INFORMATION,
-        &pSidOwner,
-        NULL,
-        NULL,
-        NULL,
-        &pSD);
+    dwRtnCode = GetSecurityInfo(hFile,
+                                SE_FILE_OBJECT,
+                                OWNER_SECURITY_INFORMATION,
+                                &pSidOwner,
+                                NULL,
+                                NULL,
+                                NULL,
+                                &pSD);
     if (dwRtnCode != ERROR_SUCCESS) {// Check GetLastError for GetSecurityInfo error condition.
         DWORD dwErrorCode = 0;
         dwErrorCode = GetLastError();
@@ -75,14 +73,13 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/finding-the-owner-of-a-f
     }
 
     // First call to LookupAccountSid to get the buffer sizes.
-    bRtnBool = LookupAccountSid(
-        NULL,           // local computer
-        pSidOwner,
-        AcctName,
-        (LPDWORD)&dwAcctName,
-        DomainName,
-        (LPDWORD)&dwDomainName,
-        &eUse);
+    bRtnBool = LookupAccountSid(NULL,           // local computer
+                                pSidOwner,
+                                AcctName,
+                                (LPDWORD)&dwAcctName,
+                                DomainName,
+                                (LPDWORD)&dwDomainName,
+                                &eUse);
 
     // Reallocate memory for the buffers.
     AcctName = (LPTSTR)GlobalAlloc(GMEM_FIXED, dwAcctName);
@@ -163,10 +160,10 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/taking-object-ownership-
 
     // Create a SID for the BUILTIN\Administrators group.
     if (!AllocateAndInitializeSid(&SIDAuthNT, 2,
-        SECURITY_BUILTIN_DOMAIN_RID,
-        DOMAIN_ALIAS_RID_ADMINS,
-        0, 0, 0, 0, 0, 0,
-        &pSIDAdmin)) {
+                                  SECURITY_BUILTIN_DOMAIN_RID,
+                                  DOMAIN_ALIAS_RID_ADMINS,
+                                  0, 0, 0, 0, 0, 0,
+                                  &pSIDAdmin)) {
         printf("AllocateAndInitializeSid (Admin) error %u\n", GetLastError());
         goto Cleanup;
     }
@@ -265,7 +262,7 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/taking-object-ownership-
         printf("Second SetNamedSecurityInfo call failed: %u\n", dwRes);
     }
 
-    Cleanup:
+Cleanup:
 
     if (pSIDAdmin)
         FreeSid(pSIDAdmin);
@@ -362,7 +359,7 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/modifying-the-acls-of-an
         goto Cleanup;
     }
 
-    Cleanup:
+Cleanup:
 
     if (pSD != NULL)
         LocalFree((HLOCAL)pSD);
@@ -429,13 +426,10 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/verifying-client-access-
         goto Cleanup;
     }
 
-    Cleanup:
-
+Cleanup:
     RevertToSelf();
-
     if (hToken != INVALID_HANDLE_VALUE)
         CloseHandle(hToken);
-
     return fAccessGranted;
 }
 
@@ -456,7 +450,8 @@ The script must be in Visual Basic Scripting Edition or JScript.
 After you specify the script language, set the BizRule property of the IAzTask object with a string representation of the script.
 
 When checking access for an operation contained by a task that has an associated business rule,
-the application must create two arrays of the same size to be passed as the varParameterNames and varParameterValues parameters of the IAzClientContext::AccessCheck method.
+the application must create two arrays of the same size to be passed as the varParameterNames and
+varParameterValues parameters of the IAzClientContext::AccessCheck method.
 For information about creating a client context, see Establishing a Client Context with Authorization Manager in C++.
 
 The IAzClientContext::AccessCheck method creates an AzBizRuleContext object that is passed to the business rule script.
@@ -1302,15 +1297,19 @@ void GroupingTasksRoles(void)
 Grouping Tasks into Roles in C++
 05/31/2018
 
-In Authorization Manager, a role represents a category of users and the tasks those users are authorized to perform.
-Tasks are grouped together and assigned to a role definition, which is represented by an IAzTask object with its IsRoleDefinition property set to TRUE.
-The role definition can then be assigned to an IAzRole object, and users or groups of users are then assigned to that object.
+In Authorization Manager,
+a role represents a category of users and the tasks those users are authorized to perform.
+Tasks are grouped together and assigned to a role definition,
+which is represented by an IAzTask object with its IsRoleDefinition property set to TRUE.
+The role definition can then be assigned to an IAzRole object,
+and users or groups of users are then assigned to that object.
 For more information about tasks and roles, see Roles.
 
 The following example shows how to assign tasks to a role definition, create a role object,
 and assign the role definition to the role object.
 The example assumes that there is an existing XML policy store named MyStore.xml in the root directory of drive C,
-that this store contains an application named Expense, and that this application contains tasks named Submit Expense and Approve Expense.
+that this store contains an application named Expense,
+and that this application contains tasks named Submit Expense and Approve Expense.
 
 https://docs.microsoft.com/en-us/windows/win32/secauthz/grouping-tasks-into-roles-in-c--
 */
@@ -2277,13 +2276,12 @@ https://docs.microsoft.com/zh-cn/windows/win32/secauthz/initializing-a-client-co
     AUTHZ_RESOURCE_MANAGER_HANDLE   g_hResourceManager;
 
     //Initialize Resource Manager
-    if (!AuthzInitializeResourceManager(
-        AUTHZ_RM_FLAG_NO_AUDIT,
-        NULL,
-        NULL,
-        NULL,
-        L"My Resource Manager",
-        &g_hResourceManager)) {
+    if (!AuthzInitializeResourceManager(AUTHZ_RM_FLAG_NO_AUDIT,
+                                        NULL,
+                                        NULL,
+                                        NULL,
+                                        L"My Resource Manager",
+                                        &g_hResourceManager)) {
         printf_s("AuthzInitializeResourceManager failed with %d\n", GetLastError());
         return FALSE;
     }
@@ -2424,7 +2422,7 @@ It uses that security descriptor to check access for the client specified by the
 https://docs.microsoft.com/zh-cn/windows/win32/secauthz/checking-access-with-authz-api
 */
 {
-    #define MY_MAX 4096
+#define MY_MAX 4096
     PSECURITY_DESCRIPTOR    pSecurityDescriptor = NULL;
     ULONG                    cbSecurityDescriptorSize = 0;
     AUTHZ_ACCESS_REQUEST    Request;
@@ -2458,16 +2456,15 @@ https://docs.microsoft.com/zh-cn/windows/win32/secauthz/checking-access-with-aut
     }
 
     //Call AuthzAccessCheck.
-    if (!AuthzAccessCheck(
-        0,
-        hClientContext,
-        &Request,
-        NULL,
-        pSecurityDescriptor,
-        NULL,
-        0,
-        pReply,
-        NULL)) {
+    if (!AuthzAccessCheck(0,
+                          hClientContext,
+                          &Request,
+                          NULL,
+                          pSecurityDescriptor,
+                          NULL,
+                          0,
+                          pReply,
+                          NULL)) {
         printf_s("AuthzAccessCheck failed with %d\n", GetLastError());
         LocalFree(pSecurityDescriptor);
         return FALSE;
@@ -2495,7 +2492,7 @@ The previous access check was performed in the example in Checking Access with A
 https://docs.microsoft.com/zh-cn/windows/win32/secauthz/caching-access-checks
 */
 {
-    #define MY_MAX 4096
+#define MY_MAX 4096
     PSECURITY_DESCRIPTOR                pSecurityDescriptor = NULL;
     ULONG                                cbSecurityDescriptorSize = 0;
     AUTHZ_ACCESS_REQUEST                Request;
@@ -2541,16 +2538,15 @@ https://docs.microsoft.com/zh-cn/windows/win32/secauthz/caching-access-checks
     }
 
     //Call AuthzAccessCheck and cache results.
-    if (!AuthzAccessCheck(
-        0,
-        hClientContext,
-        &Request,
-        NULL,
-        pSecurityDescriptor,
-        NULL,
-        0,
-        pReply,
-        &hCached)) {
+    if (!AuthzAccessCheck(0,
+                          hClientContext,
+                          &Request,
+                          NULL,
+                          pSecurityDescriptor,
+                          NULL,
+                          0,
+                          pReply,
+                          &hCached)) {
         printf_s("AuthzAccessCheck failed with %d\n", GetLastError());
         LocalFree(pSecurityDescriptor);
         return FALSE;

@@ -200,7 +200,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-using
     } else {
         printf("CSP was NULL. \n");
     }
-} // End of main
+}
 
 
 BOOL DecryptMessage(BYTE * pbEncryptedBlob,
@@ -462,7 +462,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-using
     LocalFree(pDescrOut);
     LocalFree(DataOut.pbData);
     LocalFree(DataVerify.pbData);
-} // End of main
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1571,7 +1571,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/alternate-code-for-enco
     CertCloseStore(hStoreHandle, CERT_CLOSE_STORE_FORCE_FLAG);
     CryptMsgClose(hMsg);
     CryptReleaseContext(hCryptProv, 0);
-} // End of main
+}
 
 
 // GetSignerCert enumerates the certificates in a store and
@@ -1966,7 +1966,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
 
     if (hCryptProv)
         CryptReleaseContext(hCryptProv, 0);
-} // end main
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
