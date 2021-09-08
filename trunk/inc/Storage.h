@@ -159,7 +159,14 @@ EXTERN_C_START
 
 
 BOOL WINAPI GetDriveGeometry(LPWSTR wszPath, DISK_GEOMETRY * pdg);
-int WINAPI ReadMBR(_In_ LPCWSTR lpFileName);
+int WINAPI ReadDiskSector(_In_ LPCWSTR lpFileName,
+                          _In_ LONGLONG QuadPart,
+                          _Out_writes_opt_(nNumberOfBytesToRead) LPVOID lpBuffer,
+                          _In_ DWORD nNumberOfBytesToRead);
+int WINAPI ReadMBR(_In_ LPCWSTR lpFileName,
+                   _Out_writes_opt_(nNumberOfBytesToRead) LPVOID lpBuffer,
+                   _In_ DWORD nNumberOfBytesToRead);
+int WINAPI GetMft(_In_ LPCWSTR lpFileName);
 int WINAPI WriteMBR(_In_ LPCWSTR lpFileName);
 
 int WINAPI CppShellKnownFolders(int argc, _TCHAR * argv[]);

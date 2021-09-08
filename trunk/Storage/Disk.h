@@ -13,6 +13,34 @@ FAT是开源的，见：Windows-driver-samples\filesys\fastfat\fat.h.
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+摘自：
+NTFS_On_Disk_Structure.pdf
+https://www.installsetupconfig.com/win32programming/windowsvolumeapis1_22.html
+*/
+
+
+typedef struct {
+    ULONG Type;
+    USHORT UsaOffset;
+    USHORT UsaCount;
+    USN Usn;
+} NTFS_RECORD_HEADER, * PNTFS_RECORD_HEADER;
+
+typedef struct {
+    NTFS_RECORD_HEADER Ntfs;
+    USHORT SequenceNumber;
+    USHORT LinkCount;
+    USHORT AttributesOffset;
+    USHORT Flags;               // 0x0001 = InUse, 0x0002 = Directory
+    ULONG BytesInUse;
+    ULONG BytesAllocated;
+    ULONGLONG BaseFileRecord;
+    USHORT NextAttributeNumber;
+} FILE_RECORD_HEADER, * PFILE_RECORD_HEADER;
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 //摘自：\Win2K3\NT\base\fs\ntfs\ntfs.h
 
 

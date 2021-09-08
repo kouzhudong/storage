@@ -85,7 +85,11 @@ int GetDriveGeometryTest(int argc, wchar_t * argv[])
 
 EXTERN_C
 __declspec(dllexport)
-int WINAPI ReadMBR(_In_ LPCWSTR lpFileName)
+int WINAPI ReadDiskSector(_In_ LPCWSTR lpFileName,
+                          _In_ LONGLONG QuadPart,
+                          _Out_writes_opt_(nNumberOfBytesToRead) LPVOID lpBuffer,
+                          _In_ DWORD nNumberOfBytesToRead
+)
 /*
 ¹¦ÄÜ£º¶ÁÈ¡MBR¡£
 
@@ -124,24 +128,38 @@ made at 2014.11.28
         return (FALSE);
     }
 
-    SetFilePointer(hDevice, 0, 0, 0);
-
-    BYTE inBuffer[512] = {0};
+    LARGE_INTEGER  liDistanceToMove = {0};
+    liDistanceToMove.QuadPart = QuadPart;
+    LARGE_INTEGER lpNewFilePointer = {0};
+    SetFilePointerEx(hDevice, liDistanceToMove, &lpNewFilePointer, FILE_BEGIN);
+    
     DWORD nBytesRead = 0;
-    bResult = ReadFile(hDevice, &inBuffer, 512, &nBytesRead, NULL);
+    bResult = ReadFile(hDevice, lpBuffer, nNumberOfBytesToRead, &nBytesRead, NULL);
     if (bResult == 0) {//CreateFileWµÄµÚÒ»¸ö²ÎÊýÎª0£¬µ¼ÖÂÕâÀï£º5 ¾Ü¾ø·ÃÎÊ¡£
         int x = GetLastError();
         CloseHandle(hDevice);
         return (FALSE);
     }
 
-    PPACKED_BOOT_SECTOR bs = (PPACKED_BOOT_SECTOR)inBuffer;
+    PPACKED_BOOT_SECTOR bs = (PPACKED_BOOT_SECTOR)lpBuffer;
+    _ASSERTE(bs);
 
     PBIOS_PARAMETER_BLOCK bpb = (PBIOS_PARAMETER_BLOCK)&bs->PackedBpb;
 
     CloseHandle(hDevice);
 
     return 0;
+}
+
+
+EXTERN_C
+__declspec(dllexport)
+int WINAPI ReadMBR(_In_ LPCWSTR lpFileName,
+                   _Out_writes_opt_(nNumberOfBytesToRead) LPVOID lpBuffer,
+                   _In_ DWORD nNumberOfBytesToRead
+)
+{
+    return ReadDiskSector(lpFileName, 0, lpBuffer, nNumberOfBytesToRead);
 }
 
 
@@ -243,6 +261,29 @@ lpFileName£º²»¿ÉÈ¡L"\\\\.\\PhysicalDriveX",¾¡¹ÜÕâÑùÒ²ÄÜÐ´Ò»Ð©£¬µ«ÊÇÓÐÐí¶àµÄÏÞÖÆ£
     }
 
     CloseHandle(hDevice);
+
+    return 0;
+}
+
+
+EXTERN_C
+__declspec(dllexport)
+int WINAPI GetMft(_In_ LPCWSTR lpFileName)
+{
+    BYTE inBuffer[512] = {0};
+
+    int x = ReadMBR(lpFileName, &inBuffer, sizeof(inBuffer));
+
+    PPACKED_BOOT_SECTOR bs = (PPACKED_BOOT_SECTOR)&inBuffer;
+
+    PBIOS_PARAMETER_BLOCK bpb = (PBIOS_PARAMETER_BLOCK)&bs->PackedBpb;
+
+    LONGLONG QuadPart = bs->MftStartLcn * bpb->SectorsPerCluster * bpb->BytesPerSector;
+
+    BYTE mft[512] = {0};
+    x = ReadDiskSector(lpFileName, QuadPart, mft, sizeof(mft));
+
+    PFILE_RECORD_HEADER pfrh = (PFILE_RECORD_HEADER)&mft;
 
     return 0;
 }
