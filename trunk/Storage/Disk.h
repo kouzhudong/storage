@@ -1,7 +1,95 @@
+/*
+这里定义操作磁盘（文件系统）的一些数据结构。
+
+FAT是开源的，见：Windows-driver-samples\filesys\fastfat\fat.h.
+
+这里主要是一些NTFS的结构的定义，参考：\Win2K3\NT\base\fs\ntfs\ntfs.h
+
+注意：FAT和NTFS的一些结构还是不一样的，比如：_PACKED_BOOT_SECTOR。
+*/
+
+
 #pragma once
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+//摘自：\Win2K3\NT\base\fs\ntfs\ntfs.h
+
+
+typedef LONGLONG LCN;
+typedef LCN * PLCN;
+
+
+#pragma pack(4)
+typedef struct _PACKED_BIOS_PARAMETER_BLOCK {
+    UCHAR  BytesPerSector[2];                               //  offset = 0x000
+    UCHAR  SectorsPerCluster[1];                            //  offset = 0x002
+    UCHAR  ReservedSectors[2];                              //  offset = 0x003 (zero)
+    UCHAR  Fats[1];                                         //  offset = 0x005 (zero)
+    UCHAR  RootEntries[2];                                  //  offset = 0x006 (zero)
+    UCHAR  Sectors[2];                                      //  offset = 0x008 (zero)
+    UCHAR  Media[1];                                        //  offset = 0x00A
+    UCHAR  SectorsPerFat[2];                                //  offset = 0x00B (zero)
+    UCHAR  SectorsPerTrack[2];                              //  offset = 0x00D
+    UCHAR  Heads[2];                                        //  offset = 0x00F
+    UCHAR  HiddenSectors[4];                                //  offset = 0x011 (zero)
+    UCHAR  LargeSectors[4];                                 //  offset = 0x015 (zero)
+} PACKED_BIOS_PARAMETER_BLOCK;                              //  sizeof = 0x019
+#pragma pack()
+
+static_assert(0x019 == sizeof(PACKED_BIOS_PARAMETER_BLOCK), "");
+
+typedef PACKED_BIOS_PARAMETER_BLOCK * PPACKED_BIOS_PARAMETER_BLOCK;
+
+
+#pragma pack(1)
+typedef struct BIOS_PARAMETER_BLOCK {
+    USHORT BytesPerSector;
+    UCHAR  SectorsPerCluster;
+    USHORT ReservedSectors;
+    UCHAR  Fats;
+    USHORT RootEntries;
+    USHORT Sectors;
+    UCHAR  Media;
+    USHORT SectorsPerFat;
+    USHORT SectorsPerTrack;
+    USHORT Heads;
+    ULONG  HiddenSectors;
+    ULONG  LargeSectors;
+} BIOS_PARAMETER_BLOCK;
+#pragma pack()
+
+static_assert(0x019 == sizeof(BIOS_PARAMETER_BLOCK), "");
+
+typedef BIOS_PARAMETER_BLOCK * PBIOS_PARAMETER_BLOCK;
+
+
+#pragma pack(4)
+typedef struct _PACKED_BOOT_SECTOR {
+    UCHAR Jump[3];                                                              //  offset = 0x000
+    UCHAR Oem[8];                                                               //  offset = 0x003
+    PACKED_BIOS_PARAMETER_BLOCK PackedBpb;                                      //  offset = 0x00B
+    UCHAR Unused[4];                                                            //  offset = 0x024
+    LONGLONG NumberSectors;                                                     //  offset = 0x028
+    LCN MftStartLcn;                                                            //  offset = 0x030
+    LCN Mft2StartLcn;                                                           //  offset = 0x038
+    CHAR ClustersPerFileRecordSegment;                                          //  offset = 0x040
+    UCHAR Reserved0[3];
+    CHAR DefaultClustersPerIndexAllocationBuffer;                               //  offset = 0x044
+    UCHAR Reserved1[3];
+    LONGLONG SerialNumber;                                                      //  offset = 0x048
+    ULONG Checksum;                                                             //  offset = 0x050
+    UCHAR BootStrap[0x200 - 0x054];                                             //  offset = 0x054
+} PACKED_BOOT_SECTOR;                                                           //  sizeof = 0x200
+#pragma pack()
+
+static_assert(0x200 == sizeof(PACKED_BOOT_SECTOR), "");
+
+typedef PACKED_BOOT_SECTOR * PPACKED_BOOT_SECTOR;
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//一下结构是自己定义的。
 
 
 #pragma pack(1)

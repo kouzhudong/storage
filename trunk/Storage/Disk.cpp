@@ -135,7 +135,9 @@ made at 2014.11.28
         return (FALSE);
     }
 
-    NTFS_Boot_Sector * bs = (PNTFS_Boot_Sector)inBuffer;
+    PPACKED_BOOT_SECTOR bs = (PPACKED_BOOT_SECTOR)inBuffer;
+
+    PBIOS_PARAMETER_BLOCK bpb = (PBIOS_PARAMETER_BLOCK)&bs->PackedBpb;
 
     CloseHandle(hDevice);
 
