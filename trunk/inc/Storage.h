@@ -159,7 +159,8 @@ EXTERN_C_START
 
 
 BOOL WINAPI GetDriveGeometry(LPWSTR wszPath, DISK_GEOMETRY * pdg);
-int WINAPI ReadMBR();
+int WINAPI ReadMBR(_In_ LPCWSTR lpFileName);
+int WINAPI WriteMBR(_In_ LPCWSTR lpFileName);
 
 int WINAPI CppShellKnownFolders(int argc, _TCHAR * argv[]);
 
@@ -181,7 +182,6 @@ int WINAPI GetFileZoneIdentifier(int argc, wchar_t ** argv);
 int WINAPI MapFileZoneIdentifier(int argc, wchar_t ** argv);
 int WINAPI SetFileZoneIdentifier(int argc, wchar_t ** argv);
 int WINAPI RemoveFileZoneIdentifier(int argc, wchar_t ** argv);
-
 
 
 EXTERN_C_END

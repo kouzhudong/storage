@@ -5,8 +5,9 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-/* The code of interest is in the subroutine GetDriveGeometry. The
-   code in main shows how to interpret the results of the call. */
+/* The code of interest is in the subroutine GetDriveGeometry.
+   The code in main shows how to interpret the results of the call. 
+*/
 
 
 EXTERN_C
@@ -57,10 +58,10 @@ int GetDriveGeometryTest(int argc, wchar_t * argv[])
     BOOL bResult = FALSE;      // generic results flag
     ULONGLONG DiskSize = 0;    // size of the drive, in bytes
 
-    bResult = GetDriveGeometry((LPWSTR)wszDrive, &pdg);
+    bResult = GetDriveGeometry((LPWSTR)g_PhysicalDrive0, &pdg);
 
     if (bResult) {
-        wprintf(L"Drive path      = %ws\n", wszDrive);
+        wprintf(L"Drive path      = %ws\n", g_PhysicalDrive0);
         wprintf(L"Cylinders       = %I64d\n", pdg.Cylinders.QuadPart);
         wprintf(L"Tracks/cylinder = %ld\n", (ULONG)pdg.TracksPerCylinder);
         wprintf(L"Sectors/track   = %ld\n", (ULONG)pdg.SectorsPerTrack);
@@ -84,8 +85,14 @@ int GetDriveGeometryTest(int argc, wchar_t * argv[])
 
 EXTERN_C
 __declspec(dllexport)
-int WINAPI ReadMBR()
+int WINAPI ReadMBR(_In_ LPCWSTR lpFileName)
 /*
+功能：读取MBR。
+
+参数说明：
+lpFileName：不可取L"\\\\.\\PhysicalDriveX",尽管这样也能获取到值，但是不是合法的MBR，也和winhex的不一样。
+            建议取：L"\\\\.\\x:"。
+
 http://technet.microsoft.com/en-us/library/cc781134(v=ws.10).aspx
 http://ntfs.com/ntfs-partition-boot-sector.htm
 
@@ -105,7 +112,7 @@ made at 2014.11.28
     HANDLE hDevice = INVALID_HANDLE_VALUE;  // handle to the drive to be examined 
     BOOL bResult = FALSE;                   // results flag
 
-    hDevice = CreateFileW(wszDrive,         // drive to open
+    hDevice = CreateFileW(lpFileName,         // drive to open g_PhysicalDrive0
                           GENERIC_READ,     // no access to the drive
                           FILE_SHARE_READ | FILE_SHARE_WRITE,  // share mode
                           NULL,             // default security attributes
@@ -122,14 +129,116 @@ made at 2014.11.28
     BYTE inBuffer[512] = {0};
     DWORD nBytesRead = 0;
     bResult = ReadFile(hDevice, &inBuffer, 512, &nBytesRead, NULL);
-    if (bResult == 0) //CreateFileW的第一个参数为0，导致这里：5 拒绝访问。
-    {
+    if (bResult == 0) {//CreateFileW的第一个参数为0，导致这里：5 拒绝访问。
         int x = GetLastError();
         CloseHandle(hDevice);
         return (FALSE);
     }
 
     NTFS_Boot_Sector * bs = (PNTFS_Boot_Sector)inBuffer;
+
+    CloseHandle(hDevice);
+
+    return 0;
+}
+
+
+EXTERN_C
+__declspec(dllexport)
+int WINAPI WriteMBR(_In_ LPCWSTR lpFileName)
+/*
+功能：写MBR。
+
+参数说明：
+lpFileName：不可取L"\\\\.\\PhysicalDriveX",尽管这样也能写一些，但是有许多的限制，更多的是失败。
+            建议取：L"\\\\.\\x:"。
+
+此函数在Windows 10上测试成功，写两个扇区。
+*/
+{
+    //DebugBreak();
+
+    if (!SetCurrentProcessPrivilege(SE_DEBUG_NAME, TRUE)) {
+        return FALSE;
+    }
+
+    if (!SetCurrentProcessPrivilege(SE_BACKUP_NAME, TRUE)) {
+        return FALSE;
+    }
+
+    if (!SetCurrentProcessPrivilege(SE_RESTORE_NAME, TRUE)) {
+        return FALSE;
+    }
+
+    if (!SetCurrentProcessPrivilege(SE_MANAGE_VOLUME_NAME, TRUE)) {
+        return FALSE;
+    }
+
+    //if (!SetCurrentProcessPrivilege(SE_TCB_NAME, TRUE)) {
+    //    return FALSE;
+    //}
+
+    HANDLE hDevice = INVALID_HANDLE_VALUE;  // handle to the drive to be examined 
+    BOOL bResult = FALSE;                   // results flag
+
+    hDevice = CreateFileW(lpFileName,         // drive to open
+                          GENERIC_WRITE,     // no access to the drive GENERIC_ALL
+                          FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,  // share mode
+                          NULL,             // default security attributes
+                          OPEN_EXISTING,    // disposition
+                          0,                // file attributes
+                          NULL);            // do not copy file attributes
+    if (hDevice == INVALID_HANDLE_VALUE)    // cannot open the drive
+    {
+        printf("CreateFile LastError:%d", GetLastError());
+        return (FALSE);
+    }
+
+    int x = IOCTL_DISK_GET_DRIVE_GEOMETRY;//0x00070000
+    x = FSCTL_LOCK_VOLUME;//0x00090018
+    x = FSCTL_DISMOUNT_VOLUME;//0x00090020
+
+    LPDWORD dummy = new DWORD;
+    BOOL ret = DeviceIoControl(hDevice,
+                               FSCTL_LOCK_VOLUME,
+                               NULL,
+                               0,
+                               NULL,
+                               0,
+                               dummy,
+                               NULL);
+
+    ret = DeviceIoControl(hDevice,
+                          FSCTL_DISMOUNT_VOLUME,
+                          NULL,
+                          0,
+                          NULL,
+                          0,
+                          dummy,
+                          NULL);
+
+    DISK_GEOMETRY lpOutBuffer = {0};
+    DWORD nOutBufferSize = sizeof(DISK_GEOMETRY);
+    DWORD BytesReturned = 0;
+    ret = DeviceIoControl(hDevice,
+                          IOCTL_DISK_GET_DRIVE_GEOMETRY,
+                          NULL,
+                          0,
+                          (LPVOID)&lpOutBuffer,             // output buffer
+                          nOutBufferSize,           // size of output buffer
+                          &BytesReturned,        // number of bytes returned,
+                          NULL);
+
+    SetFilePointer(hDevice, 0, 0, 0);
+
+    BYTE inBuffer[1024] = {0};//一个扇区一般是512字节。这里是两个扇区。
+    DWORD nBytesRead = 0;
+    bResult = WriteFile(hDevice, &inBuffer, sizeof(inBuffer), &nBytesRead, NULL);
+    if (bResult == 0) {//CreateFileW的第一个参数为0，导致这里：5 拒绝访问。
+        printf("WriteFile LastError:%d", GetLastError());
+        CloseHandle(hDevice);
+        return (FALSE);
+    }
 
     CloseHandle(hDevice);
 
@@ -298,8 +407,7 @@ void GetPhysicalDriveSerialNumberWithWMI(UINT nDriveNumber IN, CString & strSeri
 
     // 6. Get each enumerator element until find the desired physical drive 
     ULONG uReturn = 0;
-    while (pIEnumWbemClassObject)
-    {
+    while (pIEnumWbemClassObject) {
         CComPtr<IWbemClassObject> pIWbemClassObject;
         hr = pIEnumWbemClassObject->Next(WBEM_INFINITE, 1, &pIWbemClassObject, &uReturn);
         if (0 == uReturn || FAILED(hr))
@@ -326,8 +434,7 @@ void GetPhysicalDriveSerialNumberWithWMI(UINT nDriveNumber IN, CString & strSeri
 int GetPhysicalDriveSerialNumberWithWMITest(int argc, _TCHAR * argv[])
 {
     CString strResult;
-    try
-    {
+    try {
         // 1. Initialize COM 
         // http://msdn.microsoft.com/en-us/library/windows/desktop/aa390885(v=vs.85).aspx
         HRESULT hr = ::CoInitializeEx(0, COINIT_MULTITHREADED);
@@ -341,9 +448,8 @@ int GetPhysicalDriveSerialNumberWithWMITest(int argc, _TCHAR * argv[])
 #pragma prefast(disable: 6284, "XXXXX")
         strResult.Format(L"Serial number for drive #%u is %s", nDriveNumber, strSerialNumber);
 #pragma prefast(pop)   
-        
-    } catch (CAtlException & e)
-    {
+
+    } catch (CAtlException & e) {
         strResult.Format(_T("Get serial number failure. Error code: 0x%08X"), (HRESULT)e);
     }
 
