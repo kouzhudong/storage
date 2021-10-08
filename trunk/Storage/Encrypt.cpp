@@ -485,15 +485,19 @@ Example C Program: Encrypting a File
 2018/05/31
 
 The following example encrypts a data file.
-The example interactively requests the name of the file that contains plaintext to be encrypted and the name of a file where the encrypted data is to be written.
+The example interactively requests the name of the file that contains plaintext to be encrypted and 
+the name of a file where the encrypted data is to be written.
 
 The example prompts the user for the names of an input file and an output file.
 It also prompts the user for whether a password is to be used to create the encryption session key.
-If a password is to be used in the encryption of the data, the same password must be used in the program that decrypts the file.
+If a password is to be used in the encryption of the data, 
+the same password must be used in the program that decrypts the file.
 For more information, see Example C Program: Decrypting a File.
 
-Due to changing export control restrictions, the default cryptographic service provider (CSP) and default key length may change between operating system releases.
-It is important that both the encryption and decryption use the same CSP and that the key length be explicitly set to ensure interoperability on different operating system platforms.
+Due to changing export control restrictions, 
+the default cryptographic service provider (CSP) and default key length may change between operating system releases.
+It is important that both the encryption and decryption use the same CSP and 
+that the key length be explicitly set to ensure interoperability on different operating system platforms.
 
 This example uses the function MyHandleError. The code for this function is included with the sample.
 Code for this and other auxiliary functions is also listed under General Purpose Functions.
@@ -827,15 +831,21 @@ Example C Program: Decrypting a File
 2018/05/31
 
 The following example shows the decryption of a file.
-The example asks the user for the name of an encrypted file and the name of a file where the decrypted data will be written.
-The file with the encrypted data must exist. The example creates or overwrites the output file.
+The example asks the user for the name of an encrypted file and 
+the name of a file where the decrypted data will be written.
+The file with the encrypted data must exist.
+The example creates or overwrites the output file.
 
 The example also requests a string that is used as a password.
-If a password was used to create the encryption session key, that same password must be entered to create the decryption session key.
+If a password was used to create the encryption session key, 
+that same password must be entered to create the decryption session key.
 For more information, see Example C Program: Encrypting a File.
 
-Due to changing export control restrictions, the default cryptographic service provider (CSP) and default key length may change between operating system releases.
-It is important that both the encryption and decryption use the same CSP and that the key length be explicitly set to ensure interoperability on different operating system platforms.
+Due to changing export control restrictions, 
+the default cryptographic service provider (CSP) and 
+default key length may change between operating system releases.
+It is important that both the encryption and decryption use the same CSP and 
+that the key length be explicitly set to ensure interoperability on different operating system platforms.
 
 This example uses the function MyHandleError. The code for this function is included with the sample.
 Code for this and other auxiliary functions is also listed under General Purpose Functions.
@@ -1967,6 +1977,318 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
     if (hCryptProv)
         CryptReleaseContext(hCryptProv, 0);
 }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+void EnumProviders()
+/*
+The following example shows a loop listing all available cryptographic service providers.
+
+https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptenumprovidersa
+*/
+{
+    // Copyright (C) Microsoft.  All rights reserved.
+    // Declare and initialize variables.
+    DWORD       cbName;
+    DWORD       dwType;
+    DWORD       dwIndex;
+    LPWSTR pszName = NULL;//这个有修改，类型定义的不对。
+
+    // Print header lines for providers.
+    printf("Listing Available Providers:\n");
+    printf("Provider type\tProvider Name\n");
+    printf("_____________\t__________________"
+           "___________________\n");
+
+    // Loop through enumerating providers.
+    dwIndex = 0;
+    while (CryptEnumProviders(dwIndex, NULL, 0, &dwType, NULL, &cbName)) {
+        //  cbName returns the length of the name of the next provider. 
+        //  Allocate memory in a buffer to retrieve that name.
+        if (!(pszName = (LPWSTR)LocalAlloc(LMEM_ZEROINIT, cbName))) {
+            printf("ERROR - LocalAlloc failed\n");
+            exit(1);
+        }
+
+        //  Get the provider name.
+        if (CryptEnumProviders(dwIndex++, NULL, 0, &dwType, pszName, &cbName)) {
+            printf("     %4.0d\t%s\n", dwType, pszName);
+        } else {
+            printf("ERROR - CryptEnumProviders failed.\n");
+            exit(1);
+        }
+
+        LocalFree(pszName);
+    } // End of while loop
+
+    printf("\nProvider types and provider names have been listed.\n");
+}
+
+
+void EnumProviderTypes()
+/*
+The following example shows a loop listing all available cryptographic service provider types.
+
+https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptenumprovidertypesa
+*/
+{
+    // Copyright (C) Microsoft.  All rights reserved.
+    // Declare and initialize variables.
+    DWORD       dwIndex;
+    DWORD       dwType;
+    DWORD       cbName;
+    LPTSTR      pszName;
+
+    //   Print header lines for provider types.
+    printf("Listing Available Provider Types:\n");
+    printf("Provider type\tProvider Type Name\n");
+    printf("_____________\t_____________________________________\n");
+
+    // Loop through enumerating provider types.
+    dwIndex = 0;
+    while (CryptEnumProviderTypes(dwIndex, NULL, 0, &dwType, NULL, &cbName)) {
+        //  cbName returns the length of the name of the next provider type.
+        //  Allocate memory in a buffer to retrieve that name.
+        if (!(pszName = (LPTSTR)LocalAlloc(LMEM_ZEROINIT, cbName))) {
+            printf("ERROR - LocalAlloc failed.\n");
+            exit(1);
+        }
+
+        //  Get the provider type name.
+        if (CryptEnumProviderTypes(dwIndex++, NULL, NULL, &dwType, pszName, &cbName)) {
+            printf("     %4.0d\t%s\n", dwType, pszName);
+        } else {
+            printf("ERROR - CryptEnumProviderTypes\n");
+            exit(1);
+        }
+
+        LocalFree(pszName);
+    } // End of while loop.
+}
+
+
+void MyHandleError(TCHAR * s)
+//  This example uses the function MyHandleError, a simple error
+//  handling function, to print an error message and exit 
+//  the program. 
+//  For most applications, replace this function with one 
+//  that does more extensive error reporting.
+{
+    _tprintf(TEXT("An error occurred in running the program.\n"));
+    _tprintf(TEXT("%s\n"), s);
+    _tprintf(TEXT("Error number %x\n."), GetLastError());
+    _tprintf(TEXT("Program terminating.\n"));
+    exit(1);
+}
+
+
+void Wait(const TCHAR * s)
+{
+    char x;
+    _tprintf(s);
+    x = getchar();
+}
+
+
+void EnumCsp(int argc, _TCHAR * argv[])
+/*
+Example C Program: Enumerating CSP Providers and Provider Types
+05/31/2018
+3 minutes to read
+
+The following example lists the CSPs available on a computer and uses the following CryptoAPI functions:
+
+CryptEnumProviderTypes
+CryptEnumProviders
+CryptGetDefaultProvider
+CryptGetProvParam
+This example uses the function MyHandleError. The code for this function is included in this example. 
+Code for this and other auxiliary functions is also listed under General Purpose Functions.
+
+The following example shows enumerating CSPs and provider types.
+
+https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-enumerating-csp-providers-and-provider-types
+*/
+{
+    // Declare and initialize variables.
+    HCRYPTPROV hProv;
+    LPTSTR pszName;
+    DWORD dwType;
+    DWORD cbName;
+    DWORD dwIndex = 0;
+    BYTE * ptr;
+    ALG_ID aiAlgid;
+    DWORD dwBits;
+    DWORD dwNameLen;
+    CHAR szName[100];
+    BYTE pbData[1024];
+    DWORD cbData = 1024;
+    DWORD dwIncrement = sizeof(DWORD);
+    DWORD dwFlags = CRYPT_FIRST;
+    DWORD dwParam = PP_CLIENT_HWND;
+    const CHAR * pszAlgType = NULL;
+    BOOL fMore = TRUE;
+    LPTSTR pbProvName;
+    DWORD cbProvName;
+
+    // Print header lines for provider types.
+    _tprintf(TEXT("Listing Available Provider Types.\n"));
+    _tprintf(TEXT("Provider type    Provider Type Name\n"));
+    _tprintf(TEXT("_____________    ")
+             TEXT("_____________________________________\n"));
+
+    // Loop through enumerating provider types.
+    dwIndex = 0;
+    while (CryptEnumProviderTypes(dwIndex, NULL, 0, &dwType, NULL, &cbName)) {
+        // cbName is the length of the name of the next provider type.
+
+        // Allocate memory in a buffer to retrieve that name.
+        if (!(pszName = (LPTSTR)LocalAlloc(LMEM_ZEROINIT, cbName))) {
+            MyHandleError(TEXT("ERROR - LocalAlloc failed!"));
+        }
+
+        // Get the provider type name.
+        if (CryptEnumProviderTypes(dwIndex++, NULL, NULL, &dwType, pszName, &cbName)) {
+            _tprintf(TEXT("     %4.0d        %s\n"), dwType, pszName);
+        } else {
+            MyHandleError(TEXT("ERROR - CryptEnumProviders"));
+        }
+
+        LocalFree(pszName);
+    }
+
+    // Print header lines for providers.
+    _tprintf(TEXT("\n\nListing Available Providers.\n"));
+    _tprintf(TEXT("Provider type    Provider Name\n"));
+    _tprintf(TEXT("_____________    ")
+             TEXT("_____________________________________\n"));
+
+    // Loop through enumerating providers.
+    dwIndex = 0;
+    while (CryptEnumProviders(dwIndex, NULL, 0, &dwType, NULL, &cbName)) {
+        // cbName is the length of the name of the next provider.
+        // Allocate memory in a buffer to retrieve that name.
+        if (!(pszName = (LPTSTR)LocalAlloc(LMEM_ZEROINIT, cbName))) {
+            MyHandleError(TEXT("ERROR - LocalAlloc failed!"));
+        }
+
+        // Get the provider name.
+        if (CryptEnumProviders(dwIndex++, NULL, 0, &dwType, pszName, &cbName)) {
+            _tprintf(TEXT("     %4.0d        %s\n"), dwType, pszName);
+        } else {
+            MyHandleError(TEXT("ERROR - CryptEnumProviders"));
+        }
+
+        LocalFree(pszName);
+    } // End while loop.
+
+    // Get the name of the default CSP specified for the PROV_RSA_FULL type for the computer.
+
+    // Get the length of the RSA_FULL default provider name.
+    if (!(CryptGetDefaultProvider(
+        PROV_RSA_FULL,
+        NULL,
+        CRYPT_MACHINE_DEFAULT,
+        NULL,
+        &cbProvName))) {
+        MyHandleError(TEXT("Error getting the length of the ")
+                      TEXT("default provider name."));
+    }
+
+    // Allocate local memory for the name of the default provider.
+    if (!(pbProvName = (LPTSTR)LocalAlloc(
+        LMEM_ZEROINIT,
+        cbProvName))) {
+        MyHandleError(TEXT("Error during memory allocation ")
+                      TEXT("for provider name."));
+    }
+
+    // Get the name of the default PROV_RSA_FULL provider.
+    if (CryptGetDefaultProvider(PROV_RSA_FULL, NULL, CRYPT_MACHINE_DEFAULT, pbProvName, &cbProvName)) {
+        _tprintf(TEXT("\nThe default provider name is \"%s\"\n"), pbProvName);
+    } else {
+        MyHandleError(TEXT("Getting the provider name failed."));
+    }
+
+    LocalFree(pbProvName);
+
+    //  Acquire a cryptographic context.
+    if (!CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL, NULL)) {
+        MyHandleError(TEXT("Error during CryptAcquireContext!"));
+    }
+
+    // Enumerate the supported algorithms.
+
+    // Print header for algorithm information table.
+    _tprintf(TEXT("\nEnumerating the supported ")
+             TEXT("algorithms\n\n"));
+    _tprintf(TEXT("     Algid      Bits      Type        ")
+             TEXT("Name         Algorithm\n"));
+    _tprintf(TEXT("                                     Length")
+             TEXT("          Name\n"));
+    _tprintf(TEXT("    _______________________________________")
+             TEXT("_________________\n"));
+
+    while (fMore) {
+        // Retrieve information about an algorithm.
+        if (CryptGetProvParam(hProv, PP_ENUMALGS, pbData, &cbData, dwFlags)) {
+            // Extract algorithm information from the pbData buffer.
+            dwFlags = 0;
+            ptr = pbData;
+            aiAlgid = *(ALG_ID *)ptr;
+            ptr += sizeof(ALG_ID);
+            dwBits = *(DWORD *)ptr;
+            ptr += dwIncrement;
+            dwNameLen = *(DWORD *)ptr;
+            ptr += dwIncrement;
+            //strncpy_s(szName, (char *)ptr, sizeof(szName), dwNameLen);//这个把第二个和第三个参数写反了。
+            strncpy_s(szName, sizeof(szName), (char *)ptr, dwNameLen);
+
+            // Determine the algorithm type.
+            switch (GET_ALG_CLASS(aiAlgid)) {
+            case ALG_CLASS_DATA_ENCRYPT:
+                pszAlgType = "Encrypt  ";
+                break;
+            case ALG_CLASS_HASH:
+                pszAlgType = "Hash     ";
+                break;
+            case ALG_CLASS_KEY_EXCHANGE:
+                pszAlgType = "Exchange ";
+                break;
+            case ALG_CLASS_SIGNATURE:
+                pszAlgType = "Signature";
+                break;
+            default:
+                pszAlgType = "Unknown  ";
+                break;
+            }
+
+             // Print information about the algorithm.
+            printf("    %8.8xh    %-4d    %s     %-2d          %s\n",
+                   aiAlgid,
+                   dwBits,
+                   pszAlgType,
+                   dwNameLen,
+                   szName);
+        } else {
+            fMore = FALSE;
+        }
+    }
+
+    Wait(TEXT("\nPress Enter to continue."));
+
+    if (!(CryptReleaseContext(hProv, 0))) {
+        MyHandleError(TEXT("Error during CryptReleaseContext."));
+    }
+
+    if (GetLastError() == ERROR_NO_MORE_ITEMS) {
+        _tprintf(TEXT("\nThe program completed without error.\n"));
+    } else {
+        MyHandleError(TEXT("Error reading algorithm!"));
+    }
+} 
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
