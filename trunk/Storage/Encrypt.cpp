@@ -1948,11 +1948,31 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-void EnumProviders()
+EXTERN_C
+__declspec(dllexport)
+void WINAPI EnumProvidersByCrypt()
 /*
 The following example shows a loop listing all available cryptographic service providers.
 
 https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptenumprovidersa
+*/
+/*
+测试效果：对比ICspInformations的枚举，这里没有CNG，只是Legacy。
+Listing Available Providers:
+Provider type   Provider Name
+_____________   _____________________________________
+        1       Microsoft Base Cryptographic Provider v1.0
+       13       Microsoft Base DSS and Diffie-Hellman Cryptographic Provider
+        3       Microsoft Base DSS Cryptographic Provider
+        1       Microsoft Base Smart Card Crypto Provider
+       18       Microsoft DH SChannel Cryptographic Provider
+        1       Microsoft Enhanced Cryptographic Provider v1.0
+       13       Microsoft Enhanced DSS and Diffie-Hellman Cryptographic Provider
+       24       Microsoft Enhanced RSA and AES Cryptographic Provider
+       12       Microsoft RSA SChannel Cryptographic Provider
+        1       Microsoft Strong Cryptographic Provider
+
+Provider types and provider names have been listed.
 */
 {
     // Copyright (C) Microsoft.  All rights reserved.
@@ -2252,6 +2272,79 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-enume
     } else {
         MyHandleError(TEXT("Error reading algorithm!"));
     }
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+EXTERN_C
+__declspec(dllexport)
+HRESULT WINAPI EnumProviders(void)
+/*
+Enumerating Installed Providers
+01/08/2021
+2 minutes to read
+
+Enumerate the cryptographic providers installed on the computer.
+This sample enumerates the Cryptography API (CryptoAPI) and
+Cryptography API: Next Generation (CNG) providers.
+
+The following example shows how to use the Certificate Enrollment API to enumerate the providers installed on a computer.
+
+https://docs.microsoft.com/en-us/windows/win32/seccertenroll/enumerating-installed-providers
+*/
+{
+    CComPtr<ICspInformations>     pCSPs;   // Provider collection
+    CComPtr<ICspInformation>      pCSP;    // Provider instgance
+    HRESULT           hr = S_OK;  // Return value
+    long              lCount = 0;     // Count of providers
+    CComBSTR          bstrName;            // Provider name
+    VARIANT_BOOL      bLegacy;             // CryptoAPI or CNG
+
+    // Create a collection of cryptographic providers.
+    hr = CoCreateInstance(
+        __uuidof(CCspInformations),
+        NULL,
+        CLSCTX_INPROC_SERVER,
+        __uuidof(ICspInformations),
+        (void **)&pCSPs);
+    if (FAILED(hr)) return hr;
+
+    // Add the providers installed on the computer.
+    hr = pCSPs->AddAvailableCsps();
+    if (FAILED(hr)) return hr;
+
+    // Retrieve the number of installed providers.
+    hr = pCSPs->get_Count(&lCount);
+    if (FAILED(hr)) return hr;
+
+    // Print the providers to the console.
+    // Print the name and a value that specifies whether the CSP is a legacy or CNG provider.
+    for (long i = 0; i < lCount; i++) {
+        hr = pCSPs->get_ItemByIndex(i, &pCSP);
+        if (FAILED(hr)) return hr;
+
+        hr = pCSP->get_Name(&bstrName);
+        if (FAILED(hr)) return hr;
+
+        hr = pCSP->get_LegacyCsp(&bLegacy);
+        if (FAILED(hr)) return hr;
+
+        if (VARIANT_TRUE == bLegacy)
+            wprintf_s(L"%2d. Legacy: ", i);
+        else
+            wprintf_s(L"%2d. CNG: ", i);
+
+        wprintf_s(L"%s\n", static_cast<wchar_t *>(bstrName.m_str));
+
+        pCSP = NULL;
+    }
+
+    //printf_s("\n\nHit any key to continue: ");
+    //(void)_getch();
+
+    return hr;
 }
 
 

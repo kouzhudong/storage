@@ -192,6 +192,10 @@ int WINAPI RemoveFileZoneIdentifier(int argc, wchar_t ** argv);
 
 void WINAPI EnumCatAttributes(_In_ LPWSTR FilePath);
 
+HRESULT WINAPI EnumProviders(void);
+
+void WINAPI EnumProvidersByCrypt();
+
 
 EXTERN_C_END
 

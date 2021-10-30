@@ -2,6 +2,7 @@
 //
 
 #include "..\inc\Storage.h"
+#include "encrypt.h"
 
 
 #ifdef _WIN64  
@@ -35,10 +36,10 @@ int _cdecl main(_In_ int argc, _In_reads_(argc) CHAR * argv[])
         return 0;
     }
 
-    //SignatureVerification(Args, (PCWSTR*)Arglist);
+    //EnumProvidersTest(Args, Arglist);
     //GetAdaptersAddressesInfo(argc, argv);
 
-    EnumCatAttributes((LPWSTR)L"D:\\XXX.cdf");
+    EnumProvidersByCrypt();
 
     LocalFree(Arglist);
 }

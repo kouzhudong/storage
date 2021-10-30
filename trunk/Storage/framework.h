@@ -70,6 +70,7 @@
 #include <conio.h>
 #include <signal.h>
 #include <urlmon.h>
+#include <certenroll.h>
 
 //几个USB相关的头文件。
 #include <initguid.h> //注意前后顺序。
