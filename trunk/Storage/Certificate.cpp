@@ -6,21 +6,13 @@
 #pragma warning(disable:28183)
 #pragma warning(disable:6387)
 #pragma warning(disable:6001)
-#pragma warning(disable:6031)
-#pragma warning(disable:4838)
-#pragma warning(disable:4267)
-#pragma warning(disable:26451)
-#pragma warning(disable:4018)
 #pragma warning(disable:4477)
 #pragma warning(disable:4313)
-#pragma warning(disable:6273)
 #pragma warning(disable:4473)
 #pragma warning(disable:6064)
 #pragma warning(disable:6067)
 #pragma warning(disable:6054)
 #pragma warning(disable:6273)
-#pragma warning(disable:6273)
-#pragma warning(disable:6386)
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +93,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-listi
     char pszNameString[256];
     char pszStoreName[256];
     void * pvData;
-    DWORD            cbData;
+    DWORD            cbData = 0;
     DWORD            dwPropId = 0;
     // Zero must be used on the first
     // call to the function. After that, the last returned property identifier is passed.
@@ -360,8 +352,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-delet
     fgets(pszStoreName, 255, stdin);
     if (pszStoreName[strlen(pszStoreName) - 1] == '\n')
         pszStoreName[strlen(pszStoreName) - 1] = '\0';
-    printf("Certificates will be deleted from "
-           "the %s store.\n", pszStoreName);
+    printf("Certificates will be deleted from the %s store.\n", pszStoreName);
 
     // Open a system certificate store.
     if (hStoreHandle = CertOpenSystemStoreA(NULL, pszStoreName)) {
@@ -499,7 +490,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-certi
     HCERTSTORE  hDuplicateStore;           // Handle for a store to be created as a duplicate of an open store
     PCCERT_CONTEXT  pDesiredCert = NULL;   // Set to NULL for the first call to CertFindCertificateInStore
     PCCERT_CONTEXT  pCertContext;
-    HANDLE  hStoreFileHandle;             // Output file handle
+    HANDLE  hStoreFileHandle = INVALID_HANDLE_VALUE;             // Output file handle 
     LPCWSTR  pszFileName = L"TestStor.sto";  // Output file name
     SECURITY_ATTRIBUTES sa;                // For DACL
 
@@ -753,7 +744,6 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-certi
     if (hStoreFileHandle)
         CloseHandle(hStoreFileHandle);
     printf("All of the stores and files are closed. \n");
-    return;
 }
 
 
@@ -763,8 +753,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-certi
 // Copyright (C) Microsoft.  All rights reserved.
 // Example that uses CertSerializeCertificateStoreElement to
 // serialize the data from a certificate, 
-// and CertAddSerializedElementToStore to add that data as a new
-// certificate to a store.
+// and CertAddSerializedElementToStore to add that data as a new certificate to a store.
 // CertAddEncodeCertificateToStore is also demonstrated.
 
 
@@ -803,7 +792,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-seria
     PCCERT_CONTEXT     pCertContext = NULL;
     char               pszNameString[256];
     BYTE * pbElement;
-    DWORD              cbElement;
+    DWORD              cbElement = 0;
 
     // Open a system certificate store.
     if (hSystemStore = CertOpenSystemStoreA(0, "CA")) {
@@ -939,7 +928,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-seria
 void My_Wait()
 {
     printf("Hit enter to continue.");
-    getchar();
+    (void)getchar();
 }
 
 
@@ -978,7 +967,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-getti
     BYTE * pName = (BYTE *)"Temp Name.";
     CRYPT_DATA_BLOB  Friendly_Name_Blob = {32,pName};
     void * pvData;
-    DWORD            cbData;
+    DWORD            cbData = 0;
     DWORD            dwFlags = CERT_STORE_NO_CRYPT_RELEASE_FLAG;
     DWORD            dwPropId = 0;   // 0 must be used on the first call to the function. After that,
                                      // the last returned property ID is passed.
@@ -1208,7 +1197,7 @@ void Local_wait()
     //  It provides a pause with its length controlled by the user.
 
     _tprintf(TEXT("Hit Enter to continue : "));
-    getchar();
+    (void)getchar();
 }
 
 
@@ -1259,8 +1248,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-conve
         DWORD cbSize;
         CERT_BLOB blobEncodedName;
 
-        //        Get and display 
-        //        the name of subject of the certificate.
+        //        Get and display the name of subject of the certificate.
         if (!(cbSize = CertGetNameString(pCertContext, CERT_NAME_SIMPLE_DISPLAY_TYPE, 0, NULL, NULL, 0))) {
             MyHandleError(TEXT("CertGetName 1 failed."));
         }
@@ -1276,8 +1264,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-conve
             MyHandleError(TEXT("CertGetName failed."));
         }
 
-        //        Get and display 
-        //        the name of Issuer of the certificate.
+        //        Get and display the name of Issuer of the certificate.
         if (!(cbSize = CertGetNameString(pCertContext,
                                          CERT_NAME_SIMPLE_DISPLAY_TYPE,
                                          CERT_NAME_ISSUER_FLAG,
@@ -1430,18 +1417,22 @@ Removing a sibling store from a collection using CertRemoveStoreFromCollection.
 This example uses the function MyHandleError. The code for this function is included with the sample.
 Code for this and other auxiliary functions is also listed under General Purpose Functions.
 
-This example uses the CreateMyDACL function, defined in the Creating a DACL topic, to ensure the open file is created with a proper DACL.
+This example uses the CreateMyDACL function, defined in the Creating a DACL topic,
+to ensure the open file is created with a proper DACL.
 
-The following example opens a collection store, creates a new certificate store in memory, and adds the new store as a sibling store to the collection store.
+The following example opens a collection store, creates a new certificate store in memory,
+and adds the new store as a sibling store to the collection store.
 The program then opens a system store and retrieves a certificate.
 That certificate is added to the memory store.
 A second certificate is retrieved from the system store and a link to that certificate is added to the memory store.
-The certificate and the link are then retrieved from the collection store showing that certificates and links in a sibling store can be retrieved from the collection store.
+The certificate and the link are then retrieved from the collection store showing that certificates and
+links in a sibling store can be retrieved from the collection store.
 The memory is saved to disk. The memory store is then removed from the collection.
 The link added to the memory store can still be found in the memory store but can no longer be found in the collection store.
 All of the stores and files are closed, then the file store is reopened and a search is done for the certificate link.
 The success of this program depends upon a My store being available.
-That store must include a certificate with the subject "Insert_cert_subject_name1" and a second certificate with the subject "Insert_cert_subject_name2".
+That store must include a certificate with the subject "Insert_cert_subject_name1" and
+a second certificate with the subject "Insert_cert_subject_name2".
 The names of the subjects should be changed to the names of certificate subjects known to be in the My store.
 
 https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-collection-and-sibling-certificate-store-operations
@@ -1833,7 +1824,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-regis
     // Replace the path below with one that is appropriate for you.
     PhysicalStoreInfo.OpenParameters.pbData = (BYTE *)L"C:\\temp\\mystore";
     PhysicalStoreInfo.OpenParameters.cbData =
-        (wcslen((LPWSTR)PhysicalStoreInfo.OpenParameters.pbData) + 1) * sizeof(WCHAR);
+        (DWORD)(wcslen((LPWSTR)PhysicalStoreInfo.OpenParameters.pbData) + 1) * sizeof(WCHAR);
     PhysicalStoreInfo.dwPriority = 1;
     PhysicalStoreInfo.dwOpenEncodingType = MY_ENCODING_TYPE;
 
@@ -1911,7 +1902,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-setti
     HCERTSTORE hNewStore;      // Store to be created from a PKCS #7 message  
     HANDLE     hEvent;
     void * pvData;
-    DWORD cbData;
+    DWORD cbData = 0;
     DWORD dwSignerCount;
     CRYPT_DATA_BLOB Property_Name_Blob;   // BLOB to hold store property
     CRYPT_DATA_BLOB Save_Store_Blob;      // BLOB to hold the PKCS #7 message
@@ -1919,7 +1910,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-setti
     const BYTE * rgpbToBeHashed[1];
     DWORD                        rgcbToBeHashed[1];
     BYTE * pbHashedBlob;// Arrays of messages to be hashed
-    DWORD                        cbHashedBlob;// Length of the hash BLOB    
+    DWORD                        cbHashedBlob = 0;// Length of the hash BLOB    
     CRYPT_ALGORITHM_IDENTIFIER   AlgId;     // Data structure to hold the hash algorithm identifier
     BOOL                        fSignal;
 
@@ -1947,7 +1938,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-setti
     // Prepare a data structure to set a store property.
     // Initialize the members of the CRYPT_DATA_BLOB.
     Property_Name_Blob.pbData = (BYTE *)L"The Local MY Store";
-    Property_Name_Blob.cbData = (wcslen((LPWSTR)Property_Name_Blob.pbData) + 1) * sizeof(WCHAR);
+    Property_Name_Blob.cbData = (DWORD)(wcslen((LPWSTR)Property_Name_Blob.pbData) + 1) * sizeof(WCHAR);
 
     // Set the store's localized name property.
     if (CertSetStoreProperty(hCertStore, CERT_STORE_LOCALIZED_NAME_PROP_ID, 0, &Property_Name_Blob)) {
@@ -2389,6 +2380,38 @@ static BOOL WINAPI EnumLocCallback(LPCWSTR pwszStoreLocation, DWORD dwFlags, voi
     }
 
     return TRUE;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+EXTERN_C
+__declspec(dllexport)
+void WINAPI EnumCatAttributes(_In_ LPWSTR FilePath)
+/*
+The following example shows the correct sequence of assignments for the pPrevAttr parameter (pAttr).
+
+参数说明：
+A pointer to a null-terminated string that contains the path of the CDF file to open。
+也都是.cdf文件。
+这样的文件不常见，所以这个函数也不常用。
+
+https://docs.microsoft.com/en-us/windows/win32/api/mscat/nf-mscat-cryptcatcdfenumcatattributes
+*/
+{
+    CRYPTCATCDF * pCDF = CryptCATCDFOpen(FilePath, NULL);
+    if (NULL == pCDF) {
+        return;
+    }
+
+    CRYPTCATATTRIBUTE * pAttr = NULL;
+
+    while (pAttr = CryptCATCDFEnumCatAttributes(pCDF, pAttr, NULL)) {
+        //do something with pAttr
+    }
+
+    CryptCATCDFClose(pCDF);
 }
 
 

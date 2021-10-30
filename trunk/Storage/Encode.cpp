@@ -2,19 +2,13 @@
 #include "Encode.h"
 
 
-#pragma warning(disable:4267)
 #pragma warning(disable:6001)
-#pragma warning(disable:26451)
 #pragma warning(disable:28182)
-#pragma warning(disable:6031)
 #pragma warning(disable:4477)
-#pragma warning(disable:4703)
 #pragma warning(disable:6302)
 #pragma warning(disable:28183)
 #pragma warning(disable:6387)
 #pragma warning(disable:4996)
-#pragma warning(disable:4700)
-#pragma warning(disable:6303)
 #pragma warning(disable:6029)
 #pragma warning(disable:6011)
 
@@ -64,14 +58,12 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/signing-data
 //   provide access to the private signature key.
 
 //    You can use a command similar to the following to create a certificate that can be used with this example:
-//
 //    makecert -n "cn=Test" -sk Test -ss my
 
 //#define SIGNER_NAME L"test"
 #define SIGNER_NAME L"Insert_signer_name_here"
 
 //    Define the name of the store where the needed certificate can be found. 
-
 #define CERT_STORE_NAME  L"MY"
 
 
@@ -129,7 +121,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-signi
     }
 
     _tprintf(TEXT("Press any key to exit."));
-    _getch();
+    (void)_getch();
 }
 
 
@@ -139,7 +131,7 @@ bool SignMessage(CRYPT_DATA_BLOB * pSignedMessageBlob)
     BYTE * pbMessage;
     DWORD cbMessage;
     HCERTSTORE hCertStore = NULL;
-    PCCERT_CONTEXT pSignerCert;
+    PCCERT_CONTEXT pSignerCert = NULL;
     CRYPT_SIGN_MESSAGE_PARA  SigParams;
     DWORD cbSignedMessageBlob;
     BYTE * pbSignedMessageBlob = NULL;
@@ -408,8 +400,7 @@ void ReportFailure()
 {
     switch (GetLastError()) {
     case CRYPT_E_AUTH_ATTR_MISSING:
-        printf("Message does not contain an expected "
-               "attribute.\n");
+        printf("Message does not contain an expected attribute.\n");
         break;
     case CRYPT_E_BAD_ENCODE:
         printf("An error encountered encoding or decoding.\n");
@@ -440,8 +431,7 @@ void ReportFailure()
                "function.\n");
         break;
     case ERROR_INVALID_PARAMETER:
-        printf("The parameter from verify signature "
-               "is not valid.\n");
+        printf("The parameter from verify signature is not valid.\n");
         break;
     case NTE_BAD_FLAGS:
         printf("Bad Flags from verify signature function.\n");
@@ -453,8 +443,7 @@ void ReportFailure()
         printf("Bad Key from verify signature function.\n");
         break;
     case NTE_BAD_SIGNATURE:
-        printf("Bad signature from verify signature " \
-               "function.\n");
+        printf("Bad signature from verify signature function.\n");
         break;
     case NTE_BAD_UID:
         printf("Bad UID from verify signature function.\n");
@@ -475,40 +464,34 @@ void EncodeAndDecodeMessage(LPWSTR pwszSignerName)
 
 BOOL EncodeMessage(PCRYPT_DATA_BLOB pEncodedBlob, LPWSTR pwszSignerName)
 {
-    /*---------------------------------------------------------------
+    /*
         Declare and initialize variables. This includes getting a
         pointer to the message content. This sample creates
         the message content and gets a pointer to it. In most
         situations, the content will exist somewhere, and a
         pointer to it will get passed to the application.
-    ---------------------------------------------------------------*/
+    */
 
     HCERTSTORE hSystemStoreHandle;
     CRYPT_SIGN_MESSAGE_PARA SignMessagePara;
 
     //   The message to be signed and encoded.
-    BYTE * pbContent = (BYTE *)"The quick brown fox jumped over " \
-        "the lazy dog.";
+    BYTE * pbContent = (BYTE *)"The quick brown fox jumped over the lazy dog.";
 
-    /*---------------------------------------------------------------
+    /*
         The length of the message. This must be one more than the
-        value returned by strlen() to include the terminal NULL
-        character.
-    ---------------------------------------------------------------*/
+        value returned by strlen() to include the terminal NULL character.
+    */
     DWORD cbContent = lstrlenA((char *)pbContent) + 1;
 
     //    Arrays to hold the message to be signed and its length.
     const BYTE * rgpbToBeSigned[1];
     DWORD rgcbToBeSigned[1];
 
-    //    The signer's certificate.
-    PCCERT_CONTEXT pSignerCert;
 
-    //    Buffer to hold the name of the subject of a certificate.
-    char pszNameString[MAX_NAME];
-
-    //  The following variables are used only in the decoding phase.
-    DWORD cbData = sizeof(DWORD);
+    PCCERT_CONTEXT pSignerCert;//    The signer's certificate.    
+    char pszNameString[MAX_NAME];//    Buffer to hold the name of the subject of a certificate.    
+    DWORD cbData = sizeof(DWORD);//  The following variables are used only in the decoding phase.
 
     //  Begin processing. Display the original message.
     rgpbToBeSigned[0] = pbContent;
@@ -527,11 +510,11 @@ BOOL EncodeMessage(PCRYPT_DATA_BLOB pEncodedBlob, LPWSTR pwszSignerName)
         MyHandleError("Error Getting Store Handle");
     }
 
-    /*---------------------------------------------------------------
+    /*
         Find a certificate in the store. This certificate will be
         used to sign the message. To sign the message, the
         certificate must have a private key accessible.
-    ---------------------------------------------------------------*/
+    */
 
     if (pSignerCert = CertFindCertificateInStore(
         hSystemStoreHandle,
@@ -549,18 +532,17 @@ BOOL EncodeMessage(PCRYPT_DATA_BLOB pEncodedBlob, LPWSTR pwszSignerName)
                                MAX_NAME) > 1) {
             printf("The message signer is  %s \n", pszNameString);
         } else {
-            MyHandleError("Getting the name of the signer " \
-                          "failed.\n");
+            MyHandleError("Getting the name of the signer failed.\n");
         }
     } else {
         MyHandleError("Signer certificate not found.");
     }
 
-    /*---------------------------------------------------------------
+    /*
     Initialize the CRYPT_SIGN_MESSAGE_PARA structure. First, use
     memset to set all members to zero or NULL. Then set the values of
     all members that must be nonzero.
-    ---------------------------------------------------------------*/
+    */
 
     memset(&SignMessagePara, 0, sizeof(CRYPT_SIGN_MESSAGE_PARA));
     SignMessagePara.cbSize = sizeof(CRYPT_SIGN_MESSAGE_PARA);
@@ -570,11 +552,10 @@ BOOL EncodeMessage(PCRYPT_DATA_BLOB pEncodedBlob, LPWSTR pwszSignerName)
     SignMessagePara.cMsgCert = 1;
     SignMessagePara.rgpMsgCert = &pSignerCert;
 
-    /*---------------------------------------------------------------
+    /*
         In two steps, sign and encode the message. First, get the
-        number of bytes required for the buffer to hold the signed
-        and encoded message.
-    ---------------------------------------------------------------*/
+        number of bytes required for the buffer to hold the signed and encoded message.
+    */
 
     if (CryptSignMessage(&SignMessagePara,
                          FALSE,
@@ -636,13 +617,13 @@ void DecodeMessage(PCRYPT_DATA_BLOB pEncodedBlob, LPWSTR pwszSignerName)
     PCERT_INFO pSignerCertInfo;
     PCCERT_CONTEXT pSignerCertContext;
 
-    /*---------------------------------------------------------------
+    /*
         The following code decodes the message and verifies the
         message signature.  This code would normally be in a
         stand-alone program that would read the signed and encoded
         message and its length from a file from an email message,
         or from some other source.
-    ---------------------------------------------------------------*/
+    */
 
     //  Open a message for decoding.
     if (hMsg = CryptMsgOpenToDecode(
@@ -744,8 +725,7 @@ void DecodeMessage(PCRYPT_DATA_BLOB pEncodedBlob, LPWSTR pwszSignerName)
         0,                           // flags
         hMsg))                       // handle to the message
     {
-        printf("The certificate store to be used for message " \
-               "verification has been opened.\n");
+        printf("The certificate store to be used for message verification has been opened.\n");
     } else {
         MyHandleError("Verify open store failed");
     }
@@ -898,7 +878,7 @@ void EncodeMessageWithStream(LPWSTR pwszSignerName)
     CERT_BLOB SignerCertBlobArray[1];
     CMSG_SIGNED_ENCODE_INFO SignedMsgEncodeInfo;
     HCRYPTMSG hMsg;
-    LPWSTR pszNameString;
+    LPWSTR pszNameString = NULL;
     DWORD dwKeySpec;
 
     // Open the My system certificate store.
@@ -927,7 +907,7 @@ void EncodeMessageWithStream(LPWSTR pwszSignerName)
                               NULL,
                               pszNameString,
                               MAX_NAME) > 1) {
-            printf("The message signer is  %s \n", pszNameString);
+            printf("The message signer is  %ls \n", pszNameString);
         } else {
             MyHandleError(L"CertGetNameString failed.\n");
         }
@@ -1196,8 +1176,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-sendi
     //  pbToBeSignedAndEncrypted is the message to be encrypted and signed.
 
     const BYTE * pbToBeSignedAndEncrypted =
-        (const unsigned char *)"Insert the message to be signed "
-        "here";
+        (const unsigned char *)"Insert the message to be signed here";
 
     // This is the length of the message to be
     // encrypted and signed. Note that it is one
@@ -1272,7 +1251,6 @@ BYTE * SignAndEncrypt(const BYTE * pbToBeSignedAndEncrypted,
     // For more information, see the CertOpenStore function 
     // PSDK reference page. 
     // Note: Case is not significant in certificate store names.
-
     if (!(hCertStore = CertOpenStore(CERT_STORE_PROV_SYSTEM,
                                      0,
                                      NULL,
@@ -1320,10 +1298,10 @@ BYTE * SignAndEncrypt(const BYTE * pbToBeSignedAndEncrypted,
     // a BLOB with the name of the receiver is saved in a file.
 
     // Note: To decrypt the message signed and encrypted here,
-    // this program must use the certificate of the intended
-    // receiver. The signed and encrypted message can only be
-    // decrypted and verified by the owner of the recipient
-    // certificate. That user must have access to the private key
+    // this program must use the certificate of the intended receiver.
+    // The signed and encrypted message can only be
+    // decrypted and verified by the owner of the recipient certificate.
+    // That user must have access to the private key
     // associated with the public key of the recipient's certificate.
 
     // To run this sample, the file contains information that allows 
@@ -1645,8 +1623,7 @@ BYTE * DecryptAndVerify(DWORD cbBlob, BYTE * pbBlob)
     cbDecrypted = 0;
 
     //     Call CryptDecryptAndVerifyMessageSignature a first time
-    //     to determine the needed size of the buffer to hold the 
-    //     decrypted message. 
+    //     to determine the needed size of the buffer to hold the decrypted message. 
     //     Note: The sixth parameter is NULL in this call to 
     //     get the required size of the bytes string to contain the decrypted message.
 
@@ -1789,7 +1766,6 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-recei
 #define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
 
 // Define the name of the store where the needed certificate can be found. 
-
 #define CERT_STORE_NAME  L"MY"
 
 
@@ -1869,7 +1845,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program--cosi
     }
 
     _tprintf(TEXT("Press any key to exit."));
-    _getch();
+    (void)_getch();
 
     return 0;
 }
@@ -2208,8 +2184,7 @@ bool VerifyCosignedMessage(CRYPT_DATA_BLOB * pCosignedMessageBlob, CRYPT_DATA_BL
         goto exit_VerifyCosignedMessage;
     }
 
-    // Loop through all of the signers and verify the signature for 
-    // each one.
+    // Loop through all of the signers and verify the signature for each one.
     CRYPT_VERIFY_MESSAGE_PARA VerifyParams;
     VerifyParams.cbSize = sizeof(CRYPT_VERIFY_MESSAGE_PARA);
     VerifyParams.dwMsgAndCertEncodingType = MY_ENCODING_TYPE;
@@ -2526,8 +2501,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
                                       NULL,
                                       &cbDecodedMessageBlob,
                                       NULL))) {
-        printf("Getting the size of the verification message " \
-               "failed.\n");
+        printf("Getting the size of the verification message failed.\n");
     }
 
     pbDecodedMessageBlob = (BYTE *)malloc(cbDecodedMessageBlob);
@@ -2573,12 +2547,10 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
                                MAX_NAME) > 1) {
             printf("The counter signer is %s.\n", pszNameString);
         } else {
-            MyHandleError("Getting the countersigner name " \
-                          "failed.\n");
+            MyHandleError("Getting the countersigner name failed.\n");
         }
     } else {
-        MyHandleError("Could not find the countersigner's " \
-                      "certificate.");
+        MyHandleError("Could not find the countersigner's certificate.");
     }
 
     // Initialize the CMSG_SIGNER_ENCODE_INFO structure.
@@ -2645,8 +2617,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
     if (CryptMsgUpdate(hMsg, pbEncodedBlob, cbEncodedBlob, TRUE)) {
         printf("The message to decode has been updated.\n");
     } else {
-        MyHandleError("Updating the countersignature message " \
-                      "failed.");
+        MyHandleError("Updating the countersignature message failed.");
     }
 
     // Get a pointer to the CERT_INFO member of countersigner's  certificate. 
@@ -2666,21 +2637,13 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
     }
 
     // Get the message signer information.
-    if (!(CryptMsgGetParam(hMsg,
-                           CMSG_ENCODED_SIGNER,
-                           0,
-                           pbSignerInfo,
-                           &cbSignerInfo))) {
+    if (!(CryptMsgGetParam(hMsg, CMSG_ENCODED_SIGNER, 0, pbSignerInfo, &cbSignerInfo))) {
         MyHandleError("Getting pbSignerInfo failed.");
     }
 
     // Retrieve the countersigner information from the message.
     // Get the size of memory required.
-    if (CryptMsgGetParam(hMsg,
-                         CMSG_SIGNER_UNAUTH_ATTR_PARAM,
-                         0,
-                         NULL,
-                         &cbCountersignerInfo)) {
+    if (CryptMsgGetParam(hMsg, CMSG_SIGNER_UNAUTH_ATTR_PARAM, 0, NULL, &cbCountersignerInfo)) {
         printf("Counter Signer information is %d bytes.\n", cbCountersignerInfo);
     } else {
         MyHandleError("Sizing of cbCountersignerInfo failed.");
@@ -2780,7 +2743,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
 
     //  Begin processing. Display the original message.
     pbContent = (BYTE *)"Security is our only business";
-    cbContent = strlen((char *)pbContent) + 1;
+    cbContent = (DWORD)strlen((char *)pbContent) + 1;
 
     printf("The original message => %s\n", pbContent);
 

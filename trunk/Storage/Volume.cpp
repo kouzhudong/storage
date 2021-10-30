@@ -10,11 +10,10 @@
 //这段代码摘自：Windows-classic-samples\Samples\Win7Samples\winbase\io\enummount
 
 
-/*----------------------------------------------------------------------------
+/*
 THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF
 ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
-TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
-PARTICULAR PURPOSE.
+TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 
 Copyright (C) Microsoft Corporation.  All rights reserved.
 
@@ -22,7 +21,7 @@ EnumMountPoints.c
 
 This file implements a command line utility that enumerates volumes and
 mount points (if any) on each volume.
-----------------------------------------------------------------------------*/
+*/
 
 
 static void EnumMountPoints(LPTSTR szVolume);
@@ -55,8 +54,7 @@ Notes
     PrintDosDeviceNames(szVolumeName);
     EnumMountPoints(szVolumeName);
 
-    // Find the rest of the unique volumes and enumerate each of their
-    // mount points.
+    // Find the rest of the unique volumes and enumerate each of their mount points.
     while (FindNextVolume(hFindVolume, szVolumeName, MAX_PATH)) {
         _tprintf(_T("\nUnique vol name: "));
         _tprintf(_T("%s\n"), szVolumeName);
@@ -73,7 +71,6 @@ void EnumMountPoints(LPTSTR szVolume)
 Parameters
     szVolume
         Unique volume name of the volume to enumerate mount points for.
-
 Notes
     Enumerates and prints the volume mount points (if any) for the unique volume name passed in.
 */
@@ -127,8 +124,7 @@ Notes
     _tcscpy_s(szMountPointPath, MAX_PATH, szVolume);
     _tcscat_s(szMountPointPath, MAX_PATH, szMountPoint);
 
-    // Get and print the unique volume name for the volume mounted at the
-    // mount point
+    // Get and print the unique volume name for the volume mounted at the mount point
     if (!GetVolumeNameForVolumeMountPoint(szMountPointPath, szVolumeName, MAX_PATH)) {
         _tprintf(_T("GetVolumeNameForVolumeMountPoint failed.  Error = %d\n"), GetLastError());
     } else {
@@ -195,9 +191,8 @@ void DisplayVolumePaths(__in PWCHAR VolumeName)
     for (;;) {
         //  Allocate a buffer to hold the paths.
         Names = (PWCHAR) new BYTE[CharCount * sizeof(WCHAR)];
-        if (!Names) {
-            //  If memory can't be allocated, return.
-            return;
+        if (!Names) {            
+            return;//  If memory can't be allocated, return.
         }
 
         //  Obtain all of the paths for this volume.
@@ -275,11 +270,8 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/displaying-volume-paths
 
         //  QueryDosDeviceW does not allow a trailing backslash, so temporarily remove it.
         VolumeName[Index] = L'\0';
-
         CharCount = QueryDosDeviceW(&VolumeName[4], DeviceName, ARRAYSIZE(DeviceName));
-
         VolumeName[Index] = L'\\';
-
         if (CharCount == 0) {
             Error = GetLastError();
             wprintf(L"QueryDosDeviceW failed with error code %d\n", Error);
@@ -417,17 +409,15 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/editing-drive-letter-assig
         pszNTDevice = argv[2];
     }
 
-    // GetVolumeNameForVolumeMountPoint, SetVolumeMountPoint, and
-    // DeleteVolumeMountPoint require drive letters to have a trailing 
-    // backslash. However, DefineDosDevice requires that the trailing 
-    // backslash be absent. So, use:
+    // GetVolumeNameForVolumeMountPoint, SetVolumeMountPoint,
+    // and DeleteVolumeMountPoint require drive letters to have a trailing backslash. 
+    // However, DefineDosDevice requires that the trailing backslash be absent. So, use:
     // 
     //    szDriveLetterAndSlash     for the mounted folder functions
     //    szDriveLetter             for DefineDosDevice
     // 
     // This way, command lines that use a: or a:\ 
-    // for drive letters can be accepted without writing back to the original command-
-    // line argument.
+    // for drive letters can be accepted without writing back to the original command-line argument.
 
     szDriveLetter[0] = pszDriveLetter[0];
     szDriveLetter[1] = TEXT(':');
@@ -444,23 +434,19 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/editing-drive-letter-assig
         if (!fResult)
             _tprintf(TEXT("error %lu: couldn't remove %s\n"), GetLastError(), szDriveLetterAndSlash);
     } else {
-        // To add a drive letter that persists through reboots, use
-        // SetVolumeMountPoint. This requires the volume GUID path 
-        // of the device to which the new drive letter will refer. 
-        // To get the volume GUID path, use 
-        // GetVolumeNameForVolumeMountPoint; it requires the drive 
-        // letter to already exist. So, first define the drive 
+        // To add a drive letter that persists through reboots, use SetVolumeMountPoint.
+        // This requires the volume GUID path of the device to which the new drive letter will refer. 
+        // To get the volume GUID path, use GetVolumeNameForVolumeMountPoint; 
+        // it requires the drive letter to already exist. So, first define the drive 
         // letter as a symbolic link to the device name. After  
         // you have the volume GUID path the new drive letter will 
         // point to, you must delete the symbolic link because the 
-        // mount manager allows only one reference to a device at a 
-        // time (the new one to be added).
+        // mount manager allows only one reference to a device at a time (the new one to be added).
 
         fResult = DefineDosDevice(DDD_RAW_TARGET_PATH, szDriveLetter, pszNTDevice);
         if (fResult) {
-            // If GetVolumeNameForVolumeMountPoint fails, then 
-            // SetVolumeMountPoint will also fail. However, 
-            // DefineDosDevice must be called to remove the temporary symbolic link. 
+            // If GetVolumeNameForVolumeMountPoint fails, then SetVolumeMountPoint will also fail. 
+            // However, DefineDosDevice must be called to remove the temporary symbolic link. 
             // Therefore, set szUniqueVolume to a known empty string.
 
             if (!GetVolumeNameForVolumeMountPoint(szDriveLetterAndSlash, szUniqueVolumeName, MAX_PATH)) {
@@ -491,16 +477,11 @@ Parameters
       The name of the executable. Used in displaying the help.
 */
 {
-    _tprintf(
-        TEXT("Adds/removes a drive letter assignment for a device.\n\n"));
-    _tprintf(
-        TEXT("Usage: %s <Drive> <Device name> add a drive letter\n"), pszAppName);
-    _tprintf(
-        TEXT("       %s -r <Drive>            remove a drive letter\n\n"), pszAppName);
-    _tprintf(
-        TEXT("Example: %s e:\\ \\Device\\CdRom0\n"), pszAppName);
-    _tprintf(
-        TEXT("         %s -r e:\\\n"), pszAppName);
+    _tprintf(TEXT("Adds/removes a drive letter assignment for a device.\n\n"));
+    _tprintf(TEXT("Usage: %s <Drive> <Device name> add a drive letter\n"), pszAppName);
+    _tprintf(TEXT("       %s -r <Drive>            remove a drive letter\n\n"), pszAppName);
+    _tprintf(TEXT("Example: %s e:\\ \\Device\\CdRom0\n"), pszAppName);
+    _tprintf(TEXT("         %s -r e:\\\n"), pszAppName);
 }
 
 
@@ -557,15 +538,13 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/mounting-a-volume-at-a-mou
         return(-1);
     }
 
-    // We should do some error checking on the inputs. Make sure there 
-    // are colons and backslashes in the right places, and so on 
-
+    // We should do some error checking on the inputs. 
+    // Make sure there are colons and backslashes in the right places, and so on 
     bFlag = GetVolumeNameForVolumeMountPoint(
         argv[2], // input volume mount point or directory
         Buf, // output volume name buffer
         BUFSIZE  // size of volume name buffer
     );
-
     if (bFlag != TRUE) {
         _tprintf(TEXT("Retrieving volume name for %s failed.\n"), argv[2]);
         return (-2);
@@ -576,7 +555,6 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/mounting-a-volume-at-a-mou
         argv[1], // mount point
         Buf  // volume to be mounted
     );
-
     if (!bFlag)
         _tprintf(TEXT("Attempt to mount %s at %s failed.\n"), argv[2], argv[1]);
 
@@ -730,7 +708,8 @@ but the media is able to identify itself through the presence of the recognition
 Because no existing file system will recognize a new disk layout,
 the "RAW" file system will mount the volume and provide direct block level access.
 The "RAW" file system, incorporated in NtosKrnl,
-will have the ability to read the file system recognition structure and provide applications access to such structures through the file system control request FSCTL_QUERY_FILE_SYSTEM_RECOGNITION,
+will have the ability to read the file system recognition structure and
+provide applications access to such structures through the file system control request FSCTL_QUERY_FILE_SYSTEM_RECOGNITION,
 shown in the following example.
 
 https://docs.microsoft.com/zh-cn/windows/win32/fileio/obtaining-file-system-recognition-information
@@ -774,10 +753,9 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/obtaining-file-system-reco
         wprintf(L"failed GLE = 0x%x\n", GetLastError());
         goto exit;
     }
+
     wprintf(L"succeeded.\n\n");
-
     wprintf(L"FSCTL_QUERY_FILE_SYSTEM_RECOGNITION returned success.\n");
-
     wprintf(L"FSCTL_QUERY_FILE_SYSTEM_RECOGNITION retrieved \"%S\".\n", FsRi.FileSystem);
 
 exit:
@@ -908,9 +886,8 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/walking-a-buffer-of-change
             // Find the next record
             UsnRecord = (PUSN_RECORD)(((PCHAR)UsnRecord) + UsnRecord->RecordLength);
         }
-
-        // Update starting USN for next call
-        ReadData.StartUsn = *(USN *)&Buffer;
+        
+        ReadData.StartUsn = *(USN *)&Buffer;// Update starting USN for next call
     }
 
     CloseHandle(hVol);
@@ -936,11 +913,11 @@ ntfs的冰山一角：Change Journal Records，更多的功能有待发掘和理解。
     //获取JournalData结构及dwBytes个数。
     DWORD dwBytes;
     USN_JOURNAL_DATA JournalData;
-    if (!DeviceIoControl(hVol, 
+    if (!DeviceIoControl(hVol,
                          FSCTL_QUERY_USN_JOURNAL,
-                         NULL, 
+                         NULL,
                          0,
-                         &JournalData, 
+                         &JournalData,
                          sizeof(JournalData),
                          &dwBytes,
                          NULL)) {
@@ -957,13 +934,13 @@ ntfs的冰山一角：Change Journal Records，更多的功能有待发掘和理解。
         CHAR Buffer[4096] = {0};
 
         //dwBytes有返回值。
-        if (!DeviceIoControl(hVol, 
-                             FSCTL_READ_USN_JOURNAL, 
-                             &ReadData, 
+        if (!DeviceIoControl(hVol,
+                             FSCTL_READ_USN_JOURNAL,
+                             &ReadData,
                              sizeof(ReadData),
-                             &Buffer, 
+                             &Buffer,
                              sizeof(Buffer),
-                             &dwBytes, 
+                             &dwBytes,
                              NULL)) {
             return;
         }

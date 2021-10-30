@@ -2,20 +2,11 @@
 #include "Encrypt.h"
 
 
-#pragma warning(disable:4267)
 #pragma warning(disable:6001)
 #pragma warning(disable:26451)
 #pragma warning(disable:28182)
-#pragma warning(disable:6031)
-#pragma warning(disable:4477)
-#pragma warning(disable:4703)
-#pragma warning(disable:6302)
 #pragma warning(disable:28183)
 #pragma warning(disable:6387)
-#pragma warning(disable:4996)
-#pragma warning(disable:4700)
-#pragma warning(disable:6303)
-#pragma warning(disable:6029)
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +63,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-using
     // usually exists somewhere and a pointer to the message is passed to the application. 
 
     BYTE * pbContent = (BYTE *)"Security is our business.";// The message
-    DWORD cbContent = strlen((char *)pbContent) + 1;// Size of message
+    DWORD cbContent = (DWORD)strlen((char *)pbContent) + 1;// Size of message
     HCRYPTPROV hCryptProv;                      // CSP handle
     HCERTSTORE hStoreHandle;
     PCCERT_CONTEXT pRecipientCert;
@@ -114,27 +105,18 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-using
         printf("A recipient's certificate has been acquired. \n");
     } else {
         printf("No certificate with a CERT_KEY_CONTEXT_PROP_ID \n");
-        printf("property and an AT_KEYEXCHANGE private key "
-               "available. \n");
+        printf("property and an AT_KEYEXCHANGE private key available. \n");
         printf("While the message could be encrypted, in this case, \n");
         printf("it could not be decrypted in this program. \n");
         printf("For more information, see the documentation for \n");
         printf("CryptEncryptMessage and CryptDecryptMessage.\n\n");
-        MyHandleError("No Certificate with AT_KEYEXCHANGE "
-                      "key in store.");
+        MyHandleError("No Certificate with AT_KEYEXCHANGE key in store.");
     }
 
-    // Create a RecipientCertArray.
-    RecipientCertArray[0] = pRecipientCert;
-
-    // Initialize the algorithm identifier structure.
-    EncryptAlgSize = sizeof(EncryptAlgorithm);
-
-    // Initialize the structure to zero.
-    memset(&EncryptAlgorithm, 0, EncryptAlgSize);
-
-    // Set the necessary member.
-    EncryptAlgorithm.pszObjId = (LPSTR)szOID_RSA_RC4;
+    RecipientCertArray[0] = pRecipientCert;// Create a RecipientCertArray.    
+    EncryptAlgSize = sizeof(EncryptAlgorithm);// Initialize the algorithm identifier structure.    
+    memset(&EncryptAlgorithm, 0, EncryptAlgSize);// Initialize the structure to zero.    
+    EncryptAlgorithm.pszObjId = (LPSTR)szOID_RSA_RC4;// Set the necessary member.
 
     // Initialize the CRYPT_ENCRYPT_MESSAGE_PARA structure. 
     EncryptParamsSize = sizeof(EncryptParams);
@@ -145,14 +127,13 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-using
     EncryptParams.ContentEncryptionAlgorithm = EncryptAlgorithm;
 
     // Call CryptEncryptMessage.
-    if (CryptEncryptMessage(
-        &EncryptParams,
-        1,
-        RecipientCertArray,
-        pbContent,
-        cbContent,
-        NULL,
-        &cbEncryptedBlob)) {
+    if (CryptEncryptMessage(&EncryptParams,
+                            1,
+                            RecipientCertArray,
+                            pbContent,
+                            cbContent,
+                            NULL,
+                            &cbEncryptedBlob)) {
         printf("The encrypted message is %d bytes. \n", cbEncryptedBlob);
     } else {
         MyHandleError("Getting EncryptedBlob size failed.");
@@ -210,10 +191,10 @@ BOOL DecryptMessage(BYTE * pbEncryptedBlob,
 )
 //  Define the function DecryptMessage.
 
-    // Example function for decrypting an encrypted message using
-    // CryptDecryptMessage. Its parameters are pbEncryptedBlob,
-    // an encrypted message; cbEncryptedBlob, the length of that
-    // message; hCryptProv, a CSP; and hStoreHandle, the handle of an open certificate store.
+    // Example function for decrypting an encrypted message using CryptDecryptMessage.
+    // Its parameters are pbEncryptedBlob, an encrypted message;
+    // cbEncryptedBlob, the length of that message;
+    // hCryptProv, a CSP; and hStoreHandle, the handle of an open certificate store.
 {
     // Declare and initialize local variables.
     DWORD cbDecryptedMessage;
@@ -225,9 +206,8 @@ BOOL DecryptMessage(BYTE * pbEncryptedBlob,
     LPSTR  DecryptedString;
     BOOL   fReturn = TRUE;
 
-    // Get a pointer to the encrypted message, pbEncryptedBlob,
-    // and its length, cbEncryptedBlob. In this example, these are
-    // passed as parameters along with a CSP and an open store handle.
+    // Get a pointer to the encrypted message, pbEncryptedBlob, and its length, cbEncryptedBlob.
+    // In this example, these are passed as parameters along with a CSP and an open store handle.
 
     // View the encrypted BLOB.
     // Call a function, ByteToStr, to convert the byte BLOB to ASCII hexadecimal format. 
@@ -267,8 +247,7 @@ BOOL DecryptMessage(BYTE * pbEncryptedBlob,
 
     // Allocate memory for the returned decrypted data.
     if (pbDecryptedMessage = (BYTE *)malloc(cbDecryptedMessage)) {
-        printf("Memory has been allocated for the decrypted message. "
-               "\n");
+        printf("Memory has been allocated for the decrypted message. \n");
     } else {
         MyHandleError("Memory allocation error while decrypting");
     }
@@ -409,7 +388,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-using
     DATA_BLOB DataOut;
     DATA_BLOB DataVerify;
     BYTE * pbDataInput = (BYTE *)"Hello world of data protection.";
-    DWORD cbDataInput = strlen((char *)pbDataInput) + 1;
+    DWORD cbDataInput = (DWORD)strlen((char *)pbDataInput) + 1;
     DataIn.pbData = pbDataInput;
     DataIn.cbData = cbDataInput;
     CRYPTPROTECT_PROMPTSTRUCT PromptStruct;
@@ -454,9 +433,8 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-using
         MyHandleError("Decryption error!");
     }
 
-    // At this point, memcmp could be used to compare DataIn.pbData and 
-    // DataVerify.pbDate for equality. If the two functions worked
-    // correctly, the two byte strings are identical. 
+    // At this point, memcmp could be used to compare DataIn.pbData and DataVerify.pbDate for equality. 
+    // If the two functions worked correctly, the two byte strings are identical. 
 
     //  Clean up.
     LocalFree(pDescrOut);
@@ -485,18 +463,18 @@ Example C Program: Encrypting a File
 2018/05/31
 
 The following example encrypts a data file.
-The example interactively requests the name of the file that contains plaintext to be encrypted and 
+The example interactively requests the name of the file that contains plaintext to be encrypted and
 the name of a file where the encrypted data is to be written.
 
 The example prompts the user for the names of an input file and an output file.
 It also prompts the user for whether a password is to be used to create the encryption session key.
-If a password is to be used in the encryption of the data, 
+If a password is to be used in the encryption of the data,
 the same password must be used in the program that decrypts the file.
 For more information, see Example C Program: Decrypting a File.
 
-Due to changing export control restrictions, 
+Due to changing export control restrictions,
 the default cryptographic service provider (CSP) and default key length may change between operating system releases.
-It is important that both the encryption and decryption use the same CSP and 
+It is important that both the encryption and decryption use the same CSP and
 that the key length be explicitly set to ensure interoperability on different operating system platforms.
 
 This example uses the function MyHandleError. The code for this function is included with the sample.
@@ -510,7 +488,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encry
                  TEXT("<destination file> | <password>\n"));
         _tprintf(TEXT("<password> is optional.\n"));
         _tprintf(TEXT("Press any key to exit."));
-        _gettch();
+        (void)_gettch();
         return 1;
     }
 
@@ -621,8 +599,7 @@ bool MyEncryptFile(LPTSTR pszSourceFile, LPTSTR pszDestinationFile, LPTSTR pszPa
             if (NTE_NO_KEY == GetLastError()) {
                 // No exchange key exists. Try to create one.
                 if (!CryptGenKey(hCryptProv, AT_KEYEXCHANGE, CRYPT_EXPORTABLE, &hXchgKey)) {
-                    MyHandleError(TEXT("Could not create "
-                                  "a user public key.\n"), GetLastError());
+                    MyHandleError(TEXT("Could not create a user public key.\n"), GetLastError());
                     goto Exit_MyEncryptFile;
                 }
             } else {
@@ -682,8 +659,7 @@ bool MyEncryptFile(LPTSTR pszSourceFile, LPTSTR pszDestinationFile, LPTSTR pszPa
                      TEXT("file. \n"));
         }
 
-        // Free memory.
-        free(pbKeyBlob);
+        free(pbKeyBlob);// Free memory.
     } else {
         // The file will be encrypted with a session key derived from a password.
         // The session key will be recreated when the file is 
@@ -769,7 +745,7 @@ bool MyEncryptFile(LPTSTR pszSourceFile, LPTSTR pszDestinationFile, LPTSTR pszPa
 
     fReturn = true;
 
-    Exit_MyEncryptFile:
+Exit_MyEncryptFile:
     // Close files.
     if (hSourceFile) {
         CloseHandle(hSourceFile);
@@ -831,20 +807,20 @@ Example C Program: Decrypting a File
 2018/05/31
 
 The following example shows the decryption of a file.
-The example asks the user for the name of an encrypted file and 
+The example asks the user for the name of an encrypted file and
 the name of a file where the decrypted data will be written.
 The file with the encrypted data must exist.
 The example creates or overwrites the output file.
 
 The example also requests a string that is used as a password.
-If a password was used to create the encryption session key, 
+If a password was used to create the encryption session key,
 that same password must be entered to create the decryption session key.
 For more information, see Example C Program: Encrypting a File.
 
-Due to changing export control restrictions, 
-the default cryptographic service provider (CSP) and 
+Due to changing export control restrictions,
+the default cryptographic service provider (CSP) and
 default key length may change between operating system releases.
-It is important that both the encryption and decryption use the same CSP and 
+It is important that both the encryption and decryption use the same CSP and
 that the key length be explicitly set to ensure interoperability on different operating system platforms.
 
 This example uses the function MyHandleError. The code for this function is included with the sample.
@@ -858,7 +834,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-decry
                  TEXT("<destination file> | <password>\n"));
         _tprintf(TEXT("<password> is optional.\n"));
         _tprintf(TEXT("Press any key to exit."));
-        _gettch();
+        (void)_gettch();
         return 1;
     }
 
@@ -1046,7 +1022,7 @@ bool MyDecryptFile(LPTSTR pszSourceFile, LPTSTR pszDestinationFile, LPTSTR pszPa
 
     fReturn = true;
 
-    Exit_MyDecryptFile:
+Exit_MyDecryptFile:
 
     // Free the file read buffer.
     if (pbBuffer) {
@@ -1164,7 +1140,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/alternate-code-for-enco
     PCRYPT_ATTRIBUTES pCountersignerInfo;
 
     // Begin processing. 
-    cbContent = strlen((char *)pbContent) + 1;
+    cbContent = (DWORD)strlen((char *)pbContent) + 1;
     // One is added to include the final NULL character.
     printf("Processing begins.\n");
     printf("The length of the original message is %d.\n", cbContent);
@@ -1479,8 +1455,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/alternate-code-for-enco
     {
         printf("The message to decode has been updated. \n");
     } else {
-        MyHandleError("Updating of the verified countersignature "
-                      "message failed.");
+        MyHandleError("Updating of the verified countersignature message failed.");
     }
 
     // Get a pointer to the CERT_INFO member of the certificate of the  
@@ -1497,16 +1472,14 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/alternate-code-for-enco
         NULL,                  // Address for returned information
         &cbSignerInfo))        // Size of the returned information
     {
-        printf("The size of the signer information has been "
-               "retrieved.\n");
+        printf("The size of the signer information has been retrieved.\n");
     } else {
         MyHandleError("Sizing of cbSignerInfo failed.");
     }
 
     // Allocate memory.
     if (pbSignerInfo = (BYTE *)malloc(cbSignerInfo)) {
-        printf("%d bytes allocated for the signer "
-               "information. \n", cbSignerInfo);
+        printf("%d bytes allocated for the signer information. \n", cbSignerInfo);
     } else {
         MyHandleError("cbSignerInfo memory allocation failed");
     }
@@ -1533,8 +1506,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/alternate-code-for-enco
         NULL,                         // Address for returned information
         &cbCountersignerInfo))        // Size of returned information
     {
-        printf("The length of the countersigner's information is "
-               "retrieved. \n");
+        printf("The length of the countersigner's information is retrieved. \n");
     } else {
         MyHandleError("Sizing of cbCountersignerInfo failed.");
     }
@@ -1603,20 +1575,20 @@ PCCERT_CONTEXT GetSignerCert(HCERTSTORE hCertStore)
 
     while (fMore &&
            (pCertContext = CertFindCertificateInStore(
-           hCertStore,           // Handle of the store to be searched.
-           0,                    // Encoding type. Not used for this search.
-           0,                    // dwFindFlags. Special find criteria.
-                                 // Not used in this search.
-           CERT_FIND_PROPERTY,   // Find type. Determines the kind of  
-                                 // search to be done. In this case, search 
-                                 // for certificates that have a specific extended property.
-           &PropId,              // pvFindPara. Gives the specific 
-                                 // value searched for, here the identifier of an extended property.
-           pCertContext)))       // pCertContext is NULL for the 
-                                 // first call to the function. 
-                                 // If the function were being called in a loop, after the first call,
-                                 // pCertContext would be the certificate
-                                 // returned by the previous call.
+               hCertStore,           // Handle of the store to be searched.
+               0,                    // Encoding type. Not used for this search.
+               0,                    // dwFindFlags. Special find criteria.
+                                     // Not used in this search.
+               CERT_FIND_PROPERTY,   // Find type. Determines the kind of  
+                                     // search to be done. In this case, search 
+                                     // for certificates that have a specific extended property.
+               &PropId,              // pvFindPara. Gives the specific 
+                                     // value searched for, here the identifier of an extended property.
+               pCertContext)))       // pCertContext is NULL for the 
+                                     // first call to the function. 
+                                     // If the function were being called in a loop, after the first call,
+                                     // pCertContext would be the certificate
+                                     // returned by the previous call.
     {
         // For simplicity, this code only searches for the first occurrence of an AT_SIGNATURE key. 
         // In many situations, a search would also look for a specific subject name as well as the key type.
@@ -1687,7 +1659,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
     // Declare and initialize variables.
 
     BYTE * pbContent = (BYTE *)"Security is our only business.";// a byte pointer
-    DWORD cbContent = strlen((char *)pbContent) + 1;// the size of the message
+    DWORD cbContent = (DWORD)strlen((char *)pbContent) + 1;// the size of the message
     HCERTSTORE hStoreHandle;
     HCRYPTPROV hCryptProv;
     PCCERT_CONTEXT pSignerCert;         // signer's certificate
@@ -1758,8 +1730,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
     // Initialize the algorithm identifier structure.
     HashAlgSize = sizeof(HashAlgorithm);
     memset(&HashAlgorithm, 0, HashAlgSize);    // initialize to zero
-    HashAlgorithm.pszObjId = (LPSTR)szOID_RSA_MD5;    // initialize the 
-                                               // necessary member
+    HashAlgorithm.pszObjId = (LPSTR)szOID_RSA_MD5;    // initialize the necessary member
 
     // Initialize the CMSG_SIGNER_ENCODE_INFO structure.
     memset(&SignerEncodeInfo, 0, sizeof(CMSG_SIGNER_ENCODE_INFO));
@@ -1874,23 +1845,19 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
     {
         printf("Certificate for %S found. \n", pswzRecipientName);
     } else {
-        MyHandleError("Could not find the countersigner's "
-                      "certificate.");
+        MyHandleError("Could not find the countersigner's certificate.");
     }
 
     // Initialize the first element of the array of CERT_INFOs. 
     // In this example, there is only a single recipient.
-
     RecipCertArray[0] = pRecipCert->pCertInfo;
 
     // Initialize the symmetric-encryption algorithm identifier structure.
-
     ContentEncryptAlgSize = sizeof(ContentEncryptAlgorithm);
     memset(&ContentEncryptAlgorithm, 0, ContentEncryptAlgSize);// initialize to zero
 
     // Initialize the necessary members. This particular OID does not
     // need any parameters. Some OIDs, however, will require that the other members be initialized.
-
     ContentEncryptAlgorithm.pszObjId = (LPSTR)szOID_RSA_RC4;
 
     // Initialize the CMSG_ENVELOPED_ENCODE_INFO structure.
@@ -1965,8 +1932,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
     // Clean up.
     CertFreeCertificateContext(pRecipCert);
     if (CertCloseStore(hStoreHandle, CERT_CLOSE_STORE_CHECK_FLAG)) {
-        printf("The certificate store closed without a certificate "
-               "left open. \n");
+        printf("The certificate store closed without a certificate left open. \n");
     } else {
         printf("The store closed but a certificate was still open. \n");
     }
@@ -1999,8 +1965,7 @@ https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptenu
     // Print header lines for providers.
     printf("Listing Available Providers:\n");
     printf("Provider type\tProvider Name\n");
-    printf("_____________\t__________________"
-           "___________________\n");
+    printf("_____________\t_____________________________________\n");
 
     // Loop through enumerating providers.
     dwIndex = 0;
@@ -2014,7 +1979,7 @@ https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptenu
 
         //  Get the provider name.
         if (CryptEnumProviders(dwIndex++, NULL, 0, &dwType, pszName, &cbName)) {
-            printf("     %4.0d\t%s\n", dwType, pszName);
+            printf("     %4.0d\t%ls\n", dwType, pszName);
         } else {
             printf("ERROR - CryptEnumProviders failed.\n");
             exit(1);
@@ -2058,7 +2023,7 @@ https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptenu
 
         //  Get the provider type name.
         if (CryptEnumProviderTypes(dwIndex++, NULL, NULL, &dwType, pszName, &cbName)) {
-            printf("     %4.0d\t%s\n", dwType, pszName);
+            printf("     %4.0d\t%ls\n", dwType, pszName);
         } else {
             printf("ERROR - CryptEnumProviderTypes\n");
             exit(1);
@@ -2071,8 +2036,7 @@ https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptenu
 
 void MyHandleError(TCHAR * s)
 //  This example uses the function MyHandleError, a simple error
-//  handling function, to print an error message and exit 
-//  the program. 
+//  handling function, to print an error message and exit the program. 
 //  For most applications, replace this function with one 
 //  that does more extensive error reporting.
 {
@@ -2104,7 +2068,7 @@ CryptEnumProviderTypes
 CryptEnumProviders
 CryptGetDefaultProvider
 CryptGetProvParam
-This example uses the function MyHandleError. The code for this function is included in this example. 
+This example uses the function MyHandleError. The code for this function is included in this example.
 Code for this and other auxiliary functions is also listed under General Purpose Functions.
 
 The following example shows enumerating CSPs and provider types.
@@ -2265,7 +2229,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-enume
                 break;
             }
 
-             // Print information about the algorithm.
+            // Print information about the algorithm.
             printf("    %8.8xh    %-4d    %s     %-2d          %s\n",
                    aiAlgid,
                    dwBits,
@@ -2288,7 +2252,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-enume
     } else {
         MyHandleError(TEXT("Error reading algorithm!"));
     }
-} 
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

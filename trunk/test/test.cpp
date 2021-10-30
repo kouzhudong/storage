@@ -36,19 +36,9 @@ int _cdecl main(_In_ int argc, _In_reads_(argc) CHAR * argv[])
     }
 
     //SignatureVerification(Args, (PCWSTR*)Arglist);
-    //RemoveFileZoneIdentifier(Args, Arglist);
-
     //GetAdaptersAddressesInfo(argc, argv);
 
-    //GetEnvironment();
-    //GetExtendedUdpTable6();
-    //list<wstring> SignatureFile;
-    //VerifySignature(Arglist[1], SignatureFile);
-
-    //TCHAR ImageFilePath[MAX_PATH] = {0};
-    //GetImageFilePath(ImageFilePath, ARRAYSIZE(ImageFilePath));
-
-    ASN();
+    EnumCatAttributes((LPWSTR)L"D:\\XXX.cdf");
 
     LocalFree(Arglist);
 }

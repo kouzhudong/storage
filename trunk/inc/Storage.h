@@ -190,6 +190,8 @@ int WINAPI MapFileZoneIdentifier(int argc, wchar_t ** argv);
 int WINAPI SetFileZoneIdentifier(int argc, wchar_t ** argv);
 int WINAPI RemoveFileZoneIdentifier(int argc, wchar_t ** argv);
 
+void WINAPI EnumCatAttributes(_In_ LPWSTR FilePath);
+
 
 EXTERN_C_END
 

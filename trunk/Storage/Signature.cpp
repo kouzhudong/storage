@@ -6,20 +6,8 @@
 #pragma warning(disable:28183)
 #pragma warning(disable:6387)
 #pragma warning(disable:6001)
-#pragma warning(disable:6031)
-#pragma warning(disable:4838)
-#pragma warning(disable:4267)
 #pragma warning(disable:26451)
-#pragma warning(disable:4018)
-#pragma warning(disable:4477)
-#pragma warning(disable:4313)
-#pragma warning(disable:6273)
-#pragma warning(disable:4473)
-#pragma warning(disable:6064)
-#pragma warning(disable:6067)
 #pragma warning(disable:6054)
-#pragma warning(disable:6273)
-#pragma warning(disable:6273)
 #pragma warning(disable:6386)
 
 
@@ -215,8 +203,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-certi
             MyHandleError("Could not close the certificate store");
     }
     printf("The certificate has been freed and the store closed. \n");
-    printf("The certificate verification program ran to completion "
-           "without error. \n");
+    printf("The certificate verification program ran to completion without error. \n");
 }
 
 
@@ -534,8 +521,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-creat
         }
 
         // Display some of the contents of the chain.
-        printf("The size of the chain context "
-               "is %d. \n", pChainContext->cbSize);
+        printf("The size of the chain context is %d. \n", pChainContext->cbSize);
         printf("%d simple chains found.\n", pChainContext->cChain);
         printf("\nError status for the chain:\n");
 
@@ -556,12 +542,10 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-creat
                    "certificate chain does not have a valid signature.\n");
             break;
         case CERT_TRUST_IS_NOT_VALID_FOR_USAGE:
-            printf("The certificate or certificate chain is not valid "
-                   "in its proposed usage.\n");
+            printf("The certificate or certificate chain is not valid in its proposed usage.\n");
             break;
         case CERT_TRUST_IS_UNTRUSTED_ROOT:
-            printf("The certificate or certificate chain is based "
-                   "on an untrusted root.\n");
+            printf("The certificate or certificate chain is based on an untrusted root.\n");
             break;
         case CERT_TRUST_REVOCATION_STATUS_UNKNOWN:
             printf("The revocation status of the certificate or one of the"
@@ -569,8 +553,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-creat
             break;
         case CERT_TRUST_IS_CYCLIC:
             printf("One of the certificates in the chain was issued by a "
-                   "certification authority that the original certificate "
-                   "had certified.\n");
+                   "certification authority that the original certificate had certified.\n");
             break;
         case CERT_TRUST_IS_PARTIAL_CHAIN:
             printf("The certificate chain is not complete.\n");
@@ -579,12 +562,10 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-creat
             printf("A CTL used to create this chain was not time-valid.\n");
             break;
         case CERT_TRUST_CTL_IS_NOT_SIGNATURE_VALID:
-            printf("A CTL used to create this chain did not have a valid "
-                   "signature.\n");
+            printf("A CTL used to create this chain did not have a valid signature.\n");
             break;
         case CERT_TRUST_CTL_IS_NOT_VALID_FOR_USAGE:
-            printf("A CTL used to create this chain is not valid for this "
-                   "usage.\n");
+            printf("A CTL used to create this chain is not valid for this usage.\n");
         } // End switch
 
         printf("\nInfo status for the chain:\n");
@@ -593,16 +574,13 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-creat
             printf("No information status reported.\n");
             break;
         case CERT_TRUST_HAS_EXACT_MATCH_ISSUER:
-            printf("An exact match issuer certificate has been found for "
-                   "this certificate.\n");
+            printf("An exact match issuer certificate has been found for this certificate.\n");
             break;
         case CERT_TRUST_HAS_KEY_MATCH_ISSUER:
-            printf("A key match issuer certificate has been found for this "
-                   "certificate.\n");
+            printf("A key match issuer certificate has been found for this certificate.\n");
             break;
         case CERT_TRUST_HAS_NAME_MATCH_ISSUER:
-            printf("A name match issuer certificate has been found for this "
-                   "certificate.\n");
+            printf("A name match issuer certificate has been found for this certificate.\n");
             break;
         case CERT_TRUST_IS_SELF_SIGNED:
             printf("This certificate is self-signed.\n");
@@ -625,7 +603,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-creat
         CertFreeCertificateChain(pChainContext);
         printf("The Original chain is free.\n");
         printf("\nPress Enter to continue.");
-        getchar();
+        (void)getchar();
     } // end while loop 
 
     printf("\nThere are no more certificates in the store. \n");
@@ -674,7 +652,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-makin
     CERT_RDN_ATTR rgNameAttr[] = {
             (LPSTR)"2.5.4.3",                             // pszObjId 
             CERT_RDN_PRINTABLE_STRING,             // dwValueType
-            strlen(CERT_SUBJECT_NAME),             // value.cbData
+            (DWORD)strlen(CERT_SUBJECT_NAME),             // value.cbData
             (BYTE *)CERT_SUBJECT_NAME};             // value.pbData
 
     // Declare and initialize a CERT_RDN array.
@@ -1064,7 +1042,7 @@ void my_wait(const char * s)
 // Define the my_wait function.
 {
     printf(s);
-    getchar();
+    (void)getchar();
 }
 
 
@@ -1074,7 +1052,7 @@ static BOOL WINAPI EnumInfoCallback(PCCRYPT_OID_INFO pInfo, void * pvArg)
 // This function counts the number of lines printed
 // and does a wait for each new ground and after any four report groups are printed.
 {
-    static int old_oid = 0;
+    static DWORD old_oid = 0;
     static int break_counter = 0;
 
     if (old_oid < pInfo->dwGroupId) {
@@ -1328,8 +1306,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program--veri
             - UI was enabled in dwUIChoice and the user clicked
                 "Yes" when asked to install and run the signed subject.
         */
-        wprintf_s(L"The file \"%s\" is signed and the signature "
-                  L"was verified.\n",
+        wprintf_s(L"The file \"%s\" is signed and the signature was verified.\n",
                   pwszSourceFile);
         break;
     case TRUST_E_NOSIGNATURE:
@@ -1352,13 +1329,11 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program--veri
     case TRUST_E_EXPLICIT_DISTRUST:
         // The hash that represents the subject or the publisher 
         // is not allowed by the admin or user.
-        wprintf_s(L"The signature is present, but specifically "
-                  L"disallowed.\n");
+        wprintf_s(L"The signature is present, but specifically disallowed.\n");
         break;
     case TRUST_E_SUBJECT_NOT_TRUSTED:
         // The user clicked "No" when asked to install and run.
-        wprintf_s(L"The signature is present, but not "
-                  L"trusted.\n");
+        wprintf_s(L"The signature is present, but not trusted.\n");
         break;
     case CRYPT_E_SECURITY_SETTINGS:
         /*
@@ -1467,8 +1442,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program--veri
             - UI was enabled in dwUIChoice and the user clicked
                 "Yes" when asked to install and run the signed subject.
         */
-        wprintf_s(L"The file \"%s\" is signed and the signature "
-                  L"was verified.\n",
+        wprintf_s(L"The file \"%s\" is signed and the signature was verified.\n",
                   pwszSourceFile);
         break;
     case TRUST_E_NOSIGNATURE:
@@ -1491,13 +1465,11 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program--veri
     case TRUST_E_EXPLICIT_DISTRUST:
         // The hash that represents the subject or the publisher 
         // is not allowed by the admin or user.
-        wprintf_s(L"The signature is present, but specifically "
-                  L"disallowed.\n");
+        wprintf_s(L"The signature is present, but specifically disallowed.\n");
         break;
     case TRUST_E_SUBJECT_NOT_TRUSTED:
         // The user clicked "No" when asked to install and run.
-        wprintf_s(L"The signature is present, but not "
-                  L"trusted.\n");
+        wprintf_s(L"The signature is present, but not trusted.\n");
         break;
     case CRYPT_E_SECURITY_SETTINGS:
         /*
@@ -1941,7 +1913,7 @@ https://docs.microsoft.com/zh-CN/troubleshoot/windows/win32/get-information-auth
     ZeroMemory(&ProgPubInfo, sizeof(ProgPubInfo));
     __try {
 # ifdef UNICODE
-        lstrcpynW(szFileName, argv[1], MAX_PATH);
+        (void)lstrcpynW(szFileName, argv[1], MAX_PATH);
 #else
         if (mbstowcs(szFileName, argv[1], MAX_PATH) == -1) {
             printf("Unable to convert to unicode.\n");
@@ -1964,7 +1936,7 @@ https://docs.microsoft.com/zh-CN/troubleshoot/windows/win32/get-information-auth
         if (!fResult) {
             _tprintf(_T("CryptQueryObject failed with %x\n"), GetLastError());
             __leave;
-        }
+    }
 
         // Get signer information size.
         fResult = CryptMsgGetParam(hMsg, CMSG_SIGNER_INFO_PARAM, 0, NULL, &dwSignerInfo);
@@ -2055,7 +2027,7 @@ https://docs.microsoft.com/zh-CN/troubleshoot/windows/win32/get-information-auth
             }
             _tprintf(_T("\n"));
         }
-    } __finally {
+} __finally {
         // Clean up.
         if (ProgPubInfo.lpszProgramName != NULL)
             LocalFree(ProgPubInfo.lpszProgramName);
@@ -2153,8 +2125,7 @@ BOOL PrintCertificateInfo(PCCERT_CONTEXT pCertContext)
             __leave;
         }
 
-        // Print Subject Name.
-        _tprintf(_T("Subject Name: %s\n"), szName);
+        _tprintf(_T("Subject Name: %s\n"), szName);// Print Subject Name.
 
         fReturn = TRUE;
     } __finally {
@@ -2366,9 +2337,9 @@ BOOL GetTimeStampSignerInfo(PCMSG_SIGNER_INFO pSignerInfo, PCMSG_SIGNER_INFO * p
                 break; // Break from for loop.
             }
         }
-    } __finally {
-        // Clean up.
-        if (pCertContext != NULL) CertFreeCertificateContext(pCertContext);
+    } __finally {// Clean up.        
+        if (pCertContext != NULL)
+            CertFreeCertificateContext(pCertContext);
     }
 
     return fReturn;

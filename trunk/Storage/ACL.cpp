@@ -384,9 +384,11 @@ Verifying Client Access with ACLs in C++
 05/31/2018
 
 The following example shows how a server could check the access rights that a security descriptor allows for a client.
-The example uses the ImpersonateNamedPipeClient function; however, it would work the same using any of the other impersonation functions.
+The example uses the ImpersonateNamedPipeClient function; however,
+it would work the same using any of the other impersonation functions.
 After impersonating the client, the example calls the OpenThreadToken function to get the impersonation token.
-Then, it calls the MapGenericMask function to convert any generic access rights to the corresponding specific and standard rights according to the mapping specified in the GENERIC_MAPPING structure.
+Then, it calls the MapGenericMask function to convert any generic access rights to the corresponding specific and
+standard rights according to the mapping specified in the GENERIC_MAPPING structure.
 
 The AccessCheck function checks the requested access rights against the rights allowed for the client in the DACL of the security descriptor.
 To check access and generate an entry in the security event log, use the AccessCheckAndAuditAlarm function.
@@ -754,7 +756,8 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/establishing-a-client-co
 void CreatingActiveDirectoryStore(void)
 /*
 Creating an Active Directory Store
-To use Active Directory to store the authorization policy, the domain must be in the Windows Server 2003 domain functional level.
+To use Active Directory to store the authorization policy,
+the domain must be in the Windows Server 2003 domain functional level.
 The authorization policy store cannot be located in a Non-Domain Naming Context (also called an application partition).
 It is recommended that the store be located in the Program Data container under a new organizational unit created specifically for the authorization policy store.
 It is also recommended that the store be located within the same local area network as application servers that run applications that use the store.
