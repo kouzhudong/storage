@@ -33,13 +33,15 @@ int _cdecl main(_In_ int argc, _In_reads_(argc) CHAR * argv[])
     LPWSTR * Arglist = CommandLineToArgvW(GetCommandLineW(), &Args);
     if (NULL == Arglist) {
         //LOGA(ERROR_LEVEL, "LastError：%d", GetLastError());
-        return 0;
+        return GetLastError();
     }
 
-    //EnumProvidersTest(Args, Arglist);
+    EnumCsp(Args, Arglist);
     //GetAdaptersAddressesInfo(argc, argv);
 
-    EnumProvidersByCrypt();
+    //EnumProviderTypes();
 
     LocalFree(Arglist);
+
+    return STATUS_SUCCESS;
 }

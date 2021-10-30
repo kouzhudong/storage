@@ -196,6 +196,10 @@ HRESULT WINAPI EnumProviders(void);
 
 void WINAPI EnumProvidersByCrypt();
 
+void WINAPI EnumProviderTypes();
+
+void WINAPI EnumCsp(int argc, _TCHAR * argv[]);
+
 
 EXTERN_C_END
 

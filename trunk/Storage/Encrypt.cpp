@@ -36,9 +36,6 @@ Example C Program: Decrypting a File
 // message using CryptEncryptMessage.
 
 
-#define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
-
-
 // This program uses the function GetRecipientCert, declared here and defined after main.
 PCCERT_CONTEXT GetRecipientCert(HCERTSTORE hCertStore);
 
@@ -354,9 +351,6 @@ PCCERT_CONTEXT GetRecipientCert(HCERTSTORE hCertStore)
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
-
-
 void UsingCryptProtectData()
 /*
 Example C Program: Using CryptProtectData
@@ -446,72 +440,6 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-using
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-// Encrypting_a_File.cpp : Defines the entry point for the console application.
-
-
-#define KEYLENGTH  0x00800000
-#define ENCRYPT_ALGORITHM CALG_RC4 
-#define ENCRYPT_BLOCK_SIZE 8 
-
-
-bool MyEncryptFile(LPTSTR szSource, LPTSTR szDestination, LPTSTR szPassword);
-
-
-int EncryptingFile(int argc, _TCHAR * argv[])
-/*
-Example C Program: Encrypting a File
-2018/05/31
-
-The following example encrypts a data file.
-The example interactively requests the name of the file that contains plaintext to be encrypted and
-the name of a file where the encrypted data is to be written.
-
-The example prompts the user for the names of an input file and an output file.
-It also prompts the user for whether a password is to be used to create the encryption session key.
-If a password is to be used in the encryption of the data,
-the same password must be used in the program that decrypts the file.
-For more information, see Example C Program: Decrypting a File.
-
-Due to changing export control restrictions,
-the default cryptographic service provider (CSP) and default key length may change between operating system releases.
-It is important that both the encryption and decryption use the same CSP and
-that the key length be explicitly set to ensure interoperability on different operating system platforms.
-
-This example uses the function MyHandleError. The code for this function is included with the sample.
-Code for this and other auxiliary functions is also listed under General Purpose Functions.
-
-https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encrypting-a-file
-*/
-{
-    if (argc < 3) {
-        _tprintf(TEXT("Usage: <example.exe> <source file> ")
-                 TEXT("<destination file> | <password>\n"));
-        _tprintf(TEXT("<password> is optional.\n"));
-        _tprintf(TEXT("Press any key to exit."));
-        (void)_gettch();
-        return 1;
-    }
-
-    LPTSTR pszSource = argv[1];
-    LPTSTR pszDestination = argv[2];
-    LPTSTR pszPassword = NULL;
-
-    if (argc >= 4) {
-        pszPassword = argv[3];
-    }
-
-    // Call EncryptFile to do the actual encryption.
-    if (MyEncryptFile(pszSource, pszDestination, pszPassword)) {
-        _tprintf(TEXT("Encryption of the file %s was successful. \n"), pszSource);
-        _tprintf(TEXT("The encrypted data is in file %s.\n"), pszDestination);
-    } else {
-        MyHandleError(TEXT("Error encrypting file!\n"), GetLastError());
-    }
-
-    return 0;
-}
-
-
 bool MyEncryptFile(LPTSTR pszSourceFile, LPTSTR pszDestinationFile, LPTSTR pszPassword)
 // Code for the function MyEncryptFile called by main.
 // Parameters passed are:
@@ -523,20 +451,16 @@ bool MyEncryptFile(LPTSTR pszSourceFile, LPTSTR pszDestinationFile, LPTSTR pszPa
     bool fReturn = false;
     HANDLE hSourceFile = INVALID_HANDLE_VALUE;
     HANDLE hDestinationFile = INVALID_HANDLE_VALUE;
-
     HCRYPTPROV hCryptProv = NULL;
     HCRYPTKEY hKey = NULL;
     HCRYPTKEY hXchgKey = NULL;
     HCRYPTHASH hHash = NULL;
-
     PBYTE pbKeyBlob = NULL;
     DWORD dwKeyBlobLen;
-
     PBYTE pbBuffer = NULL;
     DWORD dwBlockLen;
     DWORD dwBufferLen;
     DWORD dwCount;
-
     bool fEOF = FALSE;
 
     // Open the source file. 
@@ -787,46 +711,30 @@ Exit_MyEncryptFile:
 } // End Encryptfile.
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-// Decrypting_a_File.cpp : Defines the entry point for the console application.
-
-
-#define KEYLENGTH  0x00800000
-#define ENCRYPT_ALGORITHM CALG_RC4 
-#define ENCRYPT_BLOCK_SIZE 8 
-
-
-bool MyDecryptFile(LPTSTR szSource, LPTSTR szDestination, LPTSTR szPassword);
-
-
-int DecryptingFile(int argc, _TCHAR * argv[])
+int EncryptingFile(int argc, _TCHAR * argv[])
 /*
-Example C Program: Decrypting a File
+Example C Program: Encrypting a File
 2018/05/31
 
-The following example shows the decryption of a file.
-The example asks the user for the name of an encrypted file and
-the name of a file where the decrypted data will be written.
-The file with the encrypted data must exist.
-The example creates or overwrites the output file.
+The following example encrypts a data file.
+The example interactively requests the name of the file that contains plaintext to be encrypted and
+the name of a file where the encrypted data is to be written.
 
-The example also requests a string that is used as a password.
-If a password was used to create the encryption session key,
-that same password must be entered to create the decryption session key.
-For more information, see Example C Program: Encrypting a File.
+The example prompts the user for the names of an input file and an output file.
+It also prompts the user for whether a password is to be used to create the encryption session key.
+If a password is to be used in the encryption of the data,
+the same password must be used in the program that decrypts the file.
+For more information, see Example C Program: Decrypting a File.
 
 Due to changing export control restrictions,
-the default cryptographic service provider (CSP) and
-default key length may change between operating system releases.
+the default cryptographic service provider (CSP) and default key length may change between operating system releases.
 It is important that both the encryption and decryption use the same CSP and
 that the key length be explicitly set to ensure interoperability on different operating system platforms.
 
 This example uses the function MyHandleError. The code for this function is included with the sample.
 Code for this and other auxiliary functions is also listed under General Purpose Functions.
 
-https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-decrypting-a-file
+https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encrypting-a-file
 */
 {
     if (argc < 3) {
@@ -847,7 +755,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-decry
     }
 
     // Call EncryptFile to do the actual encryption.
-    if (MyDecryptFile(pszSource, pszDestination, pszPassword)) {
+    if (MyEncryptFile(pszSource, pszDestination, pszPassword)) {
         _tprintf(TEXT("Encryption of the file %s was successful. \n"), pszSource);
         _tprintf(TEXT("The encrypted data is in file %s.\n"), pszDestination);
     } else {
@@ -856,6 +764,9 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-decry
 
     return 0;
 }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 bool MyDecryptFile(LPTSTR pszSourceFile, LPTSTR pszDestinationFile, LPTSTR pszPassword)
@@ -976,9 +887,8 @@ bool MyDecryptFile(LPTSTR pszSourceFile, LPTSTR pszDestinationFile, LPTSTR pszPa
     }
 
     // The decryption key is now available, either having been 
-    // imported from a BLOB read in from the source file or having 
-    // been created by using the password. This point in the program 
-    // is not reached if the decryption key is not available.
+    // imported from a BLOB read in from the source file or having been created by using the password. 
+    // This point in the program is not reached if the decryption key is not available.
 
     // Determine the number of bytes to decrypt at a time. 
     // This must be a multiple of ENCRYPT_BLOCK_SIZE. 
@@ -1065,15 +975,69 @@ Exit_MyDecryptFile:
 }
 
 
+int DecryptingFile(int argc, _TCHAR * argv[])
+/*
+Example C Program: Decrypting a File
+2018/05/31
+
+The following example shows the decryption of a file.
+The example asks the user for the name of an encrypted file and
+the name of a file where the decrypted data will be written.
+The file with the encrypted data must exist.
+The example creates or overwrites the output file.
+
+The example also requests a string that is used as a password.
+If a password was used to create the encryption session key,
+that same password must be entered to create the decryption session key.
+For more information, see Example C Program: Encrypting a File.
+
+Due to changing export control restrictions,
+the default cryptographic service provider (CSP) and
+default key length may change between operating system releases.
+It is important that both the encryption and decryption use the same CSP and
+that the key length be explicitly set to ensure interoperability on different operating system platforms.
+
+This example uses the function MyHandleError. The code for this function is included with the sample.
+Code for this and other auxiliary functions is also listed under General Purpose Functions.
+
+https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-decrypting-a-file
+*/
+{
+    if (argc < 3) {
+        _tprintf(TEXT("Usage: <example.exe> <source file> ")
+                 TEXT("<destination file> | <password>\n"));
+        _tprintf(TEXT("<password> is optional.\n"));
+        _tprintf(TEXT("Press any key to exit."));
+        (void)_gettch();
+        return 1;
+    }
+
+    LPTSTR pszSource = argv[1];
+    LPTSTR pszDestination = argv[2];
+    LPTSTR pszPassword = NULL;
+
+    if (argc >= 4) {
+        pszPassword = argv[3];
+    }
+
+    // Call EncryptFile to do the actual encryption.
+    if (MyDecryptFile(pszSource, pszDestination, pszPassword)) {
+        _tprintf(TEXT("Encryption of the file %s was successful. \n"), pszSource);
+        _tprintf(TEXT("The encrypted data is in file %s.\n"), pszDestination);
+    } else {
+        MyHandleError(TEXT("Error encrypting file!\n"), GetLastError());
+    }
+
+    return 0;
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 // Copyright (C) Microsoft.  All rights reserved.
 // In this and all other examples, use the #define and
 // #include statements listed under #includes and #defines.
-
-
-#define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
 
 
 // This program uses the function GetSignerCert, declared here and defined after main.
@@ -1556,10 +1520,10 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/alternate-code-for-enco
 }
 
 
+PCCERT_CONTEXT GetSignerCert(HCERTSTORE hCertStore)
 // GetSignerCert enumerates the certificates in a store and
 // finds the first certificate that has a signature key. If a 
 // certificate is found, a pointer to the certificate is returned.
-PCCERT_CONTEXT GetSignerCert(HCERTSTORE hCertStore)
 // Parameter passed in:
 // hCertStore, the handle of the store to be searched.
 {
@@ -1624,9 +1588,6 @@ PCCERT_CONTEXT GetSignerCert(HCERTSTORE hCertStore)
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-#define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
 
 
 void EncodingEnvelopedSignedMessage(void)
@@ -2012,11 +1973,25 @@ Provider types and provider names have been listed.
 }
 
 
-void EnumProviderTypes()
+EXTERN_C
+__declspec(dllexport)
+void WINAPI EnumProviderTypes()
 /*
 The following example shows a loop listing all available cryptographic service provider types.
 
 https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptenumprovidertypesa
+*/
+/*
+测试效果：
+Listing Available Provider Types:
+Provider type   Provider Type Name
+_____________   _____________________________________
+        1       RSA Full (Signature and Key Exchange)
+        3       DSS Signature
+       12       RSA SChannel
+       13       DSS Signature with Diffie-Hellman Key Exchange
+       18       Diffie-Hellman SChannel
+       24       RSA Full and AES
 */
 {
     // Copyright (C) Microsoft.  All rights reserved.
@@ -2076,7 +2051,9 @@ void Wait(const TCHAR * s)
 }
 
 
-void EnumCsp(int argc, _TCHAR * argv[])
+EXTERN_C
+__declspec(dllexport)
+void WINAPI EnumCsp(int argc, _TCHAR * argv[])
 /*
 Example C Program: Enumerating CSP Providers and Provider Types
 05/31/2018
@@ -2094,6 +2071,59 @@ Code for this and other auxiliary functions is also listed under General Purpose
 The following example shows enumerating CSPs and provider types.
 
 https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-enumerating-csp-providers-and-provider-types
+*/
+/*
+测试效果：
+Listing Available Provider Types.
+Provider type    Provider Type Name
+_____________    _____________________________________
+        1        RSA Full (Signature and Key Exchange)
+        3        DSS Signature
+       12        RSA SChannel
+       13        DSS Signature with Diffie-Hellman Key Exchange
+       18        Diffie-Hellman SChannel
+       24        RSA Full and AES
+
+
+Listing Available Providers.
+Provider type    Provider Name
+_____________    _____________________________________
+        1        Microsoft Base Cryptographic Provider v1.0
+       13        Microsoft Base DSS and Diffie-Hellman Cryptographic Provider
+        3        Microsoft Base DSS Cryptographic Provider
+        1        Microsoft Base Smart Card Crypto Provider
+       18        Microsoft DH SChannel Cryptographic Provider
+        1        Microsoft Enhanced Cryptographic Provider v1.0
+       13        Microsoft Enhanced DSS and Diffie-Hellman Cryptographic Provider
+       24        Microsoft Enhanced RSA and AES Cryptographic Provider
+       12        Microsoft RSA SChannel Cryptographic Provider
+        1        Microsoft Strong Cryptographic Provider
+
+The default provider name is "Microsoft Strong Cryptographic Provider"
+
+Enumerating the supported algorithms
+
+     Algid      Bits      Type        Name         Algorithm
+                                     Length          Name
+    ________________________________________________________
+    00006602h    128     Encrypt       4           RC2
+    00006801h    128     Encrypt       4           RC4
+    00006601h    56      Encrypt       4           DES
+    00006609h    112     Encrypt       13          3DES TWO KEY
+    00006603h    168     Encrypt       5           3DES
+    00008004h    160     Hash          6           SHA-1
+    00008001h    128     Hash          4           MD2
+    00008002h    128     Hash          4           MD4
+    00008003h    128     Hash          4           MD5
+    00008008h    288     Hash          12          SSL3 SHAMD5
+    00008005h    0       Hash          4           MAC
+    00002400h    1024    Signature     9           RSA_SIGN
+    0000a400h    1024    Exchange      9           RSA_KEYX
+    00008009h    0       Hash          5           HMAC
+
+Press Enter to continue.
+
+The program completed without error.
 */
 {
     // Declare and initialize variables.
@@ -2261,7 +2291,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-enume
         }
     }
 
-    Wait(TEXT("\nPress Enter to continue."));
+    //Wait(TEXT("\nPress Enter to continue."));
 
     if (!(CryptReleaseContext(hProv, 0))) {
         MyHandleError(TEXT("Error during CryptReleaseContext."));
