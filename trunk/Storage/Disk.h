@@ -184,3 +184,19 @@ typedef struct _NTFS_Boot_Sector { //Byte Offset
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+EXTERN_C
+__declspec(dllexport)
+int WINAPI ReadDiskSector(_In_ LPCWSTR lpFileName,
+                          _In_ LONGLONG QuadPart,
+                          _Out_writes_opt_(nNumberOfBytesToRead) LPVOID lpBuffer,
+                          _In_ DWORD nNumberOfBytesToRead
+);
+
+EXTERN_C
+__declspec(dllexport)
+int WINAPI ReadMBR(_In_ LPCWSTR lpFileName,
+                   _Out_writes_opt_(nNumberOfBytesToRead) LPVOID lpBuffer,
+                   _In_ DWORD nNumberOfBytesToRead
+);

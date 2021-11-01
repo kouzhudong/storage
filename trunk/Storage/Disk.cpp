@@ -266,29 +266,6 @@ lpFileName£º²»¿ÉÈ¡L"\\\\.\\PhysicalDriveX",¾¡¹ÜÕâÑùÒ²ÄÜÐ´Ò»Ð©£¬µ«ÊÇÓÐÐí¶àµÄÏÞÖÆ£
 }
 
 
-EXTERN_C
-__declspec(dllexport)
-int WINAPI GetMft(_In_ LPCWSTR lpFileName)
-{
-    BYTE inBuffer[512] = {0};
-
-    int x = ReadMBR(lpFileName, &inBuffer, sizeof(inBuffer));
-
-    PPACKED_BOOT_SECTOR bs = (PPACKED_BOOT_SECTOR)&inBuffer;
-
-    PBIOS_PARAMETER_BLOCK bpb = (PBIOS_PARAMETER_BLOCK)&bs->PackedBpb;
-
-    LONGLONG QuadPart = bs->MftStartLcn * bpb->SectorsPerCluster * bpb->BytesPerSector;
-
-    BYTE mft[512] = {0};
-    x = ReadDiskSector(lpFileName, QuadPart, mft, sizeof(mft));
-
-    PFILE_RECORD_HEADER pfrh = (PFILE_RECORD_HEADER)&mft;
-
-    return 0;
-}
-
-
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 

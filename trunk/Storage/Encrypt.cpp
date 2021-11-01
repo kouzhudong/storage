@@ -2379,3 +2379,316 @@ https://docs.microsoft.com/en-us/windows/win32/seccertenroll/enumerating-install
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+BOOL GetExportedKey(HCRYPTKEY hKey, DWORD dwBlobType, LPBYTE * ppbKeyBlob, LPDWORD pdwBlobLen)
+/*
+The following example shows how to export a cryptographic key or a key pair in a more secure manner. 
+This example assumes that a cryptographic context has been acquired and that a public key is available for export. 
+For an example that includes the complete context for using this function, 
+see Example C Program: Signing a Hash and Verifying the Hash Signature. 
+For another example that uses this function, see Example C Program: Exporting a Session Key.
+
+https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptexportkey
+*/
+{
+    DWORD dwBlobLength;
+    *ppbKeyBlob = NULL;
+    *pdwBlobLen = 0;
+
+    // Export the public key. Here the public key is exported to a PUBLICKEYBLOB. 
+    // This BLOB can be written to a file and sent to another user.
+    if (CryptExportKey(hKey, NULL, dwBlobType, 0, NULL, &dwBlobLength)) {
+        printf("Size of the BLOB for the public key determined. \n");
+    } else {
+        printf("Error computing BLOB length.\n");
+        return FALSE;
+    }
+
+    // Allocate memory for the pbKeyBlob.
+    if (*ppbKeyBlob = (LPBYTE)malloc(dwBlobLength)) {
+        printf("Memory has been allocated for the BLOB. \n");
+    } else {
+        printf("Out of memory. \n");
+        return FALSE;
+    }
+
+    // Do the actual exporting into the key BLOB.
+    if (CryptExportKey(hKey, NULL, dwBlobType, 0, *ppbKeyBlob, &dwBlobLength)) {
+        printf("Contents have been written to the BLOB. \n");
+        *pdwBlobLen = dwBlobLength;
+    } else {
+        printf("Error exporting key.\n");
+        free(*ppbKeyBlob);
+        *ppbKeyBlob = NULL;
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// Copyright (C) Microsoft.  All rights reserved.
+// This example program creates a session key and a simple key BLOB holding that session key. 
+// The key BLOB can be written to disk and later read from a disk file.
+
+
+#define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
+
+
+void MyHandleError(char * s)
+//  This example uses the function MyHandleError, a simple error
+//  handling function, to print an error message and exit the program. 
+//  For most applications, replace this function with one 
+//  that does more extensive error reporting.
+{
+    printf("An error occurred in running the program.\n");
+    printf("%s\n", s);
+    printf("Error number %x\n.", GetLastError());
+    printf("Program terminating.\n");
+    exit(1);
+}
+
+
+EXTERN_C
+__declspec(dllexport)
+void WINAPI ExportSessionKey(void)
+/*
+Example C Program: Exporting a Session Key
+
+01/08/2021
+3 minutes to read
+
+The following example creates a random session key and creates an exportable key BLOB. 
+The example illustrates the use of CryptGetUserKey, CryptExportKey, and related functions.
+
+This example illustrates the following tasks and CryptoAPI functions:
+
+Acquiring a CSP context using CryptAcquireContext.
+Gaining access to two different pairs of public/private keys using CryptGetUserKey.
+Generating an exportable session key using CryptGenKey.
+Creating a simple key BLOB containing a session key using CryptExportKey.
+Destroying a session key and access to the two pairs of public/private keys using CryptDestroyKey.
+Releasing the CSP context using CryptReleaseContext.
+This example uses the function MyHandleError. 
+The code for this function is included with the sample. 
+Code for this and other auxiliary functions is also listed under General Purpose Functions.
+
+https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-exporting-a-session-key
+*/
+{
+    // Declare and initialize variables.
+    HCRYPTPROV hProv;       // CSP handle
+    HCRYPTKEY hSignKey;     // Signature key pair handle
+    HCRYPTKEY hXchgKey;     // Exchange key pair handle
+    HCRYPTKEY hKey;         // Session key handle
+    BYTE * pbKeyBlob;        // Pointer to a simple key BLOB
+    DWORD dwBlobLen;        // The length of the key BLOB
+
+    // Acquire a cryptographic provider context handle.
+    if (CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL, 0)) {
+        printf("The CSP has been acquired. \n");
+    } else {
+        MyHandleError("Error during CryptAcquireContext.");
+    }
+
+    // Get a handle to the signature key.
+    // The signature key must exist before it can be retrieved.
+    // For more information, see the CryptGetUserKey documentation.
+    if (CryptGetUserKey(hProv, AT_SIGNATURE, &hSignKey)) {
+        printf("The signature key has been acquired. \n");
+    } else {
+        MyHandleError("Error during CryptGetUserKey for signkey.");
+    }
+
+    // Get a handle to the key exchange key.
+    // The key must exist before it can be retrieved.
+    // For more information, see the CryptGetUserKey documentation.
+
+    if (CryptGetUserKey(hProv, AT_KEYEXCHANGE, &hXchgKey)) {
+        printf("The key exchange key has been acquired. \n");
+    } else {
+        printf("Error during CryptGetUserKey exchange key.");
+    }
+    // hSignKey may be used to verify a signature. hXchgKey will be used to export a session key.
+
+    // Generate a session key.
+    if (CryptGenKey(hProv, CALG_RC4, CRYPT_EXPORTABLE, &hKey)) {
+        printf("Original session key is created. \n");
+    } else {
+        MyHandleError("ERROR -- CryptGenKey.");
+    }
+
+    // Determine the size of the key BLOB and allocate memory.
+    if (CryptExportKey(hKey, hXchgKey, SIMPLEBLOB, 0, NULL, &dwBlobLen)) {
+        printf("Size of the BLOB for the session key determined. \n");
+    } else {
+        MyHandleError("Error computing BLOB length.");
+    }
+
+    if (pbKeyBlob = (BYTE *)malloc(dwBlobLen)) {
+        printf("Memory has been allocated for the BLOB. \n");
+    } else {
+        MyHandleError("Out of memory. \n");
+    }
+
+    // Export the key into a simple key BLOB.
+    if (CryptExportKey(hKey, hXchgKey, SIMPLEBLOB, 0, pbKeyBlob, &dwBlobLen)) {
+        printf("Contents have been written to the BLOB. \n");
+    } else {
+        MyHandleError("Error during CryptExportKey.");
+    }
+
+    //   At this point, other processing such as writing the key BLOB to a file could be done.
+
+    // After all processing, clean up.
+
+    //  Free the memory used by the key BLOB.
+    free(pbKeyBlob);
+
+    // Destroy the session key.
+    if (hKey)
+        CryptDestroyKey(hKey);
+
+    // Destroy the signature key handle.
+    if (hSignKey)
+        CryptDestroyKey(hSignKey);
+
+    // Destroy the key exchange key handle.
+    if (hXchgKey)
+        CryptDestroyKey(hXchgKey);
+
+    // Release the provider handle.
+    if (hProv)
+        CryptReleaseContext(hProv, 0);
+    printf("The program ran to completion without error. \n");
+}// End of main                                                    
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// DesKeyBlob:      A plaintext key BLOB stored in a byte array. 
+//                  The byte array  must have the following format:
+//                      BLOBHEADER hdr;
+//                      DWORD dwKeySize;
+//                      BYTE rgbKeyData [];
+BYTE DesKeyBlob[] = {
+    0x08,0x02,0x00,0x00,0x01,0x66,0x00,0x00, // BLOB header 
+    0x08,0x00,0x00,0x00,                     // key length, in bytes
+    0xf1,0x0e,0x25,0x7c,0x6b,0xce,0x0d,0x34  // DES key with parity
+};
+
+
+EXTERN_C
+__declspec(dllexport)
+int WINAPI ImportPlaintextKey()
+/*
+Example C Program: Importing a Plaintext Key
+01/08/2021
+2 minutes to read
+
+Many of the functions in this SDK require that you identify a key by using an HCRYPTKEY handle. 
+If your key is contained in a byte array, 
+you can create a handle by using the CryptImportKey function as shown in the following example.
+
+This example demonstrates the following tasks and CryptoAPI functions:
+
+Acquiring a handle to a cryptographic service provider by calling CryptAcquireContext.
+Importing a plaintext key into the CSP key container by calling CryptImportKey.
+Exporting a key from the key container by calling CyptExportKey.
+Printing the exported key to the console to verify that the plaintext key was indeed imported into the container.
+Releasing the memory reserved for the plaintext key.
+Releasing the CSP by calling CryptReleaseContext.
+
+https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program--importing-a-plaintext-key
+*/
+{
+    // Declare variables.
+    // hProv:           Cryptographic service provider (CSP).
+    //                  This example uses the Microsoft Enhanced Cryptographic Provider.
+    // hKey:            Key to be used. In this example, you import the key as a PLAINTEXTKEYBLOB.
+    // dwBlobLen:       Length of the plaintext key.
+    // pbKeyBlob:       Pointer to the exported key.
+
+    HCRYPTPROV hProv = NULL;
+    HCRYPTKEY hKey = NULL;
+    DWORD dwBlobLen;
+    BYTE * pbKeyBlob;
+
+    // Acquire a handle to the CSP.
+    if (!CryptAcquireContext(&hProv, NULL, MS_ENHANCED_PROV, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT)) {
+        // If the key container cannot be opened, try creating a new
+        // container by specifying a container name and setting the CRYPT_NEWKEYSET flag.
+        if (NTE_BAD_KEYSET == GetLastError()) {
+            if (!CryptAcquireContext(
+                &hProv,
+                L"mytestcontainer",
+                MS_ENHANCED_PROV,
+                PROV_RSA_FULL,
+                CRYPT_NEWKEYSET | CRYPT_VERIFYCONTEXT)) {
+                printf("Error in AcquireContext 0x%08x \n", GetLastError());
+                return 1;
+            }
+        } else {
+            printf(" Error in AcquireContext 0x%08x \n", GetLastError());
+            return 1;
+        }
+    }
+
+    // Use the CryptImportKey function to import the PLAINTEXTKEYBLOB
+    // BYTE array into the key container. The function returns a 
+    // pointer to an HCRYPTKEY variable that contains the handle of the imported key.
+    if (!CryptImportKey(hProv, DesKeyBlob, sizeof(DesKeyBlob), 0, CRYPT_EXPORTABLE, &hKey)) {
+        printf("Error 0x%08x in importing the Des key \n", GetLastError());
+    }
+
+    // For the purpose of this example, you can export the key and 
+    // print it to verify that the plain text key created above is  
+    // the key that was imported into the CSP.
+    // Call CryptExportKey once to determine the length of the key.
+    // Allocate memory for the BLOB, and call CryptExportKey again
+    // to retrieve the key from the CSP key container.
+
+    if (!CryptExportKey(hKey, NULL, PLAINTEXTKEYBLOB, 0, NULL, &dwBlobLen)) {
+        printf("Error 0x%08x computing BLOB length.\n", GetLastError());
+        return 1;
+    }
+
+    if (pbKeyBlob = (BYTE *)malloc(dwBlobLen)) {
+        printf("Memory has been allocated for the BLOB. \n");
+    } else {
+        printf("Out of memory. \n");
+        return 1;
+    }
+
+    if (!CryptExportKey(hKey, NULL, PLAINTEXTKEYBLOB, 0, pbKeyBlob, &dwBlobLen)) {
+        printf("Error 0x%08x exporting key.\n", GetLastError());
+        return 1;
+    }
+
+    DWORD count = 0;
+    printf("Printing Key BLOB for verification \n");
+    for (count = 0; count < dwBlobLen;) {
+        printf("%02x", pbKeyBlob[count]);
+        count++;
+    }
+
+    // Free resources.
+
+    if (pbKeyBlob) {
+        free(pbKeyBlob);
+    }
+
+    if (hProv) {
+        CryptReleaseContext(hProv, 0);
+    }
+
+    return 0;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////

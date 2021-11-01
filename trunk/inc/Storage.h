@@ -194,6 +194,10 @@ void WINAPI EnumCatAttributes(_In_ LPWSTR FilePath);
 
 HRESULT WINAPI EnumProviders(void);
 
+void WINAPI ExportSessionKey(void);
+
+int WINAPI ImportPlaintextKey();
+
 void WINAPI EnumProvidersByCrypt();
 
 void WINAPI EnumProviderTypes();
