@@ -198,6 +198,18 @@ void WINAPI ExportSessionKey(void);
 
 int WINAPI ImportPlaintextKey();
 
+void WINAPI CreatingKeyContainerGeneratingKeys(void);
+
+void WINAPI AcquireCryptContext(void);
+
+void WINAPI DerivingSessionKeyFromPassword();
+
+void WINAPI DuplicatingSessionKey();
+
+void WINAPI SessionKeyParameters();
+
+int WINAPI DiffieHellman(int argc, _TCHAR * argv[]);
+
 void WINAPI EnumProvidersByCrypt();
 
 void WINAPI EnumProviderTypes();

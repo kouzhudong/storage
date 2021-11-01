@@ -7,6 +7,7 @@
 #pragma warning(disable:28182)
 #pragma warning(disable:28183)
 #pragma warning(disable:6387)
+#pragma warning(disable:6386)
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2692,3 +2693,1164 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program--impo
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// Copyright (C) Microsoft.  All rights reserved.
+
+
+//void MyHandleError(LPTSTR psz)
+//// This example uses the function MyHandleError, a simple error
+//// handling function to print an error message and exit 
+//// the program. 
+//// For most applications, replace this function with one 
+//// that does more extensive error reporting.
+//{
+//    _ftprintf(stderr, TEXT("An error occurred in the program. \n"));
+//    _ftprintf(stderr, TEXT("%s\n"), psz);
+//    _ftprintf(stderr, TEXT("Error number %x.\n"), GetLastError());
+//    _ftprintf(stderr, TEXT("Program terminating. \n"));
+//    exit(1);
+//} // End of MyHandleError.
+
+
+EXTERN_C
+__declspec(dllexport)
+void WINAPI CreatingKeyContainerGeneratingKeys(void)
+/*
+Example C Program: Creating a Key Container and Generating Keys
+01/08/2021
+3 minutes to read
+
+The following example creates a named key container and adds a signature key pair and 
+an exchange key pair to the container. 
+This example can be run without problem even if the named key container and 
+cryptographic keys already exist.
+
+ Note
+An application should not use the default key container to store private keys. 
+When multiple applications use the same container, 
+one application may change or destroy the keys that another application needs to have available. 
+It is recommended that applications use key containers that are linked to the application. 
+Doing so reduces the risk of other applications tampering with keys that are necessary for an application to function properly.
+
+This example demonstrates the following tasks and CryptoAPI functions:
+
+It attempts to acquire the named key container. 
+If the named key container does not already exist, it is created.
+If a signature key pair does not exist in the key container, 
+it creates a signature key pair within the key container.
+If an exchange key pair does not exist in the key container, 
+it creates an exchange key pair within the key container.
+These operations only need to be performed once for each user on each computer. 
+If the named key container and key pairs have already been created, this sample performs no operations.
+
+This example uses the following CryptoAPI functions:
+CryptAcquireContext
+CryptDestroyKey
+CryptGenKey
+CryptGetUserKey
+CryptReleaseContext
+
+This example uses the function MyHandleError. 
+The code for this function is included with the sample. 
+Code for this and other auxiliary functions is also listed under General Purpose Functions.
+*/
+{
+    // Handle for the cryptographic provider context.
+    HCRYPTPROV hCryptProv;
+
+    // The name of the container.
+    LPCTSTR pszContainerName = TEXT("My Sample Key Container");
+
+    // Begin processing. Attempt to acquire a context by using the 
+    // specified key container.
+    if (CryptAcquireContext(&hCryptProv, pszContainerName, NULL, PROV_RSA_FULL, 0)) {
+        _tprintf(TEXT("A crypto context with the %s key container ")
+                 TEXT("has been acquired.\n"),
+                 pszContainerName);
+    } else {
+        // Some sort of error occurred in acquiring the context. 
+        // This is most likely due to the specified container 
+        // not existing. Create a new key container.
+        if (GetLastError() == NTE_BAD_KEYSET) {
+            if (CryptAcquireContext(&hCryptProv, pszContainerName, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET)) {
+                _tprintf(TEXT("A new key container has been ")
+                         TEXT("created.\n"));
+            } else {
+                MyHandleError(TEXT("Could not create a new key ")
+                              TEXT("container.\n"));
+            }
+        } else {
+            MyHandleError(TEXT("CryptAcquireContext failed.\n"));
+        }
+    }
+
+    // A context with a key container is available.
+    // Attempt to get the handle to the signature key. 
+
+    // Public/private key handle.
+    HCRYPTKEY hKey;
+
+    if (CryptGetUserKey(hCryptProv, AT_SIGNATURE, &hKey)) {
+        _tprintf(TEXT("A signature key is available.\n"));
+    } else {
+        _tprintf(TEXT("No signature key is available.\n"));
+        if (GetLastError() == NTE_NO_KEY) {
+            // The error was that there is a container but no key.
+
+            // Create a signature key pair. 
+            _tprintf(TEXT("The signature key does not exist.\n"));
+            _tprintf(TEXT("Create a signature key pair.\n"));
+            if (CryptGenKey(hCryptProv, AT_SIGNATURE, 0, &hKey)) {
+                _tprintf(TEXT("Created a signature key pair.\n"));
+            } else {
+                MyHandleError(TEXT("Error occurred creating a ")
+                              TEXT("signature key.\n"));
+            }
+        } else {
+            MyHandleError(TEXT("An error other than NTE_NO_KEY ")
+                          TEXT("getting a signature key.\n"));
+        }
+    } // End if.
+
+    _tprintf(TEXT("A signature key pair existed, or one was ")
+             TEXT("created.\n\n"));
+
+    // Destroy the signature key.
+    if (hKey) {
+        if (!(CryptDestroyKey(hKey))) {
+            MyHandleError(TEXT("Error during CryptDestroyKey."));
+        }
+
+        hKey = NULL;
+    }
+
+    // Next, check the exchange key. 
+    if (CryptGetUserKey(hCryptProv, AT_KEYEXCHANGE, &hKey)) {
+        _tprintf(TEXT("An exchange key exists.\n"));
+    } else {
+        _tprintf(TEXT("No exchange key is available.\n"));
+
+        // Check to determine whether an exchange key needs to be created.
+        if (GetLastError() == NTE_NO_KEY) {
+            // Create a key exchange key pair.
+            _tprintf(TEXT("The exchange key does not exist.\n"));
+            _tprintf(TEXT("Attempting to create an exchange key ")
+                     TEXT("pair.\n"));
+            if (CryptGenKey(hCryptProv, AT_KEYEXCHANGE, 0, &hKey)) {
+                _tprintf(TEXT("Exchange key pair created.\n"));
+            } else {
+                MyHandleError(TEXT("Error occurred attempting to ")
+                              TEXT("create an exchange key.\n"));
+            }
+        } else {
+            MyHandleError(TEXT("An error other than NTE_NO_KEY ")
+                          TEXT("occurred.\n"));
+        }
+    }
+
+    // Destroy the exchange key.
+    if (hKey) {
+        if (!(CryptDestroyKey(hKey))) {
+            MyHandleError(TEXT("Error during CryptDestroyKey."));
+        }
+
+        hKey = NULL;
+    }
+
+    // Release the CSP.
+    if (hCryptProv) {
+        if (!(CryptReleaseContext(hCryptProv, 0))) {
+            MyHandleError(TEXT("Error during CryptReleaseContext."));
+        }
+    }
+
+    _tprintf(TEXT("Everything is okay. A signature key "));
+    _tprintf(TEXT("pair and an exchange key exist in "));
+    _tprintf(TEXT("the %s key container.\n"), pszContainerName);
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//  Copyright (C) Microsoft.  All rights reserved.
+//  Example code using CryptAcquireContext.
+
+
+//void MyHandleError(LPTSTR psz)
+//// This example uses the function MyHandleError, a simple error
+//// handling function to print an error message and exit the program. 
+//// For most applications, replace this function with one 
+//// that does more extensive error reporting.
+//{
+//    _ftprintf(stderr, TEXT("An error occurred in the program. \n"));
+//    _ftprintf(stderr, TEXT("%s\n"), psz);
+//    _ftprintf(stderr, TEXT("Error number %x.\n"), GetLastError());
+//    _ftprintf(stderr, TEXT("Program terminating. \n"));
+//    exit(1);
+//} // End of MyHandleError.
+
+
+EXTERN_C
+__declspec(dllexport)
+void WINAPI AcquireCryptContext(void)
+/*
+Example C Program: Using CryptAcquireContext
+01/08/2021
+3 minutes to read
+
+The following example demonstrates several different ways to use the CryptAcquireContext and 
+related CryptoAPI functions to work with a cryptographic service provider (CSP) and a key container.
+
+This example demonstrates the following tasks and CryptoAPI functions:
+
+Use the CryptAcquireContext function to acquire a handle for the default CSP and the default key container. 
+If no default key container exists, use the CryptAcquireContext function to create the default key container.
+Use the CryptGetProvParam function to retrieve information about a CSP and a key container.
+Increase the reference count on the provider by using the CryptContextAddRef function.
+Release a CSP by using the CryptReleaseContext function.
+Create a named key container by using the CryptAcquireContext function.
+Acquire a handle for a CSP by using the newly created key container.
+Delete a key container by using the CryptAcquireContext function.
+This example uses the function MyHandleError. 
+The code for this function is included with the sample. 
+Code for this and other auxiliary functions is also listed under General Purpose Functions.
+
+https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-using-cryptacquirecontext
+*/
+{
+    // Declare and initialize variables.
+    HCRYPTPROV hCryptProv;
+
+    // Get a handle to the default PROV_RSA_FULL provider.
+    if (CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_RSA_FULL, 0)) {
+        _tprintf(TEXT("CryptAcquireContext succeeded.\n"));
+    } else {
+        if (GetLastError() == NTE_BAD_KEYSET) {
+            // No default container was found. Attempt to create it.
+            if (CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET)) {
+                _tprintf(TEXT("CryptAcquireContext succeeded.\n"));
+            } else {
+                MyHandleError(TEXT("Could not create the default ")
+                              TEXT("key container.\n"));
+            }
+        } else {
+            MyHandleError(TEXT("A general error running ")
+                          TEXT("CryptAcquireContext."));
+        }
+    }
+
+    CHAR pszName[1000];
+    DWORD cbName;
+
+    // Read the name of the CSP.
+    cbName = 1000;
+    if (CryptGetProvParam(hCryptProv, PP_NAME, (BYTE *)pszName, &cbName, 0)) {
+        _tprintf(TEXT("CryptGetProvParam succeeded.\n"));
+        printf("Provider name: %s\n", pszName);
+    } else {
+        MyHandleError(TEXT("Error reading CSP name.\n"));
+    }
+
+    // Read the name of the key container.
+    cbName = 1000;
+    if (CryptGetProvParam(hCryptProv, PP_CONTAINER, (BYTE *)pszName, &cbName, 0)) {
+        _tprintf(TEXT("CryptGetProvParam succeeded.\n"));
+        printf("Key Container name: %s\n", pszName);
+    } else {
+        MyHandleError(TEXT("Error reading key container name.\n"));
+    }
+
+    // Perform cryptographic operations.
+    //...
+
+    //  Add to the reference count on the provider. When the 
+    //  reference count on a provider is greater than one,  
+    //  CryptReleaseContext reduces the reference count but does not free the provider.
+
+    if (CryptContextAddRef(hCryptProv, NULL, 0)) {
+        _tprintf(TEXT("CryptcontextAddRef succeeded.\n"));
+    } else {
+        MyHandleError(TEXT("Error during CryptContextAddRef!\n"));
+    }
+
+    //  The reference count on hCryptProv is now greater than one. 
+    //  The first call to CryptReleaseContext will not release the provider handle. 
+
+    //  Release the context once.
+    if (CryptReleaseContext(hCryptProv, 0)) {
+        _tprintf(TEXT("The first call to CryptReleaseContext ")
+                 TEXT("succeeded.\n"));
+    } else {
+        MyHandleError(TEXT("Error during ")
+                      TEXT("CryptReleaseContext #1!\n"));
+    }
+
+    // Release the provider handle again.
+    if (CryptReleaseContext(hCryptProv, 0)) {
+        _tprintf(TEXT("The second call to CryptReleaseContext ")
+                 TEXT("succeeded.\n"));
+    } else {
+        MyHandleError(TEXT("Error during ")
+                      TEXT("CryptReleaseContext #2!\n"));
+    }
+
+    // Get a handle to a PROV_RSA_FULL provider and
+    // create a key container named "My Sample Key Container".
+    LPCTSTR pszContainerName = TEXT("My Sample Key Container");
+
+    hCryptProv = NULL;
+    if (CryptAcquireContext(&hCryptProv, pszContainerName, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET)) {
+        _tprintf(TEXT("CryptAcquireContext succeeded. \n"));
+        _tprintf(TEXT("New key set created. \n"));
+
+        // Release the provider handle and the key container.
+        if (hCryptProv) {
+            if (CryptReleaseContext(hCryptProv, 0)) {
+                hCryptProv = NULL;
+                _tprintf(TEXT("CryptReleaseContext succeeded. \n"));
+            } else {
+                MyHandleError(TEXT("Error during ")
+                              TEXT("CryptReleaseContext!\n"));
+            }
+        }
+    } else {
+        if (GetLastError() == NTE_EXISTS) {
+            _tprintf(TEXT("The named key container could not be ")
+                     TEXT("created because it already exists.\n"));
+
+            // Just continue the program. The named container will be reopened below.
+        } else {
+            MyHandleError(TEXT("Error during CryptAcquireContext ")
+                          TEXT("for a new key container."));
+        }
+    }
+
+    // Get a handle to the provider by using the new key container. 
+    // Note: This key container will be empty until keys
+    // are explicitly created by using the CryptGenKey function.
+    if (CryptAcquireContext(&hCryptProv, pszContainerName, NULL, PROV_RSA_FULL, 0)) {
+        _tprintf(TEXT("Acquired the key set just created. \n"));
+    } else {
+        MyHandleError(TEXT("Error during CryptAcquireContext!\n"));
+    }
+
+    // Perform cryptographic operations.
+
+    // Release the provider handle.
+    if (CryptReleaseContext(hCryptProv, 0)) {
+        _tprintf(TEXT("CryptReleaseContext succeeded. \n"));
+    } else {
+        MyHandleError(TEXT("Error during CryptReleaseContext!\n"));
+    }
+
+    // Delete the new key container.
+    if (CryptAcquireContext(&hCryptProv, pszContainerName, NULL, PROV_RSA_FULL, CRYPT_DELETEKEYSET)) {
+        _tprintf(TEXT("Deleted the key container just created. \n"));
+    } else {
+        MyHandleError(TEXT("Error during CryptAcquireContext!\n"));
+    }
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+#define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
+#define PASSWORD_LENGTH 512
+
+
+//void MyHandleError(char * s)
+//// This example uses the function MyHandleError, a simple error
+//// handling function to print an error message and exit
+//// the program.
+//// For most applications, replace this function with one
+//// that does more extensive error reporting.
+//{
+//    printf("An error occurred in running the program.\n");
+//    printf("%s\n", s);
+//    printf("Error number %x\n.", GetLastError());
+//    printf("Program terminating.\n");
+//    exit(1);
+//}
+
+
+void GetConsoleInput(char * strInput, UINT  intMaxChars)
+// The GetConsoleInput function gets an array of characters from the
+// keyboard, while printing only asterisks to the screen.
+{
+    char ch;
+    char minChar = ' ';
+    minChar++;
+
+    ch = (char)_getch();
+    while (ch != '\r') {
+        if (ch == '\b' && strlen(strInput) > 0) {
+            strInput[strlen(strInput) - 1] = '\0';
+            printf("\b \b");
+        } else if ((ch >= minChar) && (strlen(strInput) < intMaxChars)) {
+            strInput[strlen(strInput) + 1] = '\0';
+            strInput[strlen(strInput)] = ch;
+            _putch('*');
+        }
+        ch = (char)_getch();
+    }
+    _putch('\n');
+}
+
+
+EXTERN_C
+__declspec(dllexport)
+void WINAPI DerivingSessionKeyFromPassword()
+/*
+Example C Program: Deriving a Session Key from a Password
+01/08/2021
+2 minutes to read
+
+The following example demonstrates creating a session cryptographic key from the hash of a password as well as the use of the function CryptDeriveKey and related functions.
+
+This example illustrates the following tasks and CryptoAPI functions:
+
+Calling CryptAcquireContext to acquiring a handle for the default CSP and the default key container.
+Using CryptCreateHash to create an empty hash object.
+Hashing the text of a password using CryptHashData.
+Deriving a session key from the hashed password using CryptDeriveKey.
+Destroying the hash and the password.
+Using CryptReleaseContext to release the CSP.
+This example uses the function MyHandleError. Code for this function is included with the sample.
+
+Code for this and other auxiliary functions is also listed under General Purpose Functions.
+
+https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-deriving-a-session-key-from-a-password
+*/
+{
+    // Copyright (C) Microsoft.  All rights reserved.
+    // Declare and initialize variables.
+
+    HCRYPTPROV hCryptProv;
+    HCRYPTKEY hKey;
+    HCRYPTHASH hHash;
+    CHAR szPassword[PASSWORD_LENGTH] = "";
+    DWORD dwLength;
+
+    // Get the password from the user.
+    fprintf(stderr, "Enter a password to be used to create a key:");
+
+    // Get a password while printing only asterisks to the screen.
+    GetConsoleInput(szPassword, PASSWORD_LENGTH);
+    printf("The password has been stored.\n");
+    dwLength = (DWORD)strlen(szPassword);
+
+    // Acquire a cryptographic provider context handle.
+    if (CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_RSA_FULL, 0)) {
+        printf("A context has been acquired. \n");
+    } else {
+        MyHandleError("Error during CryptAcquireContext!");
+    }
+
+    // Create an empty hash object.
+    if (CryptCreateHash(hCryptProv, CALG_MD5, 0, 0, &hHash)) {
+        printf("An empty hash object has been created. \n");
+    } else {
+        MyHandleError("Error during CryptCreateHash!");
+    }
+
+    // Hash the password string.
+    if (CryptHashData(hHash, (BYTE *)szPassword, dwLength, 0)) {
+        printf("The password has been hashed. \n");
+    } else {
+        MyHandleError("Error during CryptHashData!");
+    }
+
+    // Create a session key based on the hash of the password.
+    if (CryptDeriveKey(hCryptProv, CALG_RC2, hHash, CRYPT_EXPORTABLE, &hKey)) {
+        printf("The key has been derived. \n");
+    } else {
+        MyHandleError("Error during CryptDeriveKey!");
+    }
+
+    // Use hKey as appropriate to encrypt or decrypt a message.
+
+    // Clean up.
+
+    // Destroy the hash object.
+    if (hHash) {
+        if (!(CryptDestroyHash(hHash)))
+            MyHandleError("Error during CryptDestroyHash");
+    }
+
+    // Destroy the session key.
+    if (hKey) {
+        if (!(CryptDestroyKey(hKey)))
+            MyHandleError("Error during CryptDestroyKey");
+    }
+
+    // Release the provider handle.
+    if (hCryptProv) {
+        if (!(CryptReleaseContext(hCryptProv, 0)))
+            MyHandleError("Error during CryptReleaseContext");
+    }
+    printf("The program to derive a key completed without error. \n");
+} 
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+#define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
+
+
+// Copyright (C) Microsoft.  All rights reserved.
+
+
+EXTERN_C
+__declspec(dllexport)
+void WINAPI DuplicatingSessionKey()
+/*
+Example C Program: Duplicating a Session Key
+01/08/2021
+2 minutes to read
+
+The following example creates a random session key, duplicates the key, 
+sets some additional parameters on the original key, 
+and destroys both the original and the duplicate keys. 
+This example illustrates the use of CryptDuplicateKey and related functions.
+
+This example illustrates the following tasks and CryptoAPI functions:
+
+Accessing a cryptographic service provider (CSP) using CryptAcquireContext.
+Creating a session key using CryptGenKey.
+Duplicating the key created using CryptDuplicateKey.
+Using CryptSetKeyParam to alter the key generation process in two different ways.
+Filling a buffer with random bytes using CryptGenRandom.
+Destroying the keys using CryptDestroyKey.
+Releasing the CSP with CryptReleaseContext.
+This example uses the function MyHandleError. 
+The code for this function is included with the sample. 
+Code for this and other auxiliary functions is also listed under General Purpose Functions.
+
+https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-duplicating-a-session-key
+*/
+{
+    // Declare and initialize variables.
+    HCRYPTPROV   hCryptProv;
+    HCRYPTKEY    hOriginalKey;
+    HCRYPTKEY    hDuplicateKey;
+    DWORD        dwMode;
+    BYTE         pbData[16];
+
+    // Begin processing.
+    printf("This program creates a session key and duplicates \n");
+    printf("that key. Next, parameters are added to the original \n");
+    printf("key. Finally, both keys are destroyed. \n\n");
+
+    // Acquire a cryptographic provider context handle.
+    if (CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_RSA_FULL, 0)) {
+        printf("CryptAcquireContext succeeded. \n");
+    } else {
+        MyHandleError("Error during CryptAcquireContext!\n");
+    }
+
+    // Generate a key.
+    if (CryptGenKey(hCryptProv, CALG_RC4, 0, &hOriginalKey)) {
+        printf("Original session key is created. \n");
+    } else {
+        MyHandleError("ERROR - CryptGenKey.");
+    }
+
+    // Duplicate the key.
+    if (CryptDuplicateKey(hOriginalKey, NULL, 0, &hDuplicateKey)) {
+        printf("The session key has been duplicated. \n");
+    } else {
+        MyHandleError("ERROR - CryptDuplicateKey");
+    }
+
+    // Set additional parameters on the original key.
+    // First, set the cipher mode.
+
+    dwMode = CRYPT_MODE_ECB;
+    if (CryptSetKeyParam(hOriginalKey, KP_MODE, (BYTE *)&dwMode, 0)) {
+        printf("Key Parameters set. \n");
+    } else {
+        MyHandleError("Error during CryptSetKeyParam.");
+    }
+
+    // Generate a random initialization vector.
+    if (CryptGenRandom(hCryptProv, 8, pbData)) {
+        printf("Random sequence generated. \n");
+    } else {
+        MyHandleError("Error during CryptGenRandom.");
+    }
+
+    // Set the initialization vector.
+    if (CryptSetKeyParam(hOriginalKey, KP_IV, pbData, 0)) {
+        printf("Parameter set with random sequence as initialization vector. \n");
+    } else {
+        MyHandleError("Error during CryptSetKeyParam.");
+    }
+
+    // Clean up.
+
+    if (hOriginalKey)
+        if (!CryptDestroyKey(hOriginalKey))
+            MyHandleError("Failed CryptDestroyKey\n");
+
+    if (hDuplicateKey)
+        if (!CryptDestroyKey(hDuplicateKey))
+            MyHandleError("Failed CryptDestroyKey\n");
+
+    if (hCryptProv)
+        if (!CryptReleaseContext(hCryptProv, 0))
+            MyHandleError("Failed CryptReleaseContext\n");
+
+    printf("\nThe program ran to completion without error. \n");
+}
+
+
+//void MyHandleError(char * s)
+////  This example uses the function MyHandleError, a simple error
+////  handling function, to print an error message and exit 
+////  the program. 
+////  For most applications, replace this function with one 
+////  that does more extensive error reporting.
+//{
+//    printf("An error occurred in running the program.\n");
+//    printf("%s\n", s);
+//    printf("Error number %x\n.", GetLastError());
+//    printf("Program terminating.\n");
+//    exit(1);
+//}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// Copyright (C) Microsoft.  All rights reserved.
+
+
+EXTERN_C
+__declspec(dllexport)
+void WINAPI SessionKeyParameters()
+/*
+Example C Program: Setting and Getting Session Key Parameters
+01/08/2021
+2 minutes to read
+
+The following example creates a random session key, gets and prints some default parameters of that key, 
+sets a new parameters on the original key, then gets and prints the value of that new parameter. 
+It cleans up by destroying the session key and releasing the cryptographic context.
+
+This example illustrates the use of the following tasks and functions:
+
+Accessing a CSP using CryptAcquireContext.
+Filing a buffer with random bytes using CryptGenRandom.
+Creating a session key using CryptGenKey.
+Getting the value of key parameters using CryptGetKeyParam.
+Using CryptSetKeyParam to alter the key generation process.
+Destroying the keys using CryptDestroyKey.
+Releasing the CSP with CryptReleaseContext.
+This example uses the function MyHandleError. The code for this function is included with the sample. 
+Code for this and other auxiliary functions is also listed under General Purpose Functions.
+
+https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-setting-and-getting-session-key-parameters
+*/
+{
+    HCRYPTPROV hProv;
+    HCRYPTKEY hKey;
+    DWORD dwMode;
+    BYTE pbData[16];
+    BYTE pbRandomData[8];
+    DWORD dwCount;
+    DWORD i;
+
+    // Acquire a cryptographic provider context handle.
+    if (!CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL, 0)) {
+        MyHandleError(TEXT("Error during CryptAcquireContext."));
+    }
+
+    //  Generate eight bytes of random data into pbRandomData.
+    if (CryptGenRandom(hProv, 8, pbRandomData)) {
+        _tprintf(TEXT("Eight bytes of random data have been generated.\n"));
+    } else {
+        MyHandleError(TEXT("Random bytes were not correctly generated."));
+    }
+
+    // Create a random block cipher session key.
+    if (!CryptGenKey(hProv, CALG_RC4, CRYPT_EXPORTABLE, &hKey)) {
+        MyHandleError(TEXT("Error during CryptGenKey."));
+    }
+
+    // Read the cipher mode.
+    dwCount = sizeof(DWORD);
+    if (CryptGetKeyParam(hKey, KP_MODE, (PBYTE)&dwMode, &dwCount, 0)) {
+        // Print the cipher mode.
+        _tprintf(TEXT("Default cipher mode: %d\n"), dwMode);
+    } else {
+        MyHandleError(TEXT("Error during CryptGetKeyParam."));
+    }
+
+    // Read the initialization vector.
+
+    //  Get the length of the initialization vector.
+    if (!CryptGetKeyParam(hKey, KP_IV, NULL, &dwCount, 0)) {
+        MyHandleError(TEXT("Error getting the IV length"));
+    }
+
+    // Get the initialization vector, itself.
+    if (CryptGetKeyParam(hKey, KP_IV, pbData, &dwCount, 0)) {
+        // Print the initialization vector.
+        _tprintf(TEXT("Default IV:"));
+        for (i = 0; i < dwCount; i++) {
+            _tprintf(TEXT("%2.2x "), pbData[i]);
+        }
+
+        _tprintf(TEXT("\n"));
+    } else {
+        MyHandleError(TEXT("Error getting the IV."));
+    }
+
+    //  Reset the initialization vector.
+    if (CryptSetKeyParam(hKey, KP_IV, pbRandomData, 0)) {
+        _tprintf(TEXT("New initialization vector is set.\n"));
+    } else {
+        MyHandleError(TEXT("The new IV was not set."));
+    }
+
+    // Read the new initialization vector.
+
+    //  Get the length of the new initialization vector.
+    if (!CryptGetKeyParam(hKey, KP_IV, NULL, &dwCount, 0)) {
+        MyHandleError(TEXT("Error getting the IV length"));
+    }
+
+    // Get the initialization vector, itself.
+    if (CryptGetKeyParam(hKey, KP_IV, pbData, &dwCount, 0)) {
+        // Print the initialization vector.
+        _tprintf(TEXT("RE-set IV:"));
+        for (i = 0; i < dwCount; i++) {
+            _tprintf(TEXT("%2.2x "), pbData[i]);
+        }
+
+        _tprintf(TEXT("\n"));
+    } else {
+        MyHandleError(TEXT("Error getting the IV."));
+    }
+
+    //  Clean up.
+
+    //  Destroy the session key.
+    if (hKey) {
+        CryptDestroyKey(hKey);
+    }
+
+    // Release the provider handle.
+    if (hProv) {
+        CryptReleaseContext(hProv, 0);
+    }
+} 
+
+
+//void MyHandleError(PTSTR psz)
+////    This example uses the function MyHandleError, a simple error
+////    handling function, to print an error message to the standard  
+////    error (stderr) file and exit the program. 
+////    For most applications, replace this function with one 
+////    that does more extensive error reporting.
+//{
+//    _ftprintf(stderr, TEXT("An error occurred in the program. \n"));
+//    _ftprintf(stderr, TEXT("%s\n"), psz);
+//    _ftprintf(stderr, TEXT("Error number %x.\n"), GetLastError());
+//    _ftprintf(stderr, TEXT("Program terminating. \n"));
+//    exit(1);
+//} // End of MyHandleError.
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// The key size, in bits.
+#define DHKEYSIZE 512
+
+// Prime in little-endian format.
+static const BYTE g_rgbPrime[] =
+{
+    0x91, 0x02, 0xc8, 0x31, 0xee, 0x36, 0x07, 0xec,
+    0xc2, 0x24, 0x37, 0xf8, 0xfb, 0x3d, 0x69, 0x49,
+    0xac, 0x7a, 0xab, 0x32, 0xac, 0xad, 0xe9, 0xc2,
+    0xaf, 0x0e, 0x21, 0xb7, 0xc5, 0x2f, 0x76, 0xd0,
+    0xe5, 0x82, 0x78, 0x0d, 0x4f, 0x32, 0xb8, 0xcb,
+    0xf7, 0x0c, 0x8d, 0xfb, 0x3a, 0xd8, 0xc0, 0xea,
+    0xcb, 0x69, 0x68, 0xb0, 0x9b, 0x75, 0x25, 0x3d,
+    0xaa, 0x76, 0x22, 0x49, 0x94, 0xa4, 0xf2, 0x8d
+};
+
+// Generator in little-endian format.
+static BYTE g_rgbGenerator[] =
+{
+    0x02, 0x88, 0xd7, 0xe6, 0x53, 0xaf, 0x72, 0xc5,
+    0x8c, 0x08, 0x4b, 0x46, 0x6f, 0x9f, 0x2e, 0xc4,
+    0x9c, 0x5c, 0x92, 0x21, 0x95, 0xb7, 0xe5, 0x58,
+    0xbf, 0xba, 0x24, 0xfa, 0xe5, 0x9d, 0xcb, 0x71,
+    0x2e, 0x2c, 0xce, 0x99, 0xf3, 0x10, 0xff, 0x3b,
+    0xcb, 0xef, 0x6c, 0x95, 0x22, 0x55, 0x9d, 0x29,
+    0x00, 0xb5, 0x4c, 0x5b, 0xa5, 0x63, 0x31, 0x41,
+    0x13, 0x0a, 0xea, 0x39, 0x78, 0x02, 0x6d, 0x62
+};
+
+BYTE g_rgbData[] = {0x01, 0x02, 0x03, 0x04,    0x05, 0x06, 0x07, 0x08};
+
+
+EXTERN_C
+__declspec(dllexport)
+int WINAPI DiffieHellman(int argc, _TCHAR * argv[])
+/*
+Diffie-Hellman Keys
+01/08/2021
+11 minutes to read
+
+Generating Diffie-Hellman Keys
+Exchanging Diffie-Hellman Keys
+Exporting a Diffie-Hellman Private Key
+Example Code
+Generating Diffie-Hellman Keys
+To generate a Diffie-Hellman key, perform the following steps:
+
+Call the CryptAcquireContext function to get a handle to the Microsoft Diffie-Hellman Cryptographic Provider.
+
+Generate the new key. 
+There are two ways to accomplish this¡ªby having CryptoAPI generate all new values for G, P, 
+and X or by using existing values for G and P, and generating a new value for X.
+
+To generate the key by generating all new values
+
+Call the CryptGenKey function, passing either CALG_DH_SF (store and forward) or CALG_DH_EPHEM (ephemeral) in the Algid parameter. The key will be generated using new, random values for G and P, a newly calculated value for X, and its handle will be returned in the phKey parameter.
+The new key is now ready for use. The values of G and P must be sent to the recipient along with the key (or sent by some other method) when doing a key exchange.
+To generate the key by using predefined values for G and P
+
+Call CryptGenKey passing either CALG_DH_SF (store and forward) or CALG_DH_EPHEM (ephemeral) in the Algid parameter and CRYPT_PREGEN for the dwFlags parameter. A key handle will be generated and returned in the phKey parameter.
+Initialize a CRYPT_DATA_BLOB structure with the pbData member set to the P value. The BLOB contains no header information and the pbData member is in little-endian format.
+The value of P is set by calling the CryptSetKeyParam function, passing the key handle retrieved in step a in the hKey parameter, the KP_P flag in the dwParam parameter, and a pointer to the structure that contains the value of P in the pbData parameter.
+Initialize a CRYPT_DATA_BLOB structure with the pbData member set to the G value. The BLOB contains no header information and the pbData member is in little-endian format.
+The value of G is set by calling the CryptSetKeyParam function, passing the key handle retrieved in step a in the hKey parameter, the KP_G flag in the dwParam parameter, and a pointer to the structure that contains the value of G in the pbData parameter.
+The value of X is generated by calling the CryptSetKeyParam function, passing the key handle retrieved in step a in the hKey parameter, the KP_X flag in the dwParam parameter, and NULL in the pbData parameter.
+If all the function calls succeeded, the Diffie-Hellman public key is ready for use.
+When the key is no longer needed, destroy it by passing the key handle to the CryptDestroyKey function.
+
+If CALG_DH_SF was specified in the previous procedures, the key values are persisted to storage with each call to CryptSetKeyParam. The G and P values can then be retrieved by using the CryptGetKeyParam function. Some CSPs may have hard-coded G and P values. In this case a NTE_FIXEDPARAMETER error will be returned if CryptSetKeyParam is called with KP_G or KP_P specified in the dwParam parameter. If CryptDestroyKey is called, the handle to the key is destroyed, but the key values are retained in the CSP. However, if CALG_DH_EPHEM was specified, the handle to the key is destroyed, and all values are cleared from the CSP.
+
+Exchanging Diffie-Hellman Keys
+The purpose of the Diffie-Hellman algorithm is to make it possible for two or more parties to create and share an identical, secret session key by sharing information over a network that is not secure. The information that gets shared over the network is in the form of a couple of constant values and a Diffie-Hellman public key. The process used by two key-exchange parties is as follows:
+
+Both parties agree to the Diffie-Hellman parameters which are a prime number (P) and a generator number (G).
+Party 1 sends its Diffie-Hellman public key to party 2.
+Party 2 computes the secret session key by using the information contained in its private key and party 1's public key.
+Party 2 sends its Diffie-Hellman public key to party 1.
+Party 1 computes the secret session key by using the information contained in its private key and party 2's public key.
+Both parties now have the same session key, which can be used for encrypting and decrypting data. The steps necessary for this are shown in the following procedure.
+To prepare a Diffie-Hellman public key for transmission
+
+Call the CryptAcquireContext function to get a handle to the Microsoft Diffie-Hellman Cryptographic Provider.
+Create a Diffie-Hellman key by calling the CryptGenKey function to create a new key, or by calling the CryptGetUserKey function to retrieve an existing key.
+Get the size needed to hold the Diffie-Hellman key BLOB by calling the CryptExportKey, passing NULL for the pbData parameter. The required size will be returned in pdwDataLen.
+Allocate memory for the key BLOB.
+Create a Diffie-Hellman public key BLOB by calling the CryptExportKey function, passing PUBLICKEYBLOB in the dwBlobType parameter and the handle to the Diffie-Hellman key in the hKey parameter. This function call causes the calculation of the public key value, (G^X) mod P.
+If all the preceding function calls were successful, the Diffie-Hellman public key BLOB is now ready to be encoded and transmitted.
+To import a Diffie-Hellman public key and calculate the secret session key
+
+Call the CryptAcquireContext function to get a handle to the Microsoft Diffie-Hellman Cryptographic Provider.
+Create a Diffie-Hellman key by calling the CryptGenKey function to create a new key, or by calling the CryptGetUserKey function to retrieve an existing key.
+To import the Diffie-Hellman public key into the CSP, call the CryptImportKey function, passing a pointer to the public key BLOB in the pbData parameter, the length of the BLOB in the dwDataLen parameter, and the handle to the Diffie-Hellman key in the hPubKey parameter. This causes the calculation, (Y^X) mod P, to be performed, thus creating the shared, secret key and completing the key exchange. This function call returns a handle to the new, secret, session key in the hKey parameter.
+At this point, the imported Diffie-Hellman is of type CALG_AGREEDKEY_ANY. Before the key can be used, it must be converted into a session key type. This is accomplished by calling the CryptSetKeyParam function with dwParam set to KP_ALGID and with pbData set to a pointer to a ALG_ID value that represents a session key, such as CALG_RC4. The key must be converted before using the shared key in the CryptEncrypt or CryptDecrypt function. Calls made to either of these functions prior to converting the key type will fail.
+The secret session key is now ready to be used for encryption or decryption.
+When the key is no longer needed, destroy the key handle by calling the CryptDestroyKey function.
+Exporting a Diffie-Hellman Private Key
+To export a Diffie-Hellman private key, perform the following steps:
+
+Call the CryptAcquireContext function to get a handle to the Microsoft Diffie-Hellman Cryptographic Provider.
+Create a Diffie-Hellman key by calling the CryptGenKey function to create a new key, or by calling the CryptGetUserKey function to retrieve an existing key.
+Create a Diffie-Hellman private key BLOB by calling the CryptExportKey function, passing PRIVATEKEYBLOB in the dwBlobType parameter and the handle to the Diffie-Hellman key in the hKey parameter.
+When the key handle is no longer needed, call the CryptDestroyKey function to destroy the key handle.
+
+Example Code
+The following example shows how to create, export, import, and use a Diffie-Hellman key to perform a key exchange.
+
+https://docs.microsoft.com/en-us/windows/win32/seccrypto/diffie-hellman-keys
+*/
+{
+    UNREFERENCED_PARAMETER(argc);
+    UNREFERENCED_PARAMETER(argv);
+
+    BOOL fReturn;
+    HCRYPTPROV hProvParty1 = NULL;
+    HCRYPTPROV hProvParty2 = NULL;
+    DATA_BLOB P;
+    DATA_BLOB G;
+    HCRYPTKEY hPrivateKey1 = NULL;
+    HCRYPTKEY hPrivateKey2 = NULL;
+    PBYTE pbKeyBlob1 = NULL;
+    PBYTE pbKeyBlob2 = NULL;
+    HCRYPTKEY hSessionKey1 = NULL;
+    HCRYPTKEY hSessionKey2 = NULL;
+    PBYTE pbData = NULL;
+    DWORD dwLength;
+    ALG_ID Algid;
+
+    /************************
+    Construct data BLOBs for the prime and generator. The P and G
+    values, represented by the g_rgbPrime and g_rgbGenerator arrays
+    respectively, are shared values that have been agreed to by both parties.
+    ************************/
+    P.cbData = DHKEYSIZE / 8;
+    P.pbData = (BYTE *)(g_rgbPrime);
+
+    G.cbData = DHKEYSIZE / 8;
+    G.pbData = (BYTE *)(g_rgbGenerator);
+
+    /************************
+    Create the private Diffie-Hellman key for party 1.
+    ************************/
+    // Acquire a provider handle for party 1.
+    fReturn = CryptAcquireContext(&hProvParty1, NULL, MS_ENH_DSS_DH_PROV, PROV_DSS_DH, CRYPT_VERIFYCONTEXT);
+    if (!fReturn) {
+        goto ErrorExit;
+    }
+
+    // Create an ephemeral private key for party 1.
+    fReturn = CryptGenKey(
+        hProvParty1,
+        CALG_DH_EPHEM,
+        DHKEYSIZE << 16 | CRYPT_EXPORTABLE | CRYPT_PREGEN,
+        &hPrivateKey1);
+    if (!fReturn) {
+        goto ErrorExit;
+    }
+
+    // Set the prime for party 1's private key.
+    fReturn = CryptSetKeyParam(hPrivateKey1, KP_P, (PBYTE)&P, 0);
+    if (!fReturn) {
+        goto ErrorExit;
+    }
+
+    // Set the generator for party 1's private key.
+    fReturn = CryptSetKeyParam(hPrivateKey1, KP_G, (PBYTE)&G, 0);
+    if (!fReturn) {
+        goto ErrorExit;
+    }
+
+    // Generate the secret values for party 1's private key.
+    fReturn = CryptSetKeyParam(hPrivateKey1, KP_X, NULL, 0);
+    if (!fReturn) {
+        goto ErrorExit;
+    }
+
+    /************************
+    Create the private Diffie-Hellman key for party 2.
+    ************************/
+    // Acquire a provider handle for party 2.
+    fReturn = CryptAcquireContext(&hProvParty2, NULL, MS_ENH_DSS_DH_PROV, PROV_DSS_DH, CRYPT_VERIFYCONTEXT);
+    if (!fReturn) {
+        goto ErrorExit;
+    }
+
+    // Create an ephemeral private key for party 2.
+    fReturn = CryptGenKey(
+        hProvParty2,
+        CALG_DH_EPHEM,
+        DHKEYSIZE << 16 | CRYPT_EXPORTABLE | CRYPT_PREGEN,
+        &hPrivateKey2);
+    if (!fReturn) {
+        goto ErrorExit;
+    }
+
+    // Set the prime for party 2's private key.
+    fReturn = CryptSetKeyParam(hPrivateKey2, KP_P, (PBYTE)&P, 0);
+    if (!fReturn) {
+        goto ErrorExit;
+    }
+
+    // Set the generator for party 2's private key.
+    fReturn = CryptSetKeyParam(hPrivateKey2, KP_G, (PBYTE)&G, 0);
+    if (!fReturn) {
+        goto ErrorExit;
+    }
+
+    // Generate the secret values for party 2's private key.
+    fReturn = CryptSetKeyParam(hPrivateKey2, KP_X, NULL, 0);
+    if (!fReturn) {
+        goto ErrorExit;
+    }
+
+    /************************
+    Export Party 1's public key.
+    ************************/
+    // Public key value, (G^X) mod P is calculated.
+    DWORD dwDataLen1;
+
+    // Get the size for the key BLOB.
+    fReturn = CryptExportKey(hPrivateKey1, NULL, PUBLICKEYBLOB, 0, NULL, &dwDataLen1);
+    if (!fReturn) {
+        goto ErrorExit;
+    }
+
+    // Allocate the memory for the key BLOB.
+    if (!(pbKeyBlob1 = (PBYTE)malloc(dwDataLen1))) {
+        goto ErrorExit;
+    }
+
+    // Get the key BLOB.
+    fReturn = CryptExportKey(hPrivateKey1, 0, PUBLICKEYBLOB, 0, pbKeyBlob1, &dwDataLen1);
+    if (!fReturn) {
+        goto ErrorExit;
+    }
+
+    /************************
+    Export Party 2's public key.
+    ************************/
+    // Public key value, (G^X) mod P is calculated.
+    DWORD dwDataLen2;
+
+    // Get the size for the key BLOB.
+    fReturn = CryptExportKey(hPrivateKey2, NULL, PUBLICKEYBLOB, 0, NULL, &dwDataLen2);
+    if (!fReturn) {
+        goto ErrorExit;
+    }
+
+    // Allocate the memory for the key BLOB.
+    if (!(pbKeyBlob2 = (PBYTE)malloc(dwDataLen2))) {
+        goto ErrorExit;
+    }
+
+    // Get the key BLOB.
+    fReturn = CryptExportKey(hPrivateKey2, 0, PUBLICKEYBLOB, 0, pbKeyBlob2, &dwDataLen2);
+    if (!fReturn) {
+        goto ErrorExit;
+    }
+
+    /************************
+    Party 1 imports party 2's public key.
+    The imported key will contain the new shared secret
+    key (Y^X) mod P.
+    ************************/
+    fReturn = CryptImportKey(hProvParty1, pbKeyBlob2, dwDataLen2, hPrivateKey1, 0, &hSessionKey2);
+    if (!fReturn) {
+        goto ErrorExit;
+    }
+
+    /************************
+    Party 2 imports party 1's public key.
+    The imported key will contain the new shared secret
+    key (Y^X) mod P.
+    ************************/
+    fReturn = CryptImportKey(hProvParty2, pbKeyBlob1, dwDataLen1, hPrivateKey2, 0, &hSessionKey1);
+    if (!fReturn) {
+        goto ErrorExit;
+    }
+
+    /************************
+    Convert the agreed keys to symmetric keys. They are currently of
+    the form CALG_AGREEDKEY_ANY. Convert them to CALG_RC4.
+    ************************/
+    Algid = CALG_RC4;
+
+    // Enable the party 1 public session key for use by setting the 
+    // ALGID.
+    fReturn = CryptSetKeyParam(hSessionKey1, KP_ALGID, (PBYTE)&Algid, 0);
+    if (!fReturn) {
+        goto ErrorExit;
+    }
+
+    // Enable the party 2 public session key for use by setting the ALGID.
+    fReturn = CryptSetKeyParam(hSessionKey2, KP_ALGID, (PBYTE)&Algid, 0);
+    if (!fReturn) {
+        goto ErrorExit;
+    }
+
+    /************************
+    Encrypt some data with party 1's session key.
+    ************************/
+    // Get the size.
+    dwLength = sizeof(g_rgbData);
+    fReturn = CryptEncrypt(hSessionKey1, 0, TRUE, 0, NULL, &dwLength, sizeof(g_rgbData));
+    if (!fReturn) {
+        goto ErrorExit;
+    }
+
+    // Allocate a buffer to hold the encrypted data.
+    pbData = (PBYTE)malloc(dwLength);
+    if (!pbData) {
+        goto ErrorExit;
+    }
+
+    // Copy the unencrypted data to the buffer. The data will be 
+    // encrypted in place.
+    memcpy(pbData, g_rgbData, sizeof(g_rgbData));
+
+    // Encrypt the data.
+    dwLength = sizeof(g_rgbData);
+    fReturn = CryptEncrypt(hSessionKey1, 0, TRUE, 0, pbData, &dwLength, sizeof(g_rgbData));
+    if (!fReturn) {
+        goto ErrorExit;
+    }
+
+    /************************
+    Decrypt the data with party 2's session key.
+    ************************/
+    dwLength = sizeof(g_rgbData);
+    fReturn = CryptDecrypt(hSessionKey2, 0, TRUE, 0, pbData, &dwLength);
+    if (!fReturn) {
+        goto ErrorExit;
+    }
+
+ErrorExit:
+    if (pbData) {
+        free(pbData);
+        pbData = NULL;
+    }
+
+    if (hSessionKey2) {
+        CryptDestroyKey(hSessionKey2);
+        hSessionKey2 = NULL;
+    }
+
+    if (hSessionKey1) {
+        CryptDestroyKey(hSessionKey1);
+        hSessionKey1 = NULL;
+    }
+
+    if (pbKeyBlob2) {
+        free(pbKeyBlob2);
+        pbKeyBlob2 = NULL;
+    }
+
+    if (pbKeyBlob1) {
+        free(pbKeyBlob1);
+        pbKeyBlob1 = NULL;
+    }
+
+    if (hPrivateKey2) {
+        CryptDestroyKey(hPrivateKey2);
+        hPrivateKey2 = NULL;
+    }
+
+    if (hPrivateKey1) {
+        CryptDestroyKey(hPrivateKey1);
+        hPrivateKey1 = NULL;
+    }
+
+    if (hProvParty2) {
+        CryptReleaseContext(hProvParty2, 0);
+        hProvParty2 = NULL;
+    }
+
+    if (hProvParty1) {
+        CryptReleaseContext(hProvParty1, 0);
+        hProvParty1 = NULL;
+    }
+
+    return 0;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
