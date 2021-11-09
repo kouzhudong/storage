@@ -11,7 +11,6 @@
 #pragma warning(disable:4473)
 #pragma warning(disable:6064)
 #pragma warning(disable:6067)
-#pragma warning(disable:6054)
 #pragma warning(disable:6273)
 
 
@@ -961,7 +960,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-getti
     PCCERT_CONTEXT   pCertContext = NULL;
     CRYPT_KEY_PROV_INFO * pCryptKeyProvInfo;
     char pszNameString[256];
-    char pszStoreName[256];
+    char pszStoreName[256] = {0};
     char fResponse;
     char fExtra;
     BYTE * pName = (BYTE *)"Temp Name.";

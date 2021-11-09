@@ -427,8 +427,7 @@ void ReportFailure()
         printf("Out of memory.\n");
         break;
     case ERROR_INVALID_HANDLE:
-        printf("The handle from verify signature is not valid." \
-               "function.\n");
+        printf("The handle from verify signature is not valid.function.\n");
         break;
     case ERROR_INVALID_PARAMETER:
         printf("The parameter from verify signature is not valid.\n");

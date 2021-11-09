@@ -106,7 +106,8 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/getsignercert?redirecte
 Other Extended C Code Examples
 2018 / 05 / 31
 
-The following topics present other procedures and extended C code examples that use the CryptoAPI functions :
+The following topics present other procedures and 
+extended C code examples that use the CryptoAPI functions :
 
 Verifying a CTL
 Verifying Signed Messages by Using CTLs
@@ -174,9 +175,8 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-certi
     // pTargetCert is a pointer to the desired certificate.
     // Check the certificate's time validity.
     pTargetCertInfo = pTargetCert->pCertInfo;
-    switch (CertVerifyTimeValidity(
-        NULL,               // Use current time.
-        pTargetCertInfo))   // Pointer to CERT_INFO.
+    switch (CertVerifyTimeValidity(NULL,               // Use current time.
+                                   pTargetCertInfo))   // Pointer to CERT_INFO.
     {
     case -1:
     {
@@ -1306,8 +1306,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program--veri
             - UI was enabled in dwUIChoice and the user clicked
                 "Yes" when asked to install and run the signed subject.
         */
-        wprintf_s(L"The file \"%s\" is signed and the signature was verified.\n",
-                  pwszSourceFile);
+        wprintf_s(L"The file \"%s\" is signed and the signature was verified.\n", pwszSourceFile);
         break;
     case TRUST_E_NOSIGNATURE:
         // The file was not signed or had a signature that was not valid.
@@ -1442,8 +1441,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program--veri
             - UI was enabled in dwUIChoice and the user clicked
                 "Yes" when asked to install and run the signed subject.
         */
-        wprintf_s(L"The file \"%s\" is signed and the signature was verified.\n",
-                  pwszSourceFile);
+        wprintf_s(L"The file \"%s\" is signed and the signature was verified.\n", pwszSourceFile);
         break;
     case TRUST_E_NOSIGNATURE:
         // The file was not signed or had a signature that was not valid.
@@ -1887,7 +1885,6 @@ https://docs.microsoft.com/en-US/troubleshoot/windows/win32/get-information-auth
 
 https://docs.microsoft.com/zh-CN/troubleshoot/windows/win32/get-information-authenticode-signed-executables
 */
-
 /*
 此代码检测的文件是带签名的文件，如：带签名的PE，或者CAT文件，但不能是签名信息在CAT的PE文件。
 */
@@ -2294,8 +2291,7 @@ BOOL GetTimeStampSignerInfo(PCMSG_SIGNER_INFO pSignerInfo, PCMSG_SIGNER_INFO * p
     __try {
         *pCounterSignerInfo = NULL;
 
-        // Loop through unathenticated attributes for
-        // szOID_RSA_counterSign OID.
+        // Loop through unathenticated attributes for szOID_RSA_counterSign OID.
         for (DWORD n = 0; n < pSignerInfo->UnauthAttrs.cAttr; n++) {
             if (lstrcmpA(pSignerInfo->UnauthAttrs.rgAttr[n].pszObjId, szOID_RSA_counterSign) == 0) {
                 // Get size of CMSG_SIGNER_INFO structure.
@@ -2318,8 +2314,7 @@ BOOL GetTimeStampSignerInfo(PCMSG_SIGNER_INFO pSignerInfo, PCMSG_SIGNER_INFO * p
                     __leave;
                 }
 
-                // Decode and get CMSG_SIGNER_INFO structure
-                // for timestamp certificate.
+                // Decode and get CMSG_SIGNER_INFO structure for timestamp certificate.
                 fResult = CryptDecodeObject(ENCODING,
                                             PKCS7_SIGNER_INFO,
                                             pSignerInfo->UnauthAttrs.rgAttr[n].rgValue[0].pbData,
@@ -2654,7 +2649,7 @@ Looks up a file by hash in the system catalogs.
     }
 
     // Generate hash for a give file
-    if (!CryptCATAdminCalcHashFromFileHandle2(CatAdminHandle,
+    if (!CryptCATAdminCalcHashFromFileHandle2(CatAdminHandle, 
                                               FileHandle,
                                               &HashLength,
                                               HashData,
