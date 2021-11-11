@@ -3532,7 +3532,8 @@ The new key is now ready for use.
 The values of G and P must be sent to the recipient along with the key (or sent by some other method) when doing a key exchange.
 To generate the key by using predefined values for G and P
 
-Call CryptGenKey passing either CALG_DH_SF (store and forward) or CALG_DH_EPHEM (ephemeral) in the Algid parameter and CRYPT_PREGEN for the dwFlags parameter. 
+Call CryptGenKey passing either CALG_DH_SF (store and forward) or
+CALG_DH_EPHEM (ephemeral) in the Algid parameter and CRYPT_PREGEN for the dwFlags parameter. 
 A key handle will be generated and returned in the phKey parameter.
 Initialize a CRYPT_DATA_BLOB structure with the pbData member set to the P value. 
 The BLOB contains no header information and the pbData member is in little-endian format.
@@ -3775,8 +3776,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/diffie-hellman-keys
 
     /************************
     Party 1 imports party 2's public key.
-    The imported key will contain the new shared secret
-    key (Y^X) mod P.
+    The imported key will contain the new shared secret key (Y^X) mod P.
     ************************/
     fReturn = CryptImportKey(hProvParty1, pbKeyBlob2, dwDataLen2, hPrivateKey1, 0, &hSessionKey2);
     if (!fReturn) {
@@ -3785,8 +3785,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/diffie-hellman-keys
 
     /************************
     Party 2 imports party 1's public key.
-    The imported key will contain the new shared secret
-    key (Y^X) mod P.
+    The imported key will contain the new shared secret key (Y^X) mod P.
     ************************/
     fReturn = CryptImportKey(hProvParty2, pbKeyBlob1, dwDataLen1, hPrivateKey2, 0, &hSessionKey1);
     if (!fReturn) {
@@ -3799,8 +3798,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/diffie-hellman-keys
     ************************/
     Algid = CALG_RC4;
 
-    // Enable the party 1 public session key for use by setting the 
-    // ALGID.
+    // Enable the party 1 public session key for use by setting the ALGID.
     fReturn = CryptSetKeyParam(hSessionKey1, KP_ALGID, (PBYTE)&Algid, 0);
     if (!fReturn) {
         goto ErrorExit;
@@ -3828,8 +3826,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/diffie-hellman-keys
         goto ErrorExit;
     }
 
-    // Copy the unencrypted data to the buffer. The data will be 
-    // encrypted in place.
+    // Copy the unencrypted data to the buffer. The data will be encrypted in place.
     memcpy(pbData, g_rgbData, sizeof(g_rgbData));
 
     // Encrypt the data.
@@ -3899,4 +3896,3 @@ ErrorExit:
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-

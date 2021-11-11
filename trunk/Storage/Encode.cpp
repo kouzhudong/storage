@@ -60,12 +60,6 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/signing-data
 //    You can use a command similar to the following to create a certificate that can be used with this example:
 //    makecert -n "cn=Test" -sk Test -ss my
 
-//#define SIGNER_NAME L"test"
-#define SIGNER_NAME L"Insert_signer_name_here"
-
-//    Define the name of the store where the needed certificate can be found. 
-#define CERT_STORE_NAME  L"MY"
-
 
 //   Local function prototypes.
 bool SignMessage(CRYPT_DATA_BLOB * pSignedMessageBlob);
@@ -387,9 +381,6 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-signi
 // Copyright (C) Microsoft.  All rights reserved.
 // Example of encoding and decoding a signed message.
 
-#define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
-#define MAX_NAME 256
-#define CERTIFICATE_STORE_NAME L"MY"
 
 //    Declare local functions.
 BOOL EncodeMessage(PCRYPT_DATA_BLOB pEncodedData, LPWSTR pwszSignerName);
@@ -823,11 +814,6 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program--enco
 */
 
 
-#define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
-#define MAX_NAME 256
-#define ENCODED_FILE_NAME L"testStream.p7s"
-
-
 BOOL WINAPI EncodeCallback(const void * pvArg, BYTE * pbData, DWORD cbData, BOOL fFinal)
 // Callback function used for streamed Signing. 
 {
@@ -1084,12 +1070,11 @@ void DecodeMessageWithStream()
 // signed message by using a receiver's public key.
 
 
-#define MY_ENCODING_TYPE (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
-
 #ifdef MAX_NAME
 #undef MAX_NAME
 #define MAX_NAME 128
 #endif
+
 
 // Copyright (C) Microsoft.  All rights reserved.
 // SIGNER_NAME is used with the CertFindCertificateInStore  
@@ -1762,19 +1747,12 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-recei
 // Copyright (C) Microsoft.  All rights reserved.
 
 
-#define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
-
-// Define the name of the store where the needed certificate can be found. 
-#define CERT_STORE_NAME  L"MY"
-
-
 // Define the name of a certificate subject.
 // To use this program, the definitions of SIGNER_NAME and 
 // CO_SIGNER_NAME must be changed to the name of the subject of a 
-// certificate that has access to a private key. That certificate 
-// must have either the CERT_KEY_PROV_INFO_PROP_ID or  
-// CERT_KEY_CONTEXT_PROP_ID property set for the context to 
-// provide access to the private signature key.
+// certificate that has access to a private key. 
+// That certificate must have either the CERT_KEY_PROV_INFO_PROP_ID or  
+// CERT_KEY_CONTEXT_PROP_ID property set for the context to provide access to the private signature key.
 
 
 // You can use commands similar to the following to create a 
@@ -1785,21 +1763,6 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-recei
 
 //#define SIGNER_NAME L"test_signer"
 //#define CO_SIGNER_NAME L"test_co_signer"
-
-
-#ifdef SIGNER_NAME
-#undef SIGNER_NAME
-#define SIGNER_NAME L"Insert_signer_name_here"
-#endif
-
-
-#define CO_SIGNER_NAME L"Insert_co_signer_name_here"
-
-
-#ifdef MAX_NAME
-#undef MAX_NAME
-#define MAX_NAME 256
-#endif
 
 
 // Local function prototypes.
@@ -2273,11 +2236,6 @@ exit_VerifyCosignedMessage:
 //   These certificates must have either the 
 //   CERT_KEY_PROV_INFO_PROP_ID or CERT_KEY_CONTEXT_PROP_ID 
 //   property set for the contexts to provide access to private signature keys.
-
-#define SIGNER_NAME L"Insert_signer_name_here"
-#define COUNTER_SIGNER_NAME L"Insert_counter_signer_name_here"
-
-#define MAX_NAME 256
 
 
 int EncodingAndDecodingCountersignedMessage(int argc, _TCHAR * argv[])

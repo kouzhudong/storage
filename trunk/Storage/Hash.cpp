@@ -3,9 +3,7 @@
 
 
 #pragma warning(disable:28182)
-#pragma warning(disable:4267)
 #pragma warning(disable:28183)
-#pragma warning(disable:6001)
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -530,7 +528,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
 
     BYTE * pbContent = (BYTE *)"A razzle-dazzle hashed message \n"
         "Hashing is better than trashing. \n";    // The message
-    DWORD cbContent = strlen((char *)pbContent) + 1;  // Size of message
+    DWORD cbContent = (DWORD)strlen((char *)pbContent) + 1;  // Size of message
                                                     // including the final NULL.
     HCRYPTPROV hCryptProv;                          // CSP handle
     DWORD HashAlgSize;
@@ -543,7 +541,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
     //  Variables to be used in decoding.
     DWORD cbData = sizeof(DWORD);
     DWORD dwMsgType;
-    DWORD cbDecoded;
+    DWORD cbDecoded = 0;
     BYTE * pbDecoded;
 
     //  Begin processing.
@@ -807,14 +805,14 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-signi
     // Declare and initialize variables.
     HCRYPTPROV hProv;
     BYTE * pbBuffer = (BYTE *)"The data that is to be hashed and signed.";
-    DWORD dwBufferLen = strlen((char *)pbBuffer) + 1;
+    DWORD dwBufferLen = (DWORD)strlen((char *)pbBuffer) + 1;
     HCRYPTHASH hHash;
     HCRYPTKEY hKey;
     HCRYPTKEY hPubKey;
     BYTE * pbKeyBlob;
     BYTE * pbSignature;
     DWORD dwSigLen;
-    DWORD dwBlobLen;
+    DWORD dwBlobLen = 0;
 
     // Acquire a cryptographic provider context handle.
     if (CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL, 0)) {
@@ -1099,13 +1097,16 @@ If any of the data changes, the hash value will change appropriately.
 
 Hashes are not useful for encrypting data because they are not intended to be used to reproduce the original data from the hash value.
 Hashes are most useful to verify the integrity of the data when used with an asymmetric signing algorithm.
-For example, if you hashed a text message, signed the hash, and included the signed hash value with the original message,
+For example, if you hashed a text message, signed the hash, 
+and included the signed hash value with the original message,
 the recipient could verify the signed hash, create the hash value for the received message,
 and then compare this hash value with the signed hash value included with the original message.
-If the two hash values are identical, the recipient can be reasonably sure that the original message has not been modified.
+If the two hash values are identical, 
+the recipient can be reasonably sure that the original message has not been modified.
 
 The size of the hash value is fixed for a particular hashing algorithm.
-What this means is that no matter how large or small the data block is, the hash value will always be the same size.
+What this means is that no matter how large or small the data block is, 
+the hash value will always be the same size.
 As an example, the SHA256 hashing algorithm has a hash value size of 256 bits.
 
 Creating a Hashing Object
@@ -1116,7 +1117,8 @@ To create a hash using CNG, perform the following steps:
 
 Open an algorithm provider that supports the desired algorithm.
 Typical hashing algorithms include MD2, MD4, MD5, SHA-1, and SHA256.
-Call the BCryptOpenAlgorithmProvider function and specify the appropriate algorithm identifier in the pszAlgId parameter.
+Call the BCryptOpenAlgorithmProvider function and 
+specify the appropriate algorithm identifier in the pszAlgId parameter.
 The function returns a handle to the provider.
 
 Perform the following steps to create the hashing object:
@@ -1143,7 +1145,8 @@ If you will not be creating any more hash objects,
 close the algorithm provider by passing the provider handle to the BCryptCloseAlgorithmProvider function.
 
 If you will be creating more hash objects,
-we suggest you reuse the algorithm provider rather than creating and destroying the same type of algorithm provider many times.
+we suggest you reuse the algorithm provider rather than creating and 
+destroying the same type of algorithm provider many times.
 
 When you have finished using the hash value memory, free it.
 
@@ -1169,13 +1172,12 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccng/creating-a-hash-with-cng
     }
 
     //calculate the size of the buffer to hold the hash object
-    if (!NT_SUCCESS(status = BCryptGetProperty(
-        hAlg,
-        BCRYPT_OBJECT_LENGTH,
-        (PBYTE)&cbHashObject,
-        sizeof(DWORD),
-        &cbData,
-        0))) {
+    if (!NT_SUCCESS(status = BCryptGetProperty(hAlg,
+                                               BCRYPT_OBJECT_LENGTH,
+                                               (PBYTE)&cbHashObject,
+                                               sizeof(DWORD),
+                                               &cbData,
+                                               0))) {
         wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
         goto Cleanup;
     }
@@ -1188,13 +1190,12 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccng/creating-a-hash-with-cng
     }
 
     //calculate the length of the hash
-    if (!NT_SUCCESS(status = BCryptGetProperty(
-        hAlg,
-        BCRYPT_HASH_LENGTH,
-        (PBYTE)&cbHash,
-        sizeof(DWORD),
-        &cbData,
-        0))) {
+    if (!NT_SUCCESS(status = BCryptGetProperty(hAlg,
+                                               BCRYPT_HASH_LENGTH,
+                                               (PBYTE)&cbHash,
+                                               sizeof(DWORD),
+                                               &cbData,
+                                               0))) {
         wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
         goto Cleanup;
     }
@@ -1335,19 +1336,12 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccng/signing-data-with-cng
     NCRYPT_KEY_HANDLE       hKey = NULL;
     BCRYPT_KEY_HANDLE       hTmpKey = NULL;
     SECURITY_STATUS         secStatus = ERROR_SUCCESS;
-    BCRYPT_ALG_HANDLE       hHashAlg = NULL,
-        hSignAlg = NULL;
+    BCRYPT_ALG_HANDLE       hHashAlg = NULL, hSignAlg = NULL;
     BCRYPT_HASH_HANDLE      hHash = NULL;
     NTSTATUS                status = STATUS_UNSUCCESSFUL;
-    DWORD                   cbData = 0,
-        cbHash = 0,
-        cbBlob = 0,
-        cbSignature = 0,
-        cbHashObject = 0;
+    DWORD                   cbData = 0, cbHash = 0, cbBlob = 0, cbSignature = 0, cbHashObject = 0;
     PBYTE                   pbHashObject = NULL;
-    PBYTE                   pbHash = NULL,
-        pbBlob = NULL,
-        pbSignature = NULL;
+    PBYTE                   pbHash = NULL, pbBlob = NULL, pbSignature = NULL;
 
     UNREFERENCED_PARAMETER(argc);
     UNREFERENCED_PARAMETER(wargv);
@@ -1640,21 +1634,11 @@ The following example shows how to encrypt data with CNG by using the advanced e
 https://docs.microsoft.com/zh-cn/windows/win32/seccng/encrypting-data-with-cng
 */
 {
-
     BCRYPT_ALG_HANDLE       hAesAlg = NULL;
     BCRYPT_KEY_HANDLE       hKey = NULL;
     NTSTATUS                status = STATUS_UNSUCCESSFUL;
-    DWORD                   cbCipherText = 0,
-        cbPlainText = 0,
-        cbData = 0,
-        cbKeyObject = 0,
-        cbBlockLen = 0,
-        cbBlob = 0;
-    PBYTE                   pbCipherText = NULL,
-        pbPlainText = NULL,
-        pbKeyObject = NULL,
-        pbIV = NULL,
-        pbBlob = NULL;
+    DWORD cbCipherText = 0, cbPlainText = 0, cbData = 0, cbKeyObject = 0, cbBlockLen = 0, cbBlob = 0;
+    PBYTE pbCipherText = NULL, pbPlainText = NULL, pbKeyObject = NULL, pbIV = NULL, pbBlob = NULL;
 
     UNREFERENCED_PARAMETER(argc);
     UNREFERENCED_PARAMETER(wargv);
@@ -1666,7 +1650,12 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccng/encrypting-data-with-cng
     }
 
     // Calculate the size of the buffer to hold the KeyObject.
-    if (!NT_SUCCESS(status = BCryptGetProperty(hAesAlg, BCRYPT_OBJECT_LENGTH, (PBYTE)&cbKeyObject, sizeof(DWORD), &cbData, 0))) {
+    if (!NT_SUCCESS(status = BCryptGetProperty(hAesAlg, 
+                                               BCRYPT_OBJECT_LENGTH,
+                                               (PBYTE)&cbKeyObject, 
+                                               sizeof(DWORD), 
+                                               &cbData,
+                                               0))) {
         wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
         goto Cleanup;
     }
