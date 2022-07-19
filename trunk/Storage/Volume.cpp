@@ -454,10 +454,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/editing-drive-letter-assig
                 szUniqueVolumeName[0] = '\0';
             }
 
-            fResult = DefineDosDevice(
-                DDD_RAW_TARGET_PATH | DDD_REMOVE_DEFINITION | DDD_EXACT_MATCH_ON_REMOVE,
-                szDriveLetter,
-                pszNTDevice);
+            fResult = DefineDosDevice(DDD_RAW_TARGET_PATH | DDD_REMOVE_DEFINITION | DDD_EXACT_MATCH_ON_REMOVE, szDriveLetter, pszNTDevice);
             if (!fResult)
                 DEBUG_PRINT(TEXT("DefineDosDevice failed"), GetLastError());
 

@@ -360,15 +360,7 @@ int DirectoryChange(int argc, _TCHAR * argv[])
             FILE_NOTIFY_CHANGE_CREATION |
             FILE_NOTIFY_CHANGE_SIZE;
 
-        if (!ReadDirectoryChangesW(hDirectoryHandle,
-                                   buffer,
-                                   nBufferSize,
-                                   1,
-                                   dwNotifyFilter,
-                                   &dwBytes,
-                                   NULL,
-                                   NULL) ||
-            GetLastError() == ERROR_INVALID_HANDLE) {
+        if (!ReadDirectoryChangesW(hDirectoryHandle, buffer, nBufferSize, 1, dwNotifyFilter, &dwBytes, NULL, NULL) || GetLastError() == ERROR_INVALID_HANDLE) {
             break;
         }
 
@@ -431,8 +423,7 @@ DWORD WINAPI DirectoryChangeThread(LPVOID lpParam)
         PPER_IO_CONTEXT pIContext = NULL;
         LPOVERLAPPED pOL = NULL;
 
-        if (GetQueuedCompletionStatus(pic->hIocp, &dwBytes, (PULONG_PTR)&pIContext, &pOL, INFINITE))
-        {
+        if (GetQueuedCompletionStatus(pic->hIocp, &dwBytes, (PULONG_PTR)&pIContext, &pOL, INFINITE)) {
             if (NULL == pIContext) {
                 return 0;
             }
@@ -469,15 +460,7 @@ DWORD WINAPI DirectoryChangeThread(LPVOID lpParam)
         }
 
         DWORD nBytes = 0;
-        ReadDirectoryChangesW(
-            pic->hDir,
-            pic->lpBuffer,
-            MAX_BUFFER,
-            TRUE,
-            FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_SIZE,
-            &nBytes,
-            (LPOVERLAPPED)pic,
-            NULL);
+        ReadDirectoryChangesW(pic->hDir, pic->lpBuffer, MAX_BUFFER, TRUE, FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_SIZE, &nBytes, (LPOVERLAPPED)pic, NULL);
     }
 }
 
@@ -509,16 +492,15 @@ void DirectoryChangeUseIOCP()
 
         DWORD nBytes = 0;
         BOOL  bRet = FALSE;
-        bRet = ReadDirectoryChangesW(
-            g_pIContext[i].hDir,
-            g_pIContext[i].lpBuffer,
-            MAX_BUFFER,
-            TRUE,
-            FILE_NOTIFY_CHANGE_FILE_NAME |
-            FILE_NOTIFY_CHANGE_SIZE,//这个不会重复。FILE_NOTIFY_CHANGE_LAST_WRITE会重复。
-            &nBytes,
-            (LPOVERLAPPED)&g_pIContext[i],
-            NULL);
+        bRet = ReadDirectoryChangesW(g_pIContext[i].hDir,
+                                     g_pIContext[i].lpBuffer,
+                                     MAX_BUFFER,
+                                     TRUE,
+                                     FILE_NOTIFY_CHANGE_FILE_NAME |
+                                     FILE_NOTIFY_CHANGE_SIZE,//这个不会重复。FILE_NOTIFY_CHANGE_LAST_WRITE会重复。
+                                     &nBytes,
+                                     (LPOVERLAPPED)&g_pIContext[i],
+                                     NULL);
     }
 
     for (;;) {
@@ -544,9 +526,7 @@ void DirectoryChangeUseIOCP()
 DIRECTORY_INFO  DirInfo[MAX_DIRS];
 
 
-VOID CALLBACK DirectoryChangesCompletionRoutine(DWORD dwErrorCode,
-                                                DWORD dwNumberOfBytesTransfered,
-                                                LPOVERLAPPED lpOverlapped)
+VOID CALLBACK DirectoryChangesCompletionRoutine(DWORD dwErrorCode, DWORD dwNumberOfBytesTransfered, LPOVERLAPPED lpOverlapped)
 {
     for (int i = 0; ; i++) {
         if (DirInfo[i].hDir == NULL) {
@@ -597,15 +577,14 @@ VOID CALLBACK DirectoryChangesCompletionRoutine(DWORD dwErrorCode,
             DirInfo[i].Overlapped.Pointer = 0;
             DirInfo[i].Overlapped.hEvent = 0;
 
-            BOOL B = ReadDirectoryChangesW(
-                DirInfo[i].hDir,
-                DirInfo[i].lpBuffer,
-                MAX_BUFFER,
-                TRUE,
-                FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_LAST_WRITE,
-                &DirInfo[i].dwBufLength,
-                &DirInfo[i].Overlapped,
-                DirectoryChangesCompletionRoutine);
+            BOOL B = ReadDirectoryChangesW(DirInfo[i].hDir,
+                                           DirInfo[i].lpBuffer,
+                                           MAX_BUFFER,
+                                           TRUE,
+                                           FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_LAST_WRITE,
+                                           &DirInfo[i].dwBufLength,
+                                           &DirInfo[i].Overlapped,
+                                           DirectoryChangesCompletionRoutine);
             _ASSERTE(B);
 
             break;
@@ -627,14 +606,13 @@ int CreateDirectoryChangeThread()
             break;
         }
 
-        DirInfo[i].hDir = CreateFile(
-            DirInfo[i].lpszDirName,
-            FILE_LIST_DIRECTORY,
-            FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
-            NULL,
-            OPEN_EXISTING,
-            FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,
-            NULL);
+        DirInfo[i].hDir = CreateFile(DirInfo[i].lpszDirName,
+                                     FILE_LIST_DIRECTORY,
+                                     FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+                                     NULL,
+                                     OPEN_EXISTING,
+                                     FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,
+                                     NULL);
         _ASSERTE(DirInfo[i].hDir != INVALID_HANDLE_VALUE);
     }
 
@@ -643,15 +621,14 @@ int CreateDirectoryChangeThread()
             break;
         }
 
-        BOOL B = ReadDirectoryChangesW(
-            DirInfo[i].hDir,
-            DirInfo[i].lpBuffer,
-            MAX_BUFFER,
-            TRUE,
-            FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_LAST_WRITE,
-            &DirInfo[i].dwBufLength,
-            &DirInfo[i].Overlapped,
-            DirectoryChangesCompletionRoutine);
+        BOOL B = ReadDirectoryChangesW(DirInfo[i].hDir,
+                                       DirInfo[i].lpBuffer,
+                                       MAX_BUFFER,
+                                       TRUE,
+                                       FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_LAST_WRITE,
+                                       &DirInfo[i].dwBufLength,
+                                       &DirInfo[i].Overlapped,
+                                       DirectoryChangesCompletionRoutine);
         _ASSERTE(B);
     }
 
@@ -830,8 +807,7 @@ int DirListener(int argc, char * argv[])
             system(listnCmd);
         }
 
-        // Since, the term "New" is relative to the contents
-        // of latest1.txt when present which can be created
+        // Since, the term "New" is relative to the contents of latest1.txt when present which can be created
         // either by NOTIFY_lxm or DirListener(in mouse hover recognition), we would check new.txt to be present
         // to display the appropriate message until the next
         // change. Displaying the other message in case of any new videos is being taken care of by DirContDiff.exe
@@ -841,8 +817,7 @@ int DirListener(int argc, char * argv[])
 
         // It is important to note that there can be a change
         // but that change need not be an addition of new
-        // video. So, we have to compare the directory listnings
-        // anyhow.           
+        // video. So, we have to compare the directory listnings anyhow.           
         WaitUntilNextChange();
 
         // There could be file changes every single second.
