@@ -667,3 +667,301 @@ you should call the Wow64DisableWow64FsRedirectionfunction before calling FindFi
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/*
+;获取某些目录的路径。
+;SHGetFolderPath好像被SHGetKnownFolderPath和SHGetSpecialFolderPath替代。
+;CSIDL好像又被KNOWNFOLDERID代替。
+;本文以SHGetSpecialFolderPath为例写代码。
+.386
+.model flat,stdcall
+option casemap:none
+
+include windows.inc
+;include winextra.inc
+
+include kernel32.inc
+includelib kernel32.lib
+
+include shell32.inc
+includelib shell32.lib
+
+CSIDL_ADMINTOOLS                 equ 0030h
+CSIDL_ALTSTARTUP                 equ 001dh
+CSIDL_APPDATA                    equ 001ah
+CSIDL_BITBUCKET                  equ 000ah
+CSIDL_CDBURN_AREA                equ 003bh
+CSIDL_COMMON_ADMINTOOLS          equ 002fh
+CSIDL_COMMON_ALTSTARTUP          equ 001eh
+CSIDL_COMMON_APPDATA             equ 0023h
+CSIDL_COMMON_DESKTOPDIRECTORY    equ 0019h
+CSIDL_COMMON_DOCUMENTS           equ 002eh
+CSIDL_COMMON_FAVORITES           equ 001fh
+CSIDL_COMMON_MUSIC               equ 0035h
+CSIDL_COMMON_OEM_LINKS           equ 003ah
+CSIDL_COMMON_PICTURES            equ 0036h
+CSIDL_COMMON_PROGRAMS            equ 0017h
+CSIDL_COMMON_STARTMENU           equ 0016h
+CSIDL_COMMON_STARTUP             equ 0018h
+CSIDL_COMMON_TEMPLATES           equ 002dh
+CSIDL_COMMON_VIDEO               equ 0037h
+CSIDL_COMPUTERSNEARME            equ 003dh
+CSIDL_CONNECTIONS                equ 0031h
+CSIDL_CONTROLS                   equ 0003h
+CSIDL_COOKIES                    equ 0021h
+CSIDL_DESKTOP                    equ 0000h
+CSIDL_DESKTOPDIRECTORY           equ 0010h
+CSIDL_DRIVES                     equ 0011h
+CSIDL_FAVORITES                  equ 0006h
+CSIDL_FLAG_CREATE                equ 8000h
+CSIDL_FLAG_DONT_UNEXPAND         equ 2000h
+CSIDL_FLAG_DONT_VERIFY           equ 4000h
+CSIDL_FLAG_MASK                  equ 0FF00h
+CSIDL_FLAG_NO_ALIAS              equ 1000h
+CSIDL_FLAG_PER_USER_INIT         equ 0800h
+CSIDL_FONTS                      equ 0014h
+CSIDL_HISTORY                    equ 0022h
+CSIDL_INTERNET                   equ 0001h
+CSIDL_INTERNET_CACHE             equ 0020h
+CSIDL_LOCAL_APPDATA              equ 001ch
+;CSIDL_MYDOCUMENTS                equ 0005h
+CSIDL_MYMUSIC                    equ 000dh
+CSIDL_MYPICTURES                 equ 0027h
+CSIDL_MYVIDEO                    equ 000eh
+CSIDL_NETHOOD                    equ 0013h
+CSIDL_NETWORK                    equ 0012h
+CSIDL_PERSONAL                   equ 0005h
+CSIDL_PRINTERS                   equ 0004h
+CSIDL_PRINTHOOD                  equ 001bh
+CSIDL_PROFILE                    equ 0028h
+CSIDL_PROGRAMS                   equ 0002h
+CSIDL_PROGRAM_FILES              equ 0026h
+CSIDL_PROGRAM_FILESX86           equ 002ah
+CSIDL_PROGRAM_FILES_COMMON       equ 002bh
+CSIDL_PROGRAM_FILES_COMMONX86    equ 002ch
+CSIDL_RECENT                     equ 0008h
+CSIDL_RESOURCES                  equ 0038h
+CSIDL_RESOURCES_LOCALIZED        equ 0039h
+CSIDL_SENDTO                     equ 0009h
+CSIDL_STARTMENU                  equ 000bh
+CSIDL_STARTUP                    equ 0007h
+CSIDL_SYSTEM                     equ 0025h
+CSIDL_SYSTEMX86                  equ 0029h
+CSIDL_TEMPLATES                  equ 0015h
+CSIDL_WINDOWS                    equ 0024h
+
+.data?
+buffer db 512 dup (?)
+path db 512 dup (?)
+
+.code
+
+hstdout dd 0
+hstdin dd 0
+x dd 0
+
+szCSIDL_ADMINTOOLS db "FOLDERID_AdminTools:",0
+szCSIDL_ALTSTARTUP db "FOLDERID_Startup:",0
+szCSIDL_APPDATA db "FOLDERID_RoamingAppData:",0
+szCSIDL_BITBUCKET db "FOLDERID_RecycleBinFolder:",0
+szCSIDL_CDBURN_AREA db "FOLDERID_CDBurning:",0
+szCSIDL_COMMON_ADMINTOOLS db "FOLDERID_CommonAdminTools:",0
+szCSIDL_COMMON_ALTSTARTUP db "FOLDERID_CommonStartup:",0
+szCSIDL_COMMON_APPDATA db "FOLDERID_ProgramData:",0
+szCSIDL_COMMON_DESKTOPDIRECTORY db "FOLDERID_PublicDesktop:",0
+szCSIDL_COMMON_DOCUMENTS db "FOLDERID_PublicDocuments:",0
+szCSIDL_COMMON_FAVORITES db "FOLDERID_Favorites:",0
+szCSIDL_COMMON_MUSIC db "FOLDERID_PublicMusic:",0
+szCSIDL_COMMON_OEM_LINKS db "FOLDERID_CommonOEMLinks:",0
+szCSIDL_COMMON_PICTURES db "FOLDERID_PublicPictures:",0
+szCSIDL_COMMON_PROGRAMS db "FOLDERID_CommonPrograms:",0
+szCSIDL_COMMON_STARTMENU db "FOLDERID_CommonStartMenu:",0
+szCSIDL_COMMON_STARTUP db "FOLDERID_CommonStartup:",0
+szCSIDL_COMMON_TEMPLATES db "FOLDERID_CommonTemplates:",0
+szCSIDL_COMMON_VIDEO db "FOLDERID_PublicVideos:",0
+szCSIDL_COMPUTERSNEARME db "FOLDERID_NetworkFolder:",0
+szCSIDL_CONNECTIONS db "FOLDERID_ConnectionsFolder:",0
+szCSIDL_CONTROLS db "FOLDERID_ControlPanelFolder:",0
+szCSIDL_COOKIES db "FOLDERID_Cookies:",0
+szCSIDL_DESKTOP db "FOLDERID_Desktop:",0
+szCSIDL_DESKTOPDIRECTORY db "FOLDERID_Desktop:",0
+szCSIDL_DRIVES db "FOLDERID_ComputerFolder:",0
+szCSIDL_FAVORITES db "FOLDERID_Favorites:",0
+szCSIDL_FONTS db "FOLDERID_Fonts:",0
+szCSIDL_HISTORY db "FOLDERID_History:",0
+szCSIDL_INTERNET db "FOLDERID_InternetFolder:",0
+szCSIDL_INTERNET_CACHE db "FOLDERID_InternetCache:",0
+szCSIDL_LOCAL_APPDATA db "FOLDERID_LocalAppData:",0
+szCSIDL_MYDOCUMENTS db "FOLDERID_Documents:",0
+szCSIDL_MYMUSIC db "FOLDERID_Music:",0
+szCSIDL_MYPICTURES db "FOLDERID_Pictures:",0
+szCSIDL_MYVIDEO db "FOLDERID_Videos:",0
+szCSIDL_NETHOOD db "FOLDERID_NetHood:",0
+szCSIDL_NETWORK db "FOLDERID_NetworkFolder:",0
+szCSIDL_PERSONAL db "FOLDERID_Documents:",0
+szCSIDL_PRINTERS db "FOLDERID_PrintersFolder:",0
+szCSIDL_PRINTHOOD db "FOLDERID_PrintHood:",0
+szCSIDL_PROFILE db "FOLDERID_Profile:",0
+szCSIDL_PROGRAM_FILES db "FOLDERID_ProgramFiles:",0
+szCSIDL_PROGRAM_FILESX86 db "FOLDERID_ProgramFilesX86:",0
+szCSIDL_PROGRAM_FILES_COMMON db "FOLDERID_ProgramFilesCommon:",0
+szCSIDL_PROGRAM_FILES_COMMONX86 db "FOLDERID_ProgramFilesCommonX86:",0
+szCSIDL_PROGRAMS db "FOLDERID_Programs:",0
+szCSIDL_RECENT db "FOLDERID_Recent:",0
+szCSIDL_RESOURCES db "FOLDERID_ResourceDir:",0
+szCSIDL_RESOURCES_LOCALIZED db "FOLDERID_LocalizedResourcesDir:",0
+szCSIDL_SENDTO db "FOLDERID_SendTo:",0
+szCSIDL_STARTMENU db "FOLDERID_StartMenu:",0
+szCSIDL_STARTUP db "FOLDERID_Startup:",0
+szCSIDL_SYSTEM db "FOLDERID_System:",0
+szCSIDL_SYSTEMX86 db "FOLDERID_SystemX86:",0
+szCSIDL_TEMPLATES db "FOLDERID_Templates:",0
+szCSIDL_WINDOWS db "FOLDERID_Windows:",0
+
+sz_enter db 13,10,0
+notice db "按enter键退出！",13,10,0
+correy db "made by correy",0
+szsysdir db "系统盘",0 ;有极少数的几个没有带盘符，所以加这个。
+
+ShowSpecialFolderPath proc CSIDL,szCSIDL
+  invoke RtlZeroMemory,addr buffer,sizeof buffer
+  invoke RtlZeroMemory,addr path,sizeof path
+  invoke SHGetSpecialFolderPathW,0,addr buffer,CSIDL,0
+
+  invoke lstrlen,szCSIDL
+  invoke WriteFile,hstdout,szCSIDL,eax,addr x,0
+
+  invoke lstrlenW,addr buffer+2
+  invoke WideCharToMultiByte,0,0,addr buffer+2,eax,addr path,sizeof path,0,0
+
+  invoke WriteFile,hstdout,addr szsysdir,sizeof szsysdir,addr x,0
+
+  invoke lstrlen,addr path
+  invoke WriteFile,hstdout,addr path,eax,addr x,0
+
+  invoke WriteFile,hstdout,addr sz_enter,sizeof sz_enter-1,addr x,0
+  ret
+ShowSpecialFolderPath endp
+
+start:
+invoke GetStdHandle,-10
+mov hstdin,eax
+invoke GetStdHandle,-11
+mov hstdout,eax
+
+invoke SetConsoleTitle,addr correy
+invoke SetConsoleScreenBufferSize,hstdout,01000099h;高字是高度，低字是宽度。
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+invoke SHGetSpecialFolderPathW,0,addr buffer,CSIDL_ADMINTOOLS,0
+invoke WriteFile,hstdout,addr szCSIDL_ADMINTOOLS,sizeof szCSIDL_ADMINTOOLS-1,addr x,0
+
+invoke lstrlenW,addr buffer+2
+invoke WideCharToMultiByte,0,0,addr buffer+2,eax,addr path,sizeof path,0,0
+
+invoke WriteFile,hstdout,addr szsysdir,sizeof szsysdir,addr x,0
+
+invoke lstrlen,addr path
+invoke WriteFile,hstdout,addr path,eax,addr x,0
+
+invoke WriteFile,hstdout,addr sz_enter,sizeof sz_enter-1,addr x,0
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;本人没有找到CSIDL的规律，如果有我想一个循环应该可以解决。
+invoke ShowSpecialFolderPath,CSIDL_ALTSTARTUP,addr szCSIDL_ALTSTARTUP
+invoke ShowSpecialFolderPath,CSIDL_APPDATA,addr szCSIDL_APPDATA
+invoke ShowSpecialFolderPath,CSIDL_BITBUCKET ,addr szCSIDL_BITBUCKET
+invoke ShowSpecialFolderPath,CSIDL_CDBURN_AREA ,addr szCSIDL_CDBURN_AREA
+invoke ShowSpecialFolderPath,CSIDL_COMMON_ADMINTOOLS,addr szCSIDL_COMMON_ADMINTOOLS
+invoke ShowSpecialFolderPath,CSIDL_COMMON_ALTSTARTUP ,addr szCSIDL_COMMON_ALTSTARTUP
+invoke ShowSpecialFolderPath,CSIDL_COMMON_APPDATA,addr szCSIDL_COMMON_APPDATA
+invoke ShowSpecialFolderPath,CSIDL_COMMON_DESKTOPDIRECTORY,addr szCSIDL_COMMON_DESKTOPDIRECTORY
+invoke ShowSpecialFolderPath,CSIDL_COMMON_DOCUMENTS,addr szCSIDL_COMMON_DOCUMENTS
+invoke ShowSpecialFolderPath,CSIDL_COMMON_FAVORITES,addr szCSIDL_COMMON_FAVORITES
+invoke ShowSpecialFolderPath,CSIDL_COMMON_MUSIC,addr szCSIDL_COMMON_MUSIC
+invoke ShowSpecialFolderPath,CSIDL_COMMON_OEM_LINKS,addr szCSIDL_COMMON_OEM_LINKS
+invoke ShowSpecialFolderPath,CSIDL_COMMON_PICTURES,addr szCSIDL_COMMON_PICTURES
+invoke ShowSpecialFolderPath,CSIDL_COMMON_PROGRAMS,addr szCSIDL_COMMON_PROGRAMS
+invoke ShowSpecialFolderPath,CSIDL_COMMON_STARTMENU,addr szCSIDL_COMMON_STARTMENU
+invoke ShowSpecialFolderPath,CSIDL_COMMON_STARTUP,addr szCSIDL_COMMON_STARTUP
+invoke ShowSpecialFolderPath,CSIDL_COMMON_TEMPLATES,addr szCSIDL_COMMON_TEMPLATES
+invoke ShowSpecialFolderPath,CSIDL_COMMON_VIDEO,addr szCSIDL_COMMON_VIDEO
+invoke ShowSpecialFolderPath,CSIDL_COMPUTERSNEARME,addr szCSIDL_COMPUTERSNEARME
+invoke ShowSpecialFolderPath,CSIDL_CONNECTIONS,addr szCSIDL_CONNECTIONS
+invoke ShowSpecialFolderPath,CSIDL_COOKIES,addr szCSIDL_COOKIES
+invoke ShowSpecialFolderPath,CSIDL_DESKTOP,addr szCSIDL_DESKTOP
+invoke ShowSpecialFolderPath,CSIDL_DESKTOPDIRECTORY,addr szCSIDL_DESKTOPDIRECTORY
+invoke ShowSpecialFolderPath,CSIDL_DRIVES ,addr szCSIDL_DRIVES
+invoke ShowSpecialFolderPath,CSIDL_FAVORITES,addr szCSIDL_FAVORITES
+invoke ShowSpecialFolderPath,CSIDL_FONTS,addr szCSIDL_FONTS
+invoke ShowSpecialFolderPath,CSIDL_HISTORY,addr szCSIDL_HISTORY
+invoke ShowSpecialFolderPath,CSIDL_INTERNET,addr szCSIDL_INTERNET
+invoke ShowSpecialFolderPath,CSIDL_INTERNET_CACHE,addr szCSIDL_INTERNET_CACHE
+invoke ShowSpecialFolderPath,CSIDL_LOCAL_APPDATA ,addr szCSIDL_LOCAL_APPDATA
+invoke ShowSpecialFolderPath,5,addr szCSIDL_MYDOCUMENTS ;CSIDL_MYDOCUMENTS
+invoke ShowSpecialFolderPath,CSIDL_MYMUSIC,addr szCSIDL_MYMUSIC
+invoke ShowSpecialFolderPath,CSIDL_MYPICTURES ,addr szCSIDL_MYPICTURES
+invoke ShowSpecialFolderPath,CSIDL_MYMUSIC,addr szCSIDL_MYMUSIC
+invoke ShowSpecialFolderPath,CSIDL_MYPICTURES ,addr szCSIDL_MYPICTURES
+invoke ShowSpecialFolderPath,CSIDL_MYVIDEO,addr szCSIDL_MYVIDEO
+invoke ShowSpecialFolderPath,CSIDL_NETHOOD ,addr szCSIDL_NETHOOD
+invoke ShowSpecialFolderPath,CSIDL_NETWORK,addr szCSIDL_NETWORK
+invoke ShowSpecialFolderPath,CSIDL_PERSONAL ,addr szCSIDL_PERSONAL
+invoke ShowSpecialFolderPath,CSIDL_PRINTERS,addr szCSIDL_PRINTERS
+invoke ShowSpecialFolderPath,CSIDL_PRINTHOOD,addr szCSIDL_PRINTHOOD
+invoke ShowSpecialFolderPath,CSIDL_PROFILE,addr szCSIDL_PROFILE
+invoke ShowSpecialFolderPath,CSIDL_PROGRAM_FILES ,addr szCSIDL_PROGRAM_FILES
+invoke ShowSpecialFolderPath,CSIDL_PROGRAM_FILESX86,addr szCSIDL_PROGRAM_FILESX86
+invoke ShowSpecialFolderPath,CSIDL_PROGRAM_FILES_COMMON,addr szCSIDL_PROGRAM_FILES_COMMON
+invoke ShowSpecialFolderPath,CSIDL_PROGRAM_FILES_COMMONX86,addr szCSIDL_PROGRAM_FILES_COMMONX86
+invoke ShowSpecialFolderPath,CSIDL_PROGRAMS,addr szCSIDL_PROGRAMS
+invoke ShowSpecialFolderPath,CSIDL_RECENT,addr szCSIDL_RECENT
+invoke ShowSpecialFolderPath,CSIDL_RESOURCES,addr szCSIDL_RESOURCES
+invoke ShowSpecialFolderPath,CSIDL_RESOURCES_LOCALIZED,addr szCSIDL_RESOURCES_LOCALIZED
+invoke ShowSpecialFolderPath,CSIDL_SENDTO,addr szCSIDL_SENDTO
+invoke ShowSpecialFolderPath,CSIDL_STARTMENU,addr szCSIDL_STARTMENU
+invoke ShowSpecialFolderPath,CSIDL_STARTUP,addr szCSIDL_STARTUP
+invoke ShowSpecialFolderPath,CSIDL_SYSTEM,addr szCSIDL_SYSTEM
+invoke ShowSpecialFolderPath,CSIDL_SYSTEMX86 ,addr szCSIDL_SYSTEMX86
+invoke ShowSpecialFolderPath,CSIDL_TEMPLATES,addr szCSIDL_TEMPLATES
+invoke ShowSpecialFolderPath,CSIDL_WINDOWS,addr szCSIDL_WINDOWS
+
+invoke WriteFile,hstdout,addr notice,sizeof notice-1,addr x,0
+invoke ReadFile,hstdin,addr buffer,sizeof buffer,addr x,0
+
+invoke ExitProcess,0
+end start
+;made at 2011.09.30
+*/
+
+
+EXTERN_C
+__declspec(dllexport)
+void WINAPI GetSpecialFolderPath()
+/*
+核心是调用SHGetFolderPathW，再进一步是查询HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions下的对应的GUID的信息。
+
+计算机\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders里是一些Common目录。
+计算机\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders里是一些Common目录（路径里带环境变量）。
+
+计算机\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion下有ProgramFilesDir等路径。
+类似：计算机\HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion。
+*/
+{
+    WCHAR Path[MAX_PATH] = {};
+    HWND   hwnd = NULL;
+    int    csidl = CSIDL_DESKTOP;
+    BOOL   fCreate = FALSE;
+
+    for (; csidl <= CSIDL_COMPUTERSNEARME; csidl++) {
+        ZeroMemory(Path, sizeof(Path));
+        BOOL ret = SHGetSpecialFolderPathW(hwnd, Path, csidl, fCreate);
+        if (ret) {
+            printf("%ls\r\n", Path);
+        } else {
+            printf("csidl:%d, LastError:%d\r\n", csidl, GetLastError());
+        }
+    }
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////

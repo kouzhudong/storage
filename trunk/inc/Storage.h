@@ -173,6 +173,8 @@ int WINAPI CppShellKnownFolders(int argc, _TCHAR * argv[]);
 
 void WINAPI GetImageFilePath(_Out_ LPWSTR ImageFilePath, _In_ DWORD nSize);
 
+void WINAPI GetSpecialFolderPath();
+
 LONG WINAPI VerifyEmbeddedSignatureEx(LPCWSTR pwszSourceFile);
 
 void WINAPI ASN(void);
