@@ -3,6 +3,7 @@
 
 #include "..\inc\Storage.h"
 #include "encrypt.h"
+#include "Disk.h"
 
 
 #ifdef _WIN64  
@@ -36,10 +37,10 @@ int _cdecl main(_In_ int argc, _In_reads_(argc) CHAR * argv[])
         return GetLastError();
     }
 
-    //DiffieHellman(Args, Arglist);
-    //GetAdaptersAddressesInfo(argc, argv);
+    GetDriveGeometryTest(Args, Arglist);
+    //GetDriveGeometryTest(argc, argv);
 
-    GetSpecialFolderPath();
+    //GetSpecialFolderPath();
 
     LocalFree(Arglist);
 
