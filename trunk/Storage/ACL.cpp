@@ -42,13 +42,7 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/finding-the-owner-of-a-f
     PSECURITY_DESCRIPTOR pSD = NULL;
 
     // Get the handle of the file object.
-    hFile = CreateFile(TEXT("myfile.txt"),
-                       GENERIC_READ,
-                       FILE_SHARE_READ,
-                       NULL,
-                       OPEN_EXISTING,
-                       FILE_ATTRIBUTE_NORMAL,
-                       NULL);
+    hFile = CreateFile(TEXT("myfile.txt"), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE) {// Check GetLastError for CreateFile error code.
         DWORD dwErrorCode = 0;
         dwErrorCode = GetLastError();
@@ -57,14 +51,7 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/finding-the-owner-of-a-f
     }
 
     // Get the owner SID of the file.
-    dwRtnCode = GetSecurityInfo(hFile,
-                                SE_FILE_OBJECT,
-                                OWNER_SECURITY_INFORMATION,
-                                &pSidOwner,
-                                NULL,
-                                NULL,
-                                NULL,
-                                &pSD);
+    dwRtnCode = GetSecurityInfo(hFile, SE_FILE_OBJECT, OWNER_SECURITY_INFORMATION, &pSidOwner, NULL, NULL, NULL, &pSD);
     if (dwRtnCode != ERROR_SUCCESS) {// Check GetLastError for GetSecurityInfo error condition.
         DWORD dwErrorCode = 0;
         dwErrorCode = GetLastError();
@@ -159,11 +146,7 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/taking-object-ownership-
     }
 
     // Create a SID for the BUILTIN\Administrators group.
-    if (!AllocateAndInitializeSid(&SIDAuthNT, 2,
-                                  SECURITY_BUILTIN_DOMAIN_RID,
-                                  DOMAIN_ALIAS_RID_ADMINS,
-                                  0, 0, 0, 0, 0, 0,
-                                  &pSIDAdmin)) {
+    if (!AllocateAndInitializeSid(&SIDAuthNT, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &pSIDAdmin)) {
         printf("AllocateAndInitializeSid (Admin) error %u\n", GetLastError());
         goto Cleanup;
     }
@@ -327,9 +310,7 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/modifying-the-acls-of-an
         return ERROR_INVALID_PARAMETER;
 
     // Get a pointer to the existing DACL.
-    dwRes = GetNamedSecurityInfo(pszObjName, ObjectType,
-                                 DACL_SECURITY_INFORMATION,
-                                 NULL, NULL, &pOldDACL, NULL, &pSD);
+    dwRes = GetNamedSecurityInfo(pszObjName, ObjectType, DACL_SECURITY_INFORMATION, NULL, NULL, &pOldDACL, NULL, &pSD);
     if (ERROR_SUCCESS != dwRes) {
         printf("GetNamedSecurityInfo Error %u\n", dwRes);
         goto Cleanup;
@@ -351,9 +332,7 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/modifying-the-acls-of-an
     }
 
     // Attach the new ACL as the object's DACL.
-    dwRes = SetNamedSecurityInfo(pszObjName, ObjectType,
-                                 DACL_SECURITY_INFORMATION,
-                                 NULL, NULL, pNewDACL, NULL);
+    dwRes = SetNamedSecurityInfo(pszObjName, ObjectType, DACL_SECURITY_INFORMATION, NULL, NULL, pNewDACL, NULL);
     if (ERROR_SUCCESS != dwRes) {
         printf("SetNamedSecurityInfo Error %u\n", dwRes);
         goto Cleanup;
@@ -2279,12 +2258,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/secauthz/initializing-a-client-co
     AUTHZ_RESOURCE_MANAGER_HANDLE   g_hResourceManager;
 
     //Initialize Resource Manager
-    if (!AuthzInitializeResourceManager(AUTHZ_RM_FLAG_NO_AUDIT,
-                                        NULL,
-                                        NULL,
-                                        NULL,
-                                        L"My Resource Manager",
-                                        &g_hResourceManager)) {
+    if (!AuthzInitializeResourceManager(AUTHZ_RM_FLAG_NO_AUDIT, NULL, NULL, NULL, L"My Resource Manager", &g_hResourceManager)) {
         printf_s("AuthzInitializeResourceManager failed with %d\n", GetLastError());
         return FALSE;
     }
@@ -2459,15 +2433,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/secauthz/checking-access-with-aut
     }
 
     //Call AuthzAccessCheck.
-    if (!AuthzAccessCheck(0,
-                          hClientContext,
-                          &Request,
-                          NULL,
-                          pSecurityDescriptor,
-                          NULL,
-                          0,
-                          pReply,
-                          NULL)) {
+    if (!AuthzAccessCheck(0, hClientContext, &Request, NULL, pSecurityDescriptor, NULL, 0, pReply, NULL)) {
         printf_s("AuthzAccessCheck failed with %d\n", GetLastError());
         LocalFree(pSecurityDescriptor);
         return FALSE;
@@ -2531,25 +2497,13 @@ https://docs.microsoft.com/zh-cn/windows/win32/secauthz/caching-access-checks
     pCachedReply->SaclEvaluationResults = NULL;
 
     //Create security descriptor.
-    if (!ConvertStringSecurityDescriptorToSecurityDescriptor(
-        L"O:LAG:BAD:(A;;RC;;;BA)",
-        SDDL_REVISION_1,
-        &pSecurityDescriptor,
-        NULL)) {
+    if (!ConvertStringSecurityDescriptorToSecurityDescriptor(L"O:LAG:BAD:(A;;RC;;;BA)", SDDL_REVISION_1, &pSecurityDescriptor, NULL)) {
         printf_s("ConvertStringSecurityDescriptorToSecurityDescriptor failed with %d\n", GetLastError());
         return FALSE;
     }
 
     //Call AuthzAccessCheck and cache results.
-    if (!AuthzAccessCheck(0,
-                          hClientContext,
-                          &Request,
-                          NULL,
-                          pSecurityDescriptor,
-                          NULL,
-                          0,
-                          pReply,
-                          &hCached)) {
+    if (!AuthzAccessCheck(0, hClientContext, &Request, NULL, pSecurityDescriptor, NULL, 0, pReply, &hCached)) {
         printf_s("AuthzAccessCheck failed with %d\n", GetLastError());
         LocalFree(pSecurityDescriptor);
         return FALSE;
