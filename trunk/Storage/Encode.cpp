@@ -51,11 +51,9 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/signing-data
 
 //   Define the name of a certificate subject.
 //   To use this program, the definition of SIGNER_NAME
-//   must be changed to the name of the subject of
-//   a certificate that has access to a private key. That certificate
-//   must have either the CERT_KEY_PROV_INFO_PROP_ID or 
-//   CERT_KEY_CONTEXT_PROP_ID property set for the context to 
-//   provide access to the private signature key.
+//   must be changed to the name of the subject of a certificate that has access to a private key.
+//   That certificate must have either the CERT_KEY_PROV_INFO_PROP_ID or 
+//   CERT_KEY_CONTEXT_PROP_ID property set for the context to provide access to the private signature key.
 
 //    You can use a command similar to the following to create a certificate that can be used with this example:
 //    makecert -n "cn=Test" -sk Test -ss my
@@ -138,8 +136,8 @@ bool SignMessage(CRYPT_DATA_BLOB * pSignedMessageBlob)
     // Usually, the message exists somewhere and a pointer is passed to the application.
     pbMessage = (BYTE *)TEXT("CryptoAPI is a good way to handle security");
 
-    // Calculate the size of message. To include the 
-    // terminating null character, the length is one more byte 
+    // Calculate the size of message.
+    // To include the terminating null character, the length is one more byte 
     // than the length returned by the strlen function.
     cbMessage = (lstrlen((TCHAR *)pbMessage) + 1) * sizeof(TCHAR);
 
@@ -193,13 +191,7 @@ bool SignMessage(CRYPT_DATA_BLOB * pSignedMessageBlob)
     SigParams.rgAuthAttr = NULL;
 
     // First, get the size of the signed BLOB.
-    if (CryptSignMessage(&SigParams,
-                         FALSE,
-                         1,
-                         MessageArray,
-                         MessageSizeArray,
-                         NULL,
-                         &cbSignedMessageBlob)) {
+    if (CryptSignMessage(&SigParams, FALSE, 1, MessageArray, MessageSizeArray, NULL, &cbSignedMessageBlob)) {
         _tprintf(TEXT("%d bytes needed for the encoded BLOB.\n"), cbSignedMessageBlob);
     } else {
         MyHandleError(TEXT("Getting signed BLOB size failed"));
@@ -506,13 +498,12 @@ BOOL EncodeMessage(PCRYPT_DATA_BLOB pEncodedBlob, LPWSTR pwszSignerName)
         certificate must have a private key accessible.
     */
 
-    if (pSignerCert = CertFindCertificateInStore(
-        hSystemStoreHandle,
-        MY_ENCODING_TYPE,
-        0,
-        CERT_FIND_SUBJECT_STR,
-        pwszSignerName,
-        NULL)) {
+    if (pSignerCert = CertFindCertificateInStore(hSystemStoreHandle,
+                                                 MY_ENCODING_TYPE,
+                                                 0,
+                                                 CERT_FIND_SUBJECT_STR,
+                                                 pwszSignerName,
+                                                 NULL)) {
         //  Get and print the name of the subject of the certificate.
         if (CertGetNameStringA(pSignerCert,
                                CERT_NAME_SIMPLE_DISPLAY_TYPE,
@@ -547,13 +538,7 @@ BOOL EncodeMessage(PCRYPT_DATA_BLOB pEncodedBlob, LPWSTR pwszSignerName)
         number of bytes required for the buffer to hold the signed and encoded message.
     */
 
-    if (CryptSignMessage(&SignMessagePara,
-                         FALSE,
-                         1,
-                         rgpbToBeSigned,
-                         rgcbToBeSigned,
-                         NULL,
-                         &pEncodedBlob->cbData)) {
+    if (CryptSignMessage(&SignMessagePara, FALSE, 1, rgpbToBeSigned, rgcbToBeSigned, NULL, &pEncodedBlob->cbData)) {
         printf("The needed length is %d \n", pEncodedBlob->cbData);
     } else {
         MyHandleError("Getting the length failed.\n");
@@ -853,7 +838,6 @@ void EncodeMessageWithStream(LPWSTR pwszSignerName)
     DWORD cbContent1 = lstrlenA((char *)pbContent1);
     BYTE * pbContent2 = (BYTE *)"Second sentence. ";
     DWORD cbContent2 = lstrlenA((char *)pbContent2);
-
     HCRYPTPROV hCryptProv;         // CSP handle
     HCERTSTORE hStoreHandle;       // store handle
     PCCERT_CONTEXT pSignerCert;    // signer certificate
@@ -1066,8 +1050,7 @@ void DecodeMessageWithStream()
 
 
 // Example C Program: 
-// Signs a message by using a sender's private key and encrypts the
-// signed message by using a receiver's public key.
+// Signs a message by using a sender's private key and encrypts the signed message by using a receiver's public key.
 
 
 #ifdef MAX_NAME
@@ -1077,10 +1060,8 @@ void DecodeMessageWithStream()
 
 
 // Copyright (C) Microsoft.  All rights reserved.
-// SIGNER_NAME is used with the CertFindCertificateInStore  
-// function to retrieve the certificate of the message signer.
-// Replace the Unicode string below with the certificate subject 
-// name of the message signer.
+// SIGNER_NAME is used with the CertFindCertificateInStore function to retrieve the certificate of the message signer.
+// Replace the Unicode string below with the certificate subject name of the message signer.
 
 #ifdef SIGNER_NAME
 #undef SIGNER_NAME
@@ -1158,15 +1139,10 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-sendi
     // Declare and initialize local variables.
 
     //  pbToBeSignedAndEncrypted is the message to be encrypted and signed.
+    const BYTE * pbToBeSignedAndEncrypted = (const unsigned char *)"Insert the message to be signed here";
 
-    const BYTE * pbToBeSignedAndEncrypted =
-        (const unsigned char *)"Insert the message to be signed here";
-
-    // This is the length of the message to be
-    // encrypted and signed. Note that it is one
-    // more that the length returned by strlen()
-    // to include the terminating null character.
-
+    // This is the length of the message to be encrypted and signed.
+    // Note that it is one more that the length returned by strlen() to include the terminating null character.
     DWORD cbToBeSignedAndEncrypted = lstrlenA((const char *)pbToBeSignedAndEncrypted) + 1;
 
     // Pointer to a buffer that will hold the encrypted and signed message.
@@ -1179,10 +1155,9 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-sendi
     // Call the local function SignAndEncrypt.
     // This function returns a pointer to the 
     // signed and encrypted BLOB and also returns the length of that BLOB.
-    pbSignedAndEncryptedBlob = SignAndEncrypt(
-        pbToBeSignedAndEncrypted,
-        cbToBeSignedAndEncrypted,
-        &cbSignedAndEncryptedBlob);
+    pbSignedAndEncryptedBlob = SignAndEncrypt(pbToBeSignedAndEncrypted,
+                                              cbToBeSignedAndEncrypted,
+                                              &cbSignedAndEncryptedBlob);
 
     _tprintf(TEXT("The following is the signed and encrypted ")
              TEXT("message.\n"));
@@ -1256,12 +1231,7 @@ BYTE * SignAndEncrypt(const BYTE * pbToBeSignedAndEncrypted,
     // Get and print the name of the message signer.
     // The following two calls to CertGetNameString with different
     // values for the second parameter get two different forms of the certificate subject's name.
-    if (CertGetNameString(pSignerCertContext,
-                          CERT_NAME_SIMPLE_DISPLAY_TYPE,
-                          0,
-                          NULL,
-                          pszNameString,
-                          MAX_NAME) > 1) {
+    if (CertGetNameString(pSignerCertContext, CERT_NAME_SIMPLE_DISPLAY_TYPE, 0, NULL, pszNameString, MAX_NAME) > 1) {
         _tprintf(TEXT("The SIMPLE_DISPLAY_TYPE message signer's name is ")
                  TEXT("%s \n"), pszNameString);
     } else {
@@ -1283,7 +1253,7 @@ BYTE * SignAndEncrypt(const BYTE * pbToBeSignedAndEncrypted,
 
     // Note: To decrypt the message signed and encrypted here,
     // this program must use the certificate of the intended receiver.
-    // The signed and encrypted message can only be
+    // The signed and encrypted message can only be 
     // decrypted and verified by the owner of the recipient certificate.
     // That user must have access to the private key
     // associated with the public key of the recipient's certificate.
@@ -1295,8 +1265,7 @@ BYTE * SignAndEncrypt(const BYTE * pbToBeSignedAndEncrypted,
 
     // In normal use, the file would contain information used to find
     // the certificate of an intended receiver of the message. 
-    // The signed and encrypted message would be written
-    // to a file or otherwise sent to the intended receiver.
+    // The signed and encrypted message would be written to a file or otherwise sent to the intended receiver.
 
     // Open a file and read in the receiver name BLOB.
     if (!(hToSave = fopen("s.txt", "rb"))) {
@@ -1654,8 +1623,7 @@ BYTE * ReadBlob(DWORD * pcbBlob)
     // This file would be created by a program such as the example 
     // program "Example C Program: Sending and Receiving a Signed and 
     // Encrypted Message" in the Platform Software Development Kit (SDK).
-    // Change the path name for this file if it is not in the same
-    // directory as the executable.
+    // Change the path name for this file if it is not in the same directory as the executable.
 
     if (!(hInputFile = _tfopen(TEXT("sandvout.txt"), TEXT("rb")))) {
         MyHandleError(TEXT("Input file was not opened.\n"));
@@ -2010,12 +1978,7 @@ bool CosignMessage(CRYPT_DATA_BLOB * pSignedMessageBlob, CRYPT_DATA_BLOB * pCosi
     }
 
     DWORD dwKeySpec;
-    if (!(CryptAcquireCertificatePrivateKey(pCosignerCert,
-                                            0,
-                                            NULL,
-                                            &hCryptProv,
-                                            &dwKeySpec,
-                                            NULL))) {
+    if (!(CryptAcquireCertificatePrivateKey(pCosignerCert, 0, NULL, &hCryptProv, &dwKeySpec, NULL))) {
         MyHandleError(TEXT("CryptAcquireCertificatePrivateKey failed."));
         goto exit_CosignMessage;
     }
@@ -2027,10 +1990,7 @@ bool CosignMessage(CRYPT_DATA_BLOB * pSignedMessageBlob, CRYPT_DATA_BLOB * pCosi
     }
 
     // Update the message with the encoded BLOB.
-    if (!(CryptMsgUpdate(hMsg,
-                         pSignedMessageBlob->pbData,
-                         pSignedMessageBlob->cbData,
-                         TRUE))) {
+    if (!(CryptMsgUpdate(hMsg, pSignedMessageBlob->pbData, pSignedMessageBlob->cbData, TRUE))) {
         MyHandleError(TEXT("CryptMsgUpdate failed."));
         goto exit_CosignMessage;
     }
@@ -2079,11 +2039,7 @@ bool CosignMessage(CRYPT_DATA_BLOB * pSignedMessageBlob, CRYPT_DATA_BLOB * pCosi
     }
 
     // Get the cosigned message BLOB.
-    if (CryptMsgGetParam(hMsg,
-                         CMSG_ENCODED_MESSAGE,
-                         0,
-                         pbCosignedMessageBlob,
-                         &cbCosignedMessageBlob)) {
+    if (CryptMsgGetParam(hMsg, CMSG_ENCODED_MESSAGE, 0, pbCosignedMessageBlob, &cbCosignedMessageBlob)) {
         _tprintf(TEXT("The message was cosigned successfully. \n"));
         fReturn = true;// pbSignedMessageBlob now contains the signed BLOB.
     } else {

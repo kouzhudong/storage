@@ -182,11 +182,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-using
 }
 
 
-BOOL DecryptMessage(BYTE * pbEncryptedBlob,
-                    DWORD cbEncryptedBlob,
-                    HCRYPTPROV hCryptProv,
-                    HCERTSTORE hStoreHandle
-)
+BOOL DecryptMessage(BYTE * pbEncryptedBlob, DWORD cbEncryptedBlob, HCRYPTPROV hCryptProv, HCERTSTORE hStoreHandle)
 //  Define the function DecryptMessage.
 
     // Example function for decrypting an encrypted message using CryptDecryptMessage.
@@ -231,13 +227,7 @@ BOOL DecryptMessage(BYTE * pbEncryptedBlob,
 
     //  Decrypt the message data.
     //  Call CryptDecryptMessage to get the returned data size.
-    if (CryptDecryptMessage(
-        &DecryptParams,
-        pbEncryptedBlob,
-        cbEncryptedBlob,
-        NULL,
-        &cbDecryptedMessage,
-        NULL)) {
+    if (CryptDecryptMessage(&DecryptParams, pbEncryptedBlob, cbEncryptedBlob, NULL, &cbDecryptedMessage, NULL)) {
         printf("The size for the decrypted message is: %d.\n", cbDecryptedMessage);
     } else {
         MyHandleError("Error getting decrypted message size");
@@ -251,13 +241,12 @@ BOOL DecryptMessage(BYTE * pbEncryptedBlob,
     }
 
     // Call CryptDecryptMessage to decrypt the data.
-    if (CryptDecryptMessage(
-        &DecryptParams,
-        pbEncryptedBlob,
-        cbEncryptedBlob,
-        pbDecryptedMessage,
-        &cbDecryptedMessage,
-        NULL)) {
+    if (CryptDecryptMessage(&DecryptParams,
+                            pbEncryptedBlob,
+                            cbEncryptedBlob,
+                            pbDecryptedMessage,
+                            &cbDecryptedMessage,
+                            NULL)) {
         DecryptedString = (LPSTR)pbDecryptedMessage;
         printf("Message Decrypted Successfully. \n");
         printf("The decrypted string is: %s\n", DecryptedString);
@@ -313,10 +302,7 @@ PCCERT_CONTEXT GetRecipientCert(HCERTSTORE hCertStore)
         // specific subject name as well as the key type. 
 
         // Call CertGetCertificateContextProperty once to get the returned structure size. 
-        if (!(CertGetCertificateContextProperty(
-            pCertContext,
-            CERT_KEY_PROV_INFO_PROP_ID,
-            NULL, &dwSize))) {
+        if (!(CertGetCertificateContextProperty(pCertContext, CERT_KEY_PROV_INFO_PROP_ID, NULL, &dwSize))) {
             MyHandleError("Error getting key property.");
         }
 
@@ -328,11 +314,7 @@ PCCERT_CONTEXT GetRecipientCert(HCERTSTORE hCertStore)
         }
 
         // Get the key information structure. 
-        if (!(CertGetCertificateContextProperty(
-            pCertContext,
-            CERT_KEY_PROV_INFO_PROP_ID,
-            pKeyInfo,
-            &dwSize))) {
+        if (!(CertGetCertificateContextProperty(pCertContext, CERT_KEY_PROV_INFO_PROP_ID, pKeyInfo, &dwSize))) {
             MyHandleError("The second call to the function failed.");
         }
 
@@ -2384,10 +2366,10 @@ https://docs.microsoft.com/en-us/windows/win32/seccertenroll/enumerating-install
 
 BOOL GetExportedKey(HCRYPTKEY hKey, DWORD dwBlobType, LPBYTE * ppbKeyBlob, LPDWORD pdwBlobLen)
 /*
-The following example shows how to export a cryptographic key or a key pair in a more secure manner. 
-This example assumes that a cryptographic context has been acquired and that a public key is available for export. 
-For an example that includes the complete context for using this function, 
-see Example C Program: Signing a Hash and Verifying the Hash Signature. 
+The following example shows how to export a cryptographic key or a key pair in a more secure manner.
+This example assumes that a cryptographic context has been acquired and that a public key is available for export.
+For an example that includes the complete context for using this function,
+see Example C Program: Signing a Hash and Verifying the Hash Signature.
 For another example that uses this function, see Example C Program: Exporting a Session Key.
 
 https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptexportkey
@@ -2463,7 +2445,7 @@ Example C Program: Exporting a Session Key
 01/08/2021
 3 minutes to read
 
-The following example creates a random session key and creates an exportable key BLOB. 
+The following example creates a random session key and creates an exportable key BLOB.
 The example illustrates the use of CryptGetUserKey, CryptExportKey, and related functions.
 
 This example illustrates the following tasks and CryptoAPI functions:
@@ -2474,8 +2456,8 @@ Generating an exportable session key using CryptGenKey.
 Creating a simple key BLOB containing a session key using CryptExportKey.
 Destroying a session key and access to the two pairs of public/private keys using CryptDestroyKey.
 Releasing the CSP context using CryptReleaseContext.
-This example uses the function MyHandleError. 
-The code for this function is included with the sample. 
+This example uses the function MyHandleError.
+The code for this function is included with the sample.
 Code for this and other auxiliary functions is also listed under General Purpose Functions.
 
 https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-exporting-a-session-key
@@ -2592,8 +2574,8 @@ Example C Program: Importing a Plaintext Key
 01/08/2021
 2 minutes to read
 
-Many of the functions in this SDK require that you identify a key by using an HCRYPTKEY handle. 
-If your key is contained in a byte array, 
+Many of the functions in this SDK require that you identify a key by using an HCRYPTKEY handle.
+If your key is contained in a byte array,
 you can create a handle by using the CryptImportKey function as shown in the following example.
 
 This example demonstrates the following tasks and CryptoAPI functions:
@@ -2721,27 +2703,27 @@ Example C Program: Creating a Key Container and Generating Keys
 01/08/2021
 3 minutes to read
 
-The following example creates a named key container and adds a signature key pair and 
-an exchange key pair to the container. 
-This example can be run without problem even if the named key container and 
+The following example creates a named key container and adds a signature key pair and
+an exchange key pair to the container.
+This example can be run without problem even if the named key container and
 cryptographic keys already exist.
 
  Note
-An application should not use the default key container to store private keys. 
-When multiple applications use the same container, 
-one application may change or destroy the keys that another application needs to have available. 
-It is recommended that applications use key containers that are linked to the application. 
+An application should not use the default key container to store private keys.
+When multiple applications use the same container,
+one application may change or destroy the keys that another application needs to have available.
+It is recommended that applications use key containers that are linked to the application.
 Doing so reduces the risk of other applications tampering with keys that are necessary for an application to function properly.
 
 This example demonstrates the following tasks and CryptoAPI functions:
 
-It attempts to acquire the named key container. 
+It attempts to acquire the named key container.
 If the named key container does not already exist, it is created.
-If a signature key pair does not exist in the key container, 
+If a signature key pair does not exist in the key container,
 it creates a signature key pair within the key container.
-If an exchange key pair does not exist in the key container, 
+If an exchange key pair does not exist in the key container,
 it creates an exchange key pair within the key container.
-These operations only need to be performed once for each user on each computer. 
+These operations only need to be performed once for each user on each computer.
 If the named key container and key pairs have already been created, this sample performs no operations.
 
 This example uses the following CryptoAPI functions:
@@ -2751,8 +2733,8 @@ CryptGenKey
 CryptGetUserKey
 CryptReleaseContext
 
-This example uses the function MyHandleError. 
-The code for this function is included with the sample. 
+This example uses the function MyHandleError.
+The code for this function is included with the sample.
 Code for this and other auxiliary functions is also listed under General Purpose Functions.
 */
 {
@@ -2900,12 +2882,12 @@ Example C Program: Using CryptAcquireContext
 01/08/2021
 3 minutes to read
 
-The following example demonstrates several different ways to use the CryptAcquireContext and 
+The following example demonstrates several different ways to use the CryptAcquireContext and
 related CryptoAPI functions to work with a cryptographic service provider (CSP) and a key container.
 
 This example demonstrates the following tasks and CryptoAPI functions:
 
-Use the CryptAcquireContext function to acquire a handle for the default CSP and the default key container. 
+Use the CryptAcquireContext function to acquire a handle for the default CSP and the default key container.
 If no default key container exists, use the CryptAcquireContext function to create the default key container.
 Use the CryptGetProvParam function to retrieve information about a CSP and a key container.
 Increase the reference count on the provider by using the CryptContextAddRef function.
@@ -2913,8 +2895,8 @@ Release a CSP by using the CryptReleaseContext function.
 Create a named key container by using the CryptAcquireContext function.
 Acquire a handle for a CSP by using the newly created key container.
 Delete a key container by using the CryptAcquireContext function.
-This example uses the function MyHandleError. 
-The code for this function is included with the sample. 
+This example uses the function MyHandleError.
+The code for this function is included with the sample.
 Code for this and other auxiliary functions is also listed under General Purpose Functions.
 
 https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-using-cryptacquirecontext
@@ -3192,7 +3174,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-deriv
             MyHandleError("Error during CryptReleaseContext");
     }
     printf("The program to derive a key completed without error. \n");
-} 
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3212,9 +3194,9 @@ Example C Program: Duplicating a Session Key
 01/08/2021
 2 minutes to read
 
-The following example creates a random session key, duplicates the key, 
-sets some additional parameters on the original key, 
-and destroys both the original and the duplicate keys. 
+The following example creates a random session key, duplicates the key,
+sets some additional parameters on the original key,
+and destroys both the original and the duplicate keys.
 This example illustrates the use of CryptDuplicateKey and related functions.
 
 This example illustrates the following tasks and CryptoAPI functions:
@@ -3226,8 +3208,8 @@ Using CryptSetKeyParam to alter the key generation process in two different ways
 Filling a buffer with random bytes using CryptGenRandom.
 Destroying the keys using CryptDestroyKey.
 Releasing the CSP with CryptReleaseContext.
-This example uses the function MyHandleError. 
-The code for this function is included with the sample. 
+This example uses the function MyHandleError.
+The code for this function is included with the sample.
 Code for this and other auxiliary functions is also listed under General Purpose Functions.
 
 https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-duplicating-a-session-key
@@ -3337,8 +3319,8 @@ Example C Program: Setting and Getting Session Key Parameters
 01/08/2021
 2 minutes to read
 
-The following example creates a random session key, gets and prints some default parameters of that key, 
-sets a new parameters on the original key, then gets and prints the value of that new parameter. 
+The following example creates a random session key, gets and prints some default parameters of that key,
+sets a new parameters on the original key, then gets and prints the value of that new parameter.
 It cleans up by destroying the session key and releasing the cryptographic context.
 
 This example illustrates the use of the following tasks and functions:
@@ -3350,7 +3332,7 @@ Getting the value of key parameters using CryptGetKeyParam.
 Using CryptSetKeyParam to alter the key generation process.
 Destroying the keys using CryptDestroyKey.
 Releasing the CSP with CryptReleaseContext.
-This example uses the function MyHandleError. The code for this function is included with the sample. 
+This example uses the function MyHandleError. The code for this function is included with the sample.
 Code for this and other auxiliary functions is also listed under General Purpose Functions.
 
 https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-setting-and-getting-session-key-parameters
@@ -3448,7 +3430,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-setti
     if (hProv) {
         CryptReleaseContext(hProv, 0);
     }
-} 
+}
 
 
 //void MyHandleError(PTSTR psz)
@@ -3518,55 +3500,55 @@ To generate a Diffie-Hellman key, perform the following steps:
 
 Call the CryptAcquireContext function to get a handle to the Microsoft Diffie-Hellman Cryptographic Provider.
 
-Generate the new key. 
-There are two ways to accomplish this¡ªby having CryptoAPI generate all new values for G, P, 
+Generate the new key.
+There are two ways to accomplish this¡ªby having CryptoAPI generate all new values for G, P,
 and X or by using existing values for G and P, and generating a new value for X.
 
 To generate the key by generating all new values
 
-Call the CryptGenKey function, 
-passing either CALG_DH_SF (store and forward) or CALG_DH_EPHEM (ephemeral) in the Algid parameter. 
-The key will be generated using new, random values for G and P, 
+Call the CryptGenKey function,
+passing either CALG_DH_SF (store and forward) or CALG_DH_EPHEM (ephemeral) in the Algid parameter.
+The key will be generated using new, random values for G and P,
 a newly calculated value for X, and its handle will be returned in the phKey parameter.
-The new key is now ready for use. 
+The new key is now ready for use.
 The values of G and P must be sent to the recipient along with the key (or sent by some other method) when doing a key exchange.
 To generate the key by using predefined values for G and P
 
 Call CryptGenKey passing either CALG_DH_SF (store and forward) or
-CALG_DH_EPHEM (ephemeral) in the Algid parameter and CRYPT_PREGEN for the dwFlags parameter. 
+CALG_DH_EPHEM (ephemeral) in the Algid parameter and CRYPT_PREGEN for the dwFlags parameter.
 A key handle will be generated and returned in the phKey parameter.
-Initialize a CRYPT_DATA_BLOB structure with the pbData member set to the P value. 
+Initialize a CRYPT_DATA_BLOB structure with the pbData member set to the P value.
 The BLOB contains no header information and the pbData member is in little-endian format.
-The value of P is set by calling the CryptSetKeyParam function, 
-passing the key handle retrieved in step a in the hKey parameter, 
-the KP_P flag in the dwParam parameter, 
+The value of P is set by calling the CryptSetKeyParam function,
+passing the key handle retrieved in step a in the hKey parameter,
+the KP_P flag in the dwParam parameter,
 and a pointer to the structure that contains the value of P in the pbData parameter.
-Initialize a CRYPT_DATA_BLOB structure with the pbData member set to the G value. 
+Initialize a CRYPT_DATA_BLOB structure with the pbData member set to the G value.
 The BLOB contains no header information and the pbData member is in little-endian format.
-The value of G is set by calling the CryptSetKeyParam function, 
-passing the key handle retrieved in step a in the hKey parameter, 
-the KP_G flag in the dwParam parameter, 
+The value of G is set by calling the CryptSetKeyParam function,
+passing the key handle retrieved in step a in the hKey parameter,
+the KP_G flag in the dwParam parameter,
 and a pointer to the structure that contains the value of G in the pbData parameter.
-The value of X is generated by calling the CryptSetKeyParam function, 
-passing the key handle retrieved in step a in the hKey parameter, 
+The value of X is generated by calling the CryptSetKeyParam function,
+passing the key handle retrieved in step a in the hKey parameter,
 the KP_X flag in the dwParam parameter, and NULL in the pbData parameter.
 If all the function calls succeeded, the Diffie-Hellman public key is ready for use.
 When the key is no longer needed, destroy it by passing the key handle to the CryptDestroyKey function.
 
-If CALG_DH_SF was specified in the previous procedures, 
-the key values are persisted to storage with each call to CryptSetKeyParam. 
-The G and P values can then be retrieved by using the CryptGetKeyParam function. 
-Some CSPs may have hard-coded G and P values. 
-In this case a NTE_FIXEDPARAMETER error will be returned if CryptSetKeyParam is called with KP_G or KP_P specified in the dwParam parameter. 
-If CryptDestroyKey is called, the handle to the key is destroyed, 
-but the key values are retained in the CSP. 
-However, if CALG_DH_EPHEM was specified, 
+If CALG_DH_SF was specified in the previous procedures,
+the key values are persisted to storage with each call to CryptSetKeyParam.
+The G and P values can then be retrieved by using the CryptGetKeyParam function.
+Some CSPs may have hard-coded G and P values.
+In this case a NTE_FIXEDPARAMETER error will be returned if CryptSetKeyParam is called with KP_G or KP_P specified in the dwParam parameter.
+If CryptDestroyKey is called, the handle to the key is destroyed,
+but the key values are retained in the CSP.
+However, if CALG_DH_EPHEM was specified,
 the handle to the key is destroyed, and all values are cleared from the CSP.
 
 Exchanging Diffie-Hellman Keys
-The purpose of the Diffie-Hellman algorithm is to make it possible for two or more parties to create and share an identical, 
-secret session key by sharing information over a network that is not secure. 
-The information that gets shared over the network is in the form of a couple of constant values and a Diffie-Hellman public key. 
+The purpose of the Diffie-Hellman algorithm is to make it possible for two or more parties to create and share an identical,
+secret session key by sharing information over a network that is not secure.
+The information that gets shared over the network is in the form of a couple of constant values and a Diffie-Hellman public key.
 The process used by two key-exchange parties is as follows:
 
 Both parties agree to the Diffie-Hellman parameters which are a prime number (P) and a generator number (G).
@@ -3574,38 +3556,38 @@ Party 1 sends its Diffie-Hellman public key to party 2.
 Party 2 computes the secret session key by using the information contained in its private key and party 1's public key.
 Party 2 sends its Diffie-Hellman public key to party 1.
 Party 1 computes the secret session key by using the information contained in its private key and party 2's public key.
-Both parties now have the same session key, which can be used for encrypting and decrypting data. 
+Both parties now have the same session key, which can be used for encrypting and decrypting data.
 The steps necessary for this are shown in the following procedure.
 To prepare a Diffie-Hellman public key for transmission
 
 Call the CryptAcquireContext function to get a handle to the Microsoft Diffie-Hellman Cryptographic Provider.
-Create a Diffie-Hellman key by calling the CryptGenKey function to create a new key, 
+Create a Diffie-Hellman key by calling the CryptGenKey function to create a new key,
 or by calling the CryptGetUserKey function to retrieve an existing key.
-Get the size needed to hold the Diffie-Hellman key BLOB by calling the CryptExportKey, passing NULL for the pbData parameter. 
+Get the size needed to hold the Diffie-Hellman key BLOB by calling the CryptExportKey, passing NULL for the pbData parameter.
 The required size will be returned in pdwDataLen.
 Allocate memory for the key BLOB.
-Create a Diffie-Hellman public key BLOB by calling the CryptExportKey function, 
-passing PUBLICKEYBLOB in the dwBlobType parameter and the handle to the Diffie-Hellman key in the hKey parameter. 
+Create a Diffie-Hellman public key BLOB by calling the CryptExportKey function,
+passing PUBLICKEYBLOB in the dwBlobType parameter and the handle to the Diffie-Hellman key in the hKey parameter.
 This function call causes the calculation of the public key value, (G^X) mod P.
 If all the preceding function calls were successful, the Diffie-Hellman public key BLOB is now ready to be encoded and transmitted.
 To import a Diffie-Hellman public key and calculate the secret session key
 
 Call the CryptAcquireContext function to get a handle to the Microsoft Diffie-Hellman Cryptographic Provider.
-Create a Diffie-Hellman key by calling the CryptGenKey function to create a new key, 
+Create a Diffie-Hellman key by calling the CryptGenKey function to create a new key,
 or by calling the CryptGetUserKey function to retrieve an existing key.
-To import the Diffie-Hellman public key into the CSP, call the CryptImportKey function, 
-passing a pointer to the public key BLOB in the pbData parameter, 
-the length of the BLOB in the dwDataLen parameter, 
-and the handle to the Diffie-Hellman key in the hPubKey parameter. 
-This causes the calculation, (Y^X) mod P, to be performed, 
-thus creating the shared, secret key and completing the key exchange. 
+To import the Diffie-Hellman public key into the CSP, call the CryptImportKey function,
+passing a pointer to the public key BLOB in the pbData parameter,
+the length of the BLOB in the dwDataLen parameter,
+and the handle to the Diffie-Hellman key in the hPubKey parameter.
+This causes the calculation, (Y^X) mod P, to be performed,
+thus creating the shared, secret key and completing the key exchange.
 This function call returns a handle to the new, secret, session key in the hKey parameter.
-At this point, the imported Diffie-Hellman is of type CALG_AGREEDKEY_ANY. 
-Before the key can be used, it must be converted into a session key type. 
-This is accomplished by calling the CryptSetKeyParam function with dwParam set to KP_ALGID and 
-with pbData set to a pointer to a ALG_ID value that represents a session key, 
-such as CALG_RC4. 
-The key must be converted before using the shared key in the CryptEncrypt or CryptDecrypt function. 
+At this point, the imported Diffie-Hellman is of type CALG_AGREEDKEY_ANY.
+Before the key can be used, it must be converted into a session key type.
+This is accomplished by calling the CryptSetKeyParam function with dwParam set to KP_ALGID and
+with pbData set to a pointer to a ALG_ID value that represents a session key,
+such as CALG_RC4.
+The key must be converted before using the shared key in the CryptEncrypt or CryptDecrypt function.
 Calls made to either of these functions prior to converting the key type will fail.
 The secret session key is now ready to be used for encryption or decryption.
 When the key is no longer needed, destroy the key handle by calling the CryptDestroyKey function.
@@ -3613,9 +3595,9 @@ Exporting a Diffie-Hellman Private Key
 To export a Diffie-Hellman private key, perform the following steps:
 
 Call the CryptAcquireContext function to get a handle to the Microsoft Diffie-Hellman Cryptographic Provider.
-Create a Diffie-Hellman key by calling the CryptGenKey function to create a new key, 
+Create a Diffie-Hellman key by calling the CryptGenKey function to create a new key,
 or by calling the CryptGetUserKey function to retrieve an existing key.
-Create a Diffie-Hellman private key BLOB by calling the CryptExportKey function, 
+Create a Diffie-Hellman private key BLOB by calling the CryptExportKey function,
 passing PRIVATEKEYBLOB in the dwBlobType parameter and the handle to the Diffie-Hellman key in the hKey parameter.
 When the key handle is no longer needed, call the CryptDestroyKey function to destroy the key handle.
 
