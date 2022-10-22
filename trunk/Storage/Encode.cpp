@@ -267,8 +267,7 @@ bool VerifySignedMessage(CRYPT_DATA_BLOB * pSignedMessageBlob, CRYPT_DATA_BLOB *
     VerifyParams.pfnGetSignerCertificate = NULL;
     VerifyParams.pvGetArg = NULL;
 
-    // First, call CryptVerifyMessageSignature to get the length 
-    // of the buffer needed to hold the decoded message.
+    // First, call CryptVerifyMessageSignature to get the length of the buffer needed to hold the decoded message.
     if (CryptVerifyMessageSignature(&VerifyParams,
                                     0,
                                     pSignedMessageBlob->pbData,
@@ -447,11 +446,10 @@ void EncodeAndDecodeMessage(LPWSTR pwszSignerName)
 BOOL EncodeMessage(PCRYPT_DATA_BLOB pEncodedBlob, LPWSTR pwszSignerName)
 {
     /*
-        Declare and initialize variables. This includes getting a
-        pointer to the message content. This sample creates
-        the message content and gets a pointer to it. In most
-        situations, the content will exist somewhere, and a
-        pointer to it will get passed to the application.
+        Declare and initialize variables.
+        This includes getting a pointer to the message content.
+        This sample creates the message content and gets a pointer to it.
+        In most situations, the content will exist somewhere, and a pointer to it will get passed to the application.
     */
 
     HCERTSTORE hSystemStoreHandle;
@@ -493,9 +491,8 @@ BOOL EncodeMessage(PCRYPT_DATA_BLOB pEncodedBlob, LPWSTR pwszSignerName)
     }
 
     /*
-        Find a certificate in the store. This certificate will be
-        used to sign the message. To sign the message, the
-        certificate must have a private key accessible.
+        Find a certificate in the store. This certificate will be used to sign the message.
+        To sign the message, the certificate must have a private key accessible.
     */
 
     if (pSignerCert = CertFindCertificateInStore(hSystemStoreHandle,
@@ -520,9 +517,9 @@ BOOL EncodeMessage(PCRYPT_DATA_BLOB pEncodedBlob, LPWSTR pwszSignerName)
     }
 
     /*
-    Initialize the CRYPT_SIGN_MESSAGE_PARA structure. First, use
-    memset to set all members to zero or NULL. Then set the values of
-    all members that must be nonzero.
+    Initialize the CRYPT_SIGN_MESSAGE_PARA structure.
+    First, use memset to set all members to zero or NULL. 
+    Then set the values of all members that must be nonzero.
     */
 
     memset(&SignMessagePara, 0, sizeof(CRYPT_SIGN_MESSAGE_PARA));
@@ -593,11 +590,9 @@ void DecodeMessage(PCRYPT_DATA_BLOB pEncodedBlob, LPWSTR pwszSignerName)
     PCCERT_CONTEXT pSignerCertContext;
 
     /*
-        The following code decodes the message and verifies the
-        message signature.  This code would normally be in a
-        stand-alone program that would read the signed and encoded
-        message and its length from a file from an email message,
-        or from some other source.
+        The following code decodes the message and verifies the message signature. 
+        This code would normally be in a stand-alone program that would read the signed and encoded
+        message and its length from a file from an email message, or from some other source.
     */
 
     //  Open a message for decoding.
@@ -2189,8 +2184,7 @@ exit_VerifyCosignedMessage:
 //   To use this program, the definitions of SIGNER_NAME and 
 //   COUNTER_SIGNER_NAME must be changed to the names of 
 //   the subjects of certificates that have access to private keys. 
-//   These certificates must have either the 
-//   CERT_KEY_PROV_INFO_PROP_ID or CERT_KEY_CONTEXT_PROP_ID 
+//   These certificates must have either the CERT_KEY_PROV_INFO_PROP_ID or CERT_KEY_CONTEXT_PROP_ID 
 //   property set for the contexts to provide access to private signature keys.
 
 

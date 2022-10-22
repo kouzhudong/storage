@@ -1270,14 +1270,6 @@ Abstract:
 #define STATUS_UNSUCCESSFUL         ((NTSTATUS)0xC0000001L)
 
 
-//static const  BYTE rgbMsg[] =
-//{
-//    0x04, 0x87, 0xec, 0x66, 0xa8, 0xbf, 0x17, 0xa6,
-//    0xe3, 0x62, 0x6f, 0x1a, 0x55, 0xe2, 0xaf, 0x5e,
-//    0xbc, 0x54, 0xa4, 0xdc, 0x68, 0x19, 0x3e, 0x94,
-//};
-
-
 void __cdecl SigningDataWithCNG(int argc, __in_ecount(argc) LPWSTR * wargv)
 /*
 Signing Data with CNG
@@ -1342,6 +1334,12 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccng/signing-data-with-cng
     DWORD                   cbData = 0, cbHash = 0, cbBlob = 0, cbSignature = 0, cbHashObject = 0;
     PBYTE                   pbHashObject = NULL;
     PBYTE                   pbHash = NULL, pbBlob = NULL, pbSignature = NULL;
+
+    static const  BYTE rgbMsg[] = {
+        0x04, 0x87, 0xec, 0x66, 0xa8, 0xbf, 0x17, 0xa6,
+        0xe3, 0x62, 0x6f, 0x1a, 0x55, 0xe2, 0xaf, 0x5e,
+        0xbc, 0x54, 0xa4, 0xdc, 0x68, 0x19, 0x3e, 0x94,
+    };
 
     UNREFERENCED_PARAMETER(argc);
     UNREFERENCED_PARAMETER(wargv);
@@ -1684,8 +1682,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccng/encrypting-data-with-cng
         goto Cleanup;
     }
 
-    // Allocate a buffer for the IV. The buffer is consumed during the 
-    // encrypt/decrypt process.
+    // Allocate a buffer for the IV. The buffer is consumed during the encrypt/decrypt process.
     pbIV = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbBlockLen);
     if (NULL == pbIV) {
         wprintf(L"**** memory allocation failed\n");
