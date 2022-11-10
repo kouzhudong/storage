@@ -212,6 +212,8 @@ void WINAPI SessionKeyParameters();
 
 int WINAPI DiffieHellman(int argc, _TCHAR * argv[]);
 
+void WINAPI EnumSslProtocolProviders();
+
 void WINAPI EnumProvidersByCrypt();
 
 void WINAPI EnumProviderTypes();

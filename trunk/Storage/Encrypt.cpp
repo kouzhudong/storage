@@ -3878,3 +3878,61 @@ ErrorExit:
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+//SslEnumCipherSuites 和 SslEnumProtocolProviders 的用法示例。
+
+
+EXTERN_C
+__declspec(dllexport)
+void WINAPI EnumSslProtocolProviders()
+/*
+
+https://learn.microsoft.com/zh-cn/windows/win32/seccng/sslenumprotocolproviders
+*/
+{
+    SslEnumProtocolProviders_fn SslEnumProtocolProviders = nullptr;
+    SslFreeBuffer_fn SslFreeBuffer = nullptr;
+
+    HMODULE Ncrypt = LoadLibrary(TEXT("Ncrypt.dll"));
+    if (Ncrypt == NULL) {
+
+        return;
+    }
+
+    SslEnumProtocolProviders = (SslEnumProtocolProviders_fn)GetProcAddress(Ncrypt, "SslEnumProtocolProviders");
+    SslFreeBuffer = (SslFreeBuffer_fn)GetProcAddress(Ncrypt, "SslFreeBuffer");
+    if (!SslEnumProtocolProviders || !SslFreeBuffer) {
+
+        FreeLibrary(Ncrypt);
+        return;
+    } 
+
+    DWORD pdwProviderCount = 0;
+    NCryptProviderName * ppProviderList = nullptr;
+    SECURITY_STATUS Status = SslEnumProtocolProviders(&pdwProviderCount, &ppProviderList, 0);
+    if (0 != Status) {
+
+        FreeLibrary(Ncrypt);
+        return;
+    }
+
+    for (DWORD i = 0; i < pdwProviderCount; i++) {
+        printf("Name:%ls, Comment:%ls.\r\n", ppProviderList[i].pszName, ppProviderList[i].pszComment);
+    }
+
+    Status = SslFreeBuffer(ppProviderList);
+    FreeLibrary(Ncrypt);
+}
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
