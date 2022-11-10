@@ -2315,6 +2315,11 @@ https://docs.microsoft.com/en-us/windows/win32/seccertenroll/enumerating-install
     CComBSTR          bstrName;            // Provider name
     VARIANT_BOOL      bLegacy;             // CryptoAPI or CNG
 
+    //hr = CoInitialize(0);
+    hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
+    if (FAILED(hr)) 
+        return hr;
+
     // Create a collection of cryptographic providers.
     hr = CoCreateInstance(
         __uuidof(CCspInformations),
@@ -2356,6 +2361,8 @@ https://docs.microsoft.com/en-us/windows/win32/seccertenroll/enumerating-install
 
     //printf_s("\n\nHit any key to continue: ");
     //(void)_getch();
+
+    //CoUninitialize();
 
     return hr;
 }
@@ -3924,10 +3931,30 @@ https://learn.microsoft.com/zh-cn/windows/win32/seccng/sslenumprotocolproviders
 }
 
 
+EXTERN_C
+__declspec(dllexport)
+void WINAPI EnumSslCipherSuites()
+/*
+
+https://learn.microsoft.com/en-us/windows/win32/seccng/sslenumciphersuites
+*/
+{
+
+
+
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-
+/*
+BCryptEnumAlgorithms 函数
+BCryptEnumContextFunctionProviders 函数
+BCryptEnumContextFunctions 函数
+BCryptEnumContexts 函数
+BCryptEnumProviders 函数  已经有CryptEnumProviders的示例。
+BCryptEnumRegisteredProviders 函数
+的用法示例。
+*/
 
 
 
