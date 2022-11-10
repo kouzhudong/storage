@@ -3963,3 +3963,24 @@ BCryptEnumRegisteredProviders 函数
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+CryptEnumKeyIdentifierProperties function
+CryptEnumOIDFunction function
+CryptEnumOIDInfo function
+CryptEnumProvidersA function
+CryptEnumProvidersW function
+CryptEnumProviderTypesA function
+CryptEnumProviderTypesW function
+的用法示例。
+*/
+
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
