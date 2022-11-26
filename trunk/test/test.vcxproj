@@ -149,12 +149,14 @@
   <ItemGroup>
     <ClCompile Include="Disk.cpp" />
     <ClCompile Include="encrypt.cpp" />
+    <ClCompile Include="Folder.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\inc\Storage.h" />
     <ClInclude Include="Disk.h" />
     <ClInclude Include="encrypt.h" />
+    <ClInclude Include="Folder.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

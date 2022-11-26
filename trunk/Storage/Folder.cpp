@@ -193,12 +193,11 @@ void PrintSomeDefaultKnownFolders()
 
 #pragma region Extending Known Folders with Custom Folders
 
+
 HRESULT CreateKnownFolder(REFKNOWNFOLDERID kfid);
 HRESULT RegisterKnownFolder(REFKNOWNFOLDERID kfid);
-
 HRESULT RemoveKnownFolder(REFKNOWNFOLDERID kfid);
 HRESULT UnregisterKnownFolder(REFKNOWNFOLDERID kfid);
-
 void PrintKnownFolder(REFKNOWNFOLDERID kfid);
 
 
@@ -411,6 +410,7 @@ void PrintKnownFolder(REFKNOWNFOLDERID kfid)
     }
 }
 
+
 #pragma endregion
 
 
@@ -544,12 +544,14 @@ made at 2013.11.18
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-bool DelDir(TCHAR * path)
+EXTERN_C
+__declspec(dllexport)
+bool WINAPI DelDirByApi(_In_ LPCWSTR Dir)
 {
     // Check that the input path plus 3 is not longer than MAX_PATH.
     // Three characters are for the "\*" plus NULL appended below.
     size_t length_of_arg;
-    StringCchLength(path, MAX_PATH, &length_of_arg);//argv[1]
+    StringCchLength(Dir, MAX_PATH, &length_of_arg);//argv[1]
     if (length_of_arg > (MAX_PATH - 3)) {
         _tprintf(TEXT("\nDirectory path is too long.\n"));
         return false;
@@ -558,7 +560,7 @@ bool DelDir(TCHAR * path)
     // Prepare string for use with FindFile functions.  
     // First, copy the string to a buffer, then append '\*' to the directory name.
     TCHAR szDir[MAX_PATH];
-    StringCchCopy(szDir, MAX_PATH, path);//argv[1]
+    StringCchCopy(szDir, MAX_PATH, Dir);//argv[1]
     StringCchCat(szDir, MAX_PATH, TEXT("\\*"));
 
     // Find the first file in the directory.
@@ -579,9 +581,9 @@ bool DelDir(TCHAR * path)
                 //这里不操作。
             } else {
                 TCHAR sztemp[MAX_PATH] = {0};
-                StringCchCopy(sztemp, MAX_PATH, path);//argv[1]
+                StringCchCopy(sztemp, MAX_PATH, Dir);//argv[1]
                 PathAppend(sztemp, ffd.cFileName);
-                DelDir(sztemp);
+                DelDirByApi(sztemp);
 
                 /*_tprintf(TEXT("  %s   <DIR>\n"), ffd.cFileName);*/
             }
@@ -592,7 +594,7 @@ bool DelDir(TCHAR * path)
             //_tprintf(TEXT("  %s   %ld bytes\n"), ffd.cFileName, filesize.QuadPart);
 
             TCHAR sztemp[MAX_PATH] = {0};
-            StringCchCopy(sztemp, MAX_PATH, path);//argv[1]
+            StringCchCopy(sztemp, MAX_PATH, Dir);//argv[1]
             PathAppend(sztemp, ffd.cFileName);
             bool b = DeleteFile(sztemp);
             if (b == 0) {
@@ -608,19 +610,21 @@ bool DelDir(TCHAR * path)
 
     FindClose(hFind);
 
-    return RemoveDirectory(path);//里面有空文件夹依旧任务是空目录。返回0失败。
+    return RemoveDirectory(Dir);//里面有空文件夹依旧任务是空目录。返回0失败。
 }
 
 
-void DelDir2(TCHAR * dir)
+EXTERN_C
+__declspec(dllexport)
+void WINAPI DelDirByShell(_In_ LPCWSTR Dir)
 {
-    if (!PathFileExists(dir)) {
+    if (!PathFileExists(Dir)) {
         return;
     }
 
     TCHAR DelDir[MAX_PATH] = {0};
-    lstrcpy(DelDir, dir);
-    int len = lstrlen(dir);
+    lstrcpy(DelDir, Dir);
+    int len = lstrlen(Dir);
     DelDir[len] = 0;
     DelDir[len + 1] = 0;
 
@@ -639,29 +643,6 @@ void DelDir2(TCHAR * dir)
     if (0 != err) {
         //失败。
     }
-}
-
-
-int DelDirTest(int argc, TCHAR * argv[])
-/*
-删除文件夹有两种办法：
-1.递归遍历加RemoveDirectory（移除空目录）。只读属性需要去掉。
-2.SHFileOperation函数的FO_DELETE。
-修改自：http://msdn.microsoft.com/en-us/library/windows/desktop/aa365200(v=vs.85).aspx等。
-
-If you are writing a 32-bit application to list all the files in a directory and the application may be run on a 64-bit computer,
-you should call the Wow64DisableWow64FsRedirectionfunction before calling FindFirstFile and call Wow64RevertWow64FsRedirection after the last call to FindNextFile.
-*/
-{
-    setlocale(LC_CTYPE, ".936");
-
-    TCHAR path[MAX_PATH] = L"e:\\test";
-
-    bool b = DelDir(path);
-
-    DelDir2((TCHAR *)L"e:\\test2");
-
-    return 0;
 }
 
 
