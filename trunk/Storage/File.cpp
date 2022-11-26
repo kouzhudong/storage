@@ -45,7 +45,6 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/appending-one-file-to-anot
     BYTE   buff[4096];
 
     // Open the existing file.
-
     hFile = CreateFile(TEXT("one.txt"), // open One.txt
                        GENERIC_READ,             // open for reading
                        0,                        // do not share
@@ -53,15 +52,12 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/appending-one-file-to-anot
                        OPEN_EXISTING,            // existing file only
                        FILE_ATTRIBUTE_NORMAL,    // normal file
                        NULL);                    // no attr. template
-
     if (hFile == INVALID_HANDLE_VALUE) {
         printf("Could not open One.txt.");
         return;
     }
 
-    // Open the existing file, or if the file does not exist,
-    // create a new file.
-
+    // Open the existing file, or if the file does not exist, create a new file.
     hAppend = CreateFile(TEXT("two.txt"), // open Two.txt
                          FILE_APPEND_DATA,         // open for writing
                          FILE_SHARE_READ,          // allow multiple readers
@@ -69,19 +65,15 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/appending-one-file-to-anot
                          OPEN_ALWAYS,              // open or create
                          FILE_ATTRIBUTE_NORMAL,    // normal file
                          NULL);                    // no attr. template
-
     if (hAppend == INVALID_HANDLE_VALUE) {
         printf("Could not open Two.txt.");
         return;
     }
 
     // Append the first file to the end of the second file.
-    // Lock the second file to prevent another process from
-    // accessing it while writing to it. Unlock the
-    // file when writing is complete.
-
-    while (ReadFile(hFile, buff, sizeof(buff), &dwBytesRead, NULL)
-           && dwBytesRead > 0) {
+    // Lock the second file to prevent another process from accessing it while writing to it.
+    // Unlock the file when writing is complete.
+    while (ReadFile(hFile, buff, sizeof(buff), &dwBytesRead, NULL) && dwBytesRead > 0) {
         dwPos = SetFilePointer(hAppend, 0, NULL, FILE_END);
         LockFile(hAppend, dwPos, 0, dwBytesRead, 0);
         WriteFile(hAppend, buff, dwBytesRead, &dwBytesWritten, NULL);
@@ -89,7 +81,6 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/appending-one-file-to-anot
     }
 
     // Close both files.
-
     CloseHandle(hFile);
     CloseHandle(hAppend);
 }
@@ -139,8 +130,7 @@ The following C++ example shows how to create a temporary file for data manipula
 //  This application opens a file specified by the user and uses
 //  a temporary file to convert the file to upper case letters.
 //  Note that the given source file is assumed to be an ASCII text file
-//  and the new file created is overwritten each time the application is
-//  run.
+//  and the new file created is overwritten each time the application is run.
 //
 
 https://docs.microsoft.com/zh-cn/windows/win32/fileio/creating-and-using-a-temporary-file
@@ -148,14 +138,11 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/creating-and-using-a-tempo
 {
     HANDLE hFile = INVALID_HANDLE_VALUE;
     HANDLE hTempFile = INVALID_HANDLE_VALUE;
-
     BOOL fSuccess = FALSE;
     DWORD dwRetVal = 0;
     UINT uRetVal = 0;
-
     DWORD dwBytesRead = 0;
     DWORD dwBytesWritten = 0;
-
     TCHAR szTempFileName[MAX_PATH];
     TCHAR lpTempPathBuffer[MAX_PATH];
     char  chBuffer[BUFSIZE];
@@ -224,21 +211,15 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/creating-and-using-a-tempo
     }
 
     //  Reads BUFSIZE blocks to the buffer and converts all characters in 
-    //  the buffer to upper case, then writes the buffer to the temporary 
-    //  file. 
+    //  the buffer to upper case, then writes the buffer to the temporary file. 
     do {
         if (ReadFile(hFile, chBuffer, BUFSIZE, &dwBytesRead, NULL)) {
-            //  Replaces lower case letters with upper case
-            //  in place (using the same buffer). The return
-            //  value is the number of replacements performed,
-            //  which we aren't interested in for this demo.
+            //  Replaces lower case letters with upper case in place (using the same buffer).
+            //  The return 
+            //  value is the number of replacements performed, which we aren't interested in for this demo.
             CharUpperBuffA(chBuffer, dwBytesRead);
 
-            fSuccess = WriteFile(hTempFile,
-                                 chBuffer,
-                                 dwBytesRead,
-                                 &dwBytesWritten,
-                                 NULL);
+            fSuccess = WriteFile(hTempFile, chBuffer, dwBytesRead, &dwBytesWritten, NULL);
             if (!fSuccess) {
                 PrintError(TEXT("WriteFile failed"));
                 return (5);
@@ -250,8 +231,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/creating-and-using-a-tempo
         //  Continues until the whole file is processed.
     } while (dwBytesRead == BUFSIZE);
 
-    //  The handles to the files are no longer needed, so
-    //  they are closed prior to moving the new file.
+    //  The handles to the files are no longer needed, so they are closed prior to moving the new file.
     if (!CloseHandle(hFile)) {
         PrintError(TEXT("CloseHandle(hFile) failed"));
         return (7);
@@ -262,11 +242,8 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/creating-and-using-a-tempo
         return (8);
     }
 
-    //  Moves the temporary file to the new text file, allowing for differnt
-    //  drive letters or volume names.
-    fSuccess = MoveFileEx(szTempFileName,
-                          TEXT("AllCaps.txt"),
-                          MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED);
+    //  Moves the temporary file to the new text file, allowing for differnt drive letters or volume names.
+    fSuccess = MoveFileEx(szTempFileName, TEXT("AllCaps.txt"), MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED);
     if (!fSuccess) {
         PrintError(TEXT("MoveFileEx failed"));
         return (9);
@@ -306,7 +283,6 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/opening-a-file-for-reading
                        CREATE_NEW,             // create new file only
                        FILE_ATTRIBUTE_NORMAL,  // normal file
                        NULL);                  // no attr. template
-
     if (hFile == INVALID_HANDLE_VALUE) {
         DisplayError(TEXT("CreateFile"));
         _tprintf(TEXT("Terminal failure: Unable to open file \"%s\" for write.\n"), argv[1]);
@@ -321,16 +297,14 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/opening-a-file-for-reading
         dwBytesToWrite,  // number of bytes to write
         &dwBytesWritten, // number of bytes that were written
         NULL);            // no overlapped structure
-
     if (FALSE == bErrorFlag) {
         DisplayError(TEXT("WriteFile"));
         printf("Terminal failure: Unable to write to file.\n");
     } else {
         if (dwBytesWritten != dwBytesToWrite) {
             // This is an error because a synchronous write that results in
-            // success (WriteFile returns TRUE) should write all data as
-            // requested. This would not necessarily be the case for
-            // asynchronous writes.
+            // success (WriteFile returns TRUE) should write all data as requested.
+            // This would not necessarily be the case for asynchronous writes.
             printf("Error: dwBytesWritten != dwBytesToWrite\n");
         } else {
             _tprintf(TEXT("Wrote %d bytes to %s successfully.\n"), dwBytesWritten, argv[1]);
@@ -401,16 +375,13 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/opening-a-file-for-reading
                        OPEN_EXISTING,         // existing file only
                        FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED, // normal file
                        NULL);                 // no attr. template
-
     if (hFile == INVALID_HANDLE_VALUE) {
         DisplayError(TEXT("CreateFile"));
         _tprintf(TEXT("Terminal failure: unable to open file \"%s\" for read.\n"), argv[1]);
         return;
     }
 
-    // Read one character less than the buffer size to save room for
-    // the terminating NULL character. 
-
+    // Read one character less than the buffer size to save room for the terminating NULL character. 
     if (FALSE == ReadFileEx(hFile, ReadBuffer, BUFFERSIZE - 1, &ol, FileIOCompletionRoutine)) {
         DisplayError(TEXT("ReadFile"));
         printf("Terminal failure: Unable to read from file.\n GetLastError=%08x\n", GetLastError());
@@ -467,7 +438,6 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/retrieving-and-changing-fi
     HANDLE          hSearch;
     DWORD           dwAttrs;
     TCHAR           szNewPath[MAX_PATH];
-
     BOOL            fFinished = FALSE;
 
     if (argc != 2) {
@@ -476,23 +446,19 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/retrieving-and-changing-fi
     }
 
     // Create a new directory. 
-
     if (!CreateDirectory(argv[1], NULL)) {
         printf("CreateDirectory failed (%d)\n", GetLastError());
         return;
     }
 
     // Start searching for text files in the current directory. 
-
     hSearch = FindFirstFile(TEXT("*.txt"), &FileData);
     if (hSearch == INVALID_HANDLE_VALUE) {
         printf("No text files found.\n");
         return;
     }
 
-    // Copy each .TXT file to the new directory 
-    // and change it to read only, if not already. 
-
+    // Copy each .TXT file to the new directory and change it to read only, if not already. 
     while (!fFinished) {
         StringCchPrintf(szNewPath, sizeof(szNewPath) / sizeof(szNewPath[0]), TEXT("%s\\%s"), argv[1], FileData.cFileName);
 
@@ -501,8 +467,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/retrieving-and-changing-fi
             if (dwAttrs == INVALID_FILE_ATTRIBUTES) return;
 
             if (!(dwAttrs & FILE_ATTRIBUTE_READONLY)) {
-                SetFileAttributes(szNewPath,
-                                  dwAttrs | FILE_ATTRIBUTE_READONLY);
+                SetFileAttributes(szNewPath, dwAttrs | FILE_ATTRIBUTE_READONLY);
             }
         } else {
             printf("Could not copy file.\n");
@@ -520,9 +485,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/retrieving-and-changing-fi
         }
     }
 
-    // Close the search handle. 
-
-    FindClose(hSearch);
+    FindClose(hSearch);// Close the search handle. 
 }
 
 
@@ -531,31 +494,23 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/retrieving-and-changing-fi
 
 void GoDoSomethingElse(void)
 // Routine Description:
-//     Placeholder to demo when async I/O might want to do
-//     other processing.
+//     Placeholder to demo when async I/O might want to do other processing.
 {
     printf("Inside GoDoSomethingElse()\n");
 }
 
 
 DWORD AsyncTestForEnd(HANDLE hEvent, HANDLE hFile)
-
 // Routine Description:
 //      Demonstrate async ReadFile operations that can catch
 //      End-of-file conditions. Unless the operation completes
 //      synchronously or the file size happens to be an exact
-//      multiple of BUF_SIZE, this routine will eventually force
-//      an EOF condition on any file.
-
+//      multiple of BUF_SIZE, this routine will eventually force an EOF condition on any file.
 // Parameters:
 //      hEvent - pre-made manual-reset event.
-//
 //      hFile - pre-opened file handle, overlapped.
-//
 //      inBuffer - the buffer to read in the data to.
-//
 //      nBytesToRead - how much to read (usually the buffer size).
-
 // Return Value:
 //      Number of bytes read.
 {
@@ -564,15 +519,12 @@ DWORD AsyncTestForEnd(HANDLE hEvent, HANDLE hFile)
     DWORD dwBytesRead = 0;
     DWORD dwFileSize = GetFileSize(hFile, NULL);
     OVERLAPPED stOverlapped = {0};
-
     DWORD dwError = 0;
     LPCTSTR errMsg = NULL;
-
     BOOL bResult = FALSE;
     BOOL bContinue = TRUE;
 
-    // Set up overlapped structure event. Other members are already 
-    // initialized to zero.
+    // Set up overlapped structure event. Other members are already initialized to zero.
     stOverlapped.hEvent = hEvent;
 
     // This is an intentionally brute-force loop to force the EOF trigger.
@@ -585,18 +537,10 @@ DWORD AsyncTestForEnd(HANDLE hEvent, HANDLE hFile)
         bContinue = FALSE;
 
         // Attempt an asynchronous read operation.
-        bResult = ReadFile(hFile,
-                           inBuffer,
-                           nBytesToRead,
-                           &dwBytesRead,
-                           &stOverlapped);
-
+        bResult = ReadFile(hFile, inBuffer, nBytesToRead, &dwBytesRead, &stOverlapped);
         dwError = GetLastError();
-
-        // Check for a problem or pending operation. 
-        if (!bResult) {
+        if (!bResult) {// Check for a problem or pending operation. 
             switch (dwError) {
-
             case ERROR_HANDLE_EOF:
             {
                 printf("\nReadFile returned FALSE and EOF condition, async EOF not triggered.\n");
@@ -606,26 +550,19 @@ DWORD AsyncTestForEnd(HANDLE hEvent, HANDLE hFile)
             {
                 BOOL bPending = TRUE;
 
-                // Loop until the I/O is complete, that is: the overlapped 
-                // event is signaled.
+                // Loop until the I/O is complete, that is: the overlapped event is signaled.
 
                 while (bPending) {
                     bPending = FALSE;
 
-                    // Pending asynchronous I/O, do something else
-                    // and re-check overlapped structure.
+                    // Pending asynchronous I/O, do something else and re-check overlapped structure.
                     printf("\nReadFile operation is pending\n");
 
-                    // Do something else then come back to check. 
-                    GoDoSomethingElse();
+                    GoDoSomethingElse();// Do something else then come back to check. 
 
                     // Check the result of the asynchronous read
                     // without waiting (forth parameter FALSE). 
-                    bResult = GetOverlappedResult(hFile,
-                                                  &stOverlapped,
-                                                  &dwBytesRead,
-                                                  FALSE);
-
+                    bResult = GetOverlappedResult(hFile, &stOverlapped, &dwBytesRead, FALSE);
                     if (!bResult) {
                         switch (dwError = GetLastError()) {
                         case ERROR_HANDLE_EOF:
@@ -634,7 +571,6 @@ DWORD AsyncTestForEnd(HANDLE hEvent, HANDLE hFile)
                             printf("GetOverlappedResult found EOF\n");
                             break;
                         }
-
                         case ERROR_IO_INCOMPLETE:
                         {
                             // Operation is still pending, allow while loop
@@ -644,13 +580,11 @@ DWORD AsyncTestForEnd(HANDLE hEvent, HANDLE hFile)
                             bContinue = TRUE;
                             break;
                         }
-
                         default:
                         {
                             // Decode any other errors codes.
                             errMsg = ErrorMessage(dwError);
-                            _tprintf(TEXT("GetOverlappedResult failed (%d): %s\n"),
-                                     dwError, errMsg);
+                            _tprintf(TEXT("GetOverlappedResult failed (%d): %s\n"), dwError, errMsg);
                             LocalFree((LPVOID)errMsg);
                         }
                         }
@@ -663,7 +597,6 @@ DWORD AsyncTestForEnd(HANDLE hEvent, HANDLE hFile)
                 }
                 break;
             }
-
             default:
             {
                 // Decode any other errors codes.
@@ -707,7 +640,8 @@ void __cdecl EndOfFile(int argc, TCHAR * argv[])
 Testing for the End of a File
 2018/05/31
 
-The ReadFile function checks for the end-of-file condition (EOF) differently for synchronous and asynchronous read operations.
+The ReadFile function checks for the end-of-file condition (EOF) differently for synchronous and
+asynchronous read operations.
 When a synchronous read operation gets to the end of a file,
 ReadFile returns TRUE and sets the variable pointed to by the lpNumberOfBytesRead parameter to zero.
 An asynchronous read operation can encounter the end of a file during the initiating call to ReadFile or during subsequent asynchronous operations if the file pointer is programmatically advanced beyond the end of the file.
@@ -724,7 +658,8 @@ The following C++ example shows how to test for the end of a file during a synch
    }
 
 The test for end-of-file during an asynchronous read operation is slightly more involved than for a similar synchronous read operation.
-The end-of-file indicator for asynchronous read operations is when GetOverlappedResult returns FALSE and GetLastError returns ERROR_HANDLE_EOF.
+The end-of-file indicator for asynchronous read operations is when GetOverlappedResult returns FALSE and
+GetLastError returns ERROR_HANDLE_EOF.
 
 The following C++ example shows how to test for the end of file during an asynchronous read operation.
 
@@ -749,7 +684,6 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/testing-for-the-end-of-a-f
                        OPEN_EXISTING,          // existing file only
                        FILE_FLAG_OVERLAPPED,   // overlapped operation
                        NULL);                  // no attr. template
-
     if (hFile == INVALID_HANDLE_VALUE) {
         DWORD dwError = GetLastError();
         LPCTSTR errMsg = ErrorMessage(dwError);
@@ -759,7 +693,6 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/testing-for-the-end-of-a-f
     }
 
     hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-
     if (hEvent == NULL) {
         DWORD dwError = GetLastError();
         LPCTSTR errMsg = ErrorMessage(dwError);
@@ -800,31 +733,31 @@ void CreateLongPathFile()
 ²Î¿¼×ÊÁÏ£ºhttps://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx
 
 Maximum Path Length Limitation
-In the Windows API (with some exceptions discussed in the following paragraphs), the maximum length for a path is MAX_PATH, 
+In the Windows API (with some exceptions discussed in the following paragraphs), the maximum length for a path is MAX_PATH,
 which is defined as 260 characters.
-A local path is structured in the following order: drive letter, colon, backslash, name components separated by backslashes, 
+A local path is structured in the following order: drive letter, colon, backslash, name components separated by backslashes,
 and a terminating null character.
 For example, the maximum path on drive D is "D:\some 256-character path string<NUL>" where "<NUL>" represents the invisible terminating null character for the current system codepage.
 (The characters < > are used here for visual clarity and cannot be part of a valid path string.)
 
-Note  File I/O functions in the Windows API convert "/" to "\" as part of converting the name to an NT-style name, 
+Note  File I/O functions in the Windows API convert "/" to "\" as part of converting the name to an NT-style name,
 except when using the "\\?\" prefix as detailed in the following sections.
 The Windows API has many functions that also have Unicode versions to permit an extended-length path for a maximum total path length of 32,767 characters.
-This type of path is composed of components separated by backslashes, 
+This type of path is composed of components separated by backslashes,
 each up to the value returned in the lpMaximumComponentLength parameter of the GetVolumeInformation function (this value is commonly 255 characters).
 To specify an extended-length path, use the "\\?\" prefix. For example, "\\?\D:\very long path".
 
-Note  The maximum path of 32,767 characters is approximate, 
-because the "\\?\" prefix may be expanded to a longer string by the system at run time, 
+Note  The maximum path of 32,767 characters is approximate,
+because the "\\?\" prefix may be expanded to a longer string by the system at run time,
 and this expansion applies to the total length.
 The "\\?\" prefix can also be used with paths constructed according to the universal naming convention (UNC).
-To specify such a path using UNC, use the "\\?\UNC\" prefix. 
+To specify such a path using UNC, use the "\\?\UNC\" prefix.
 For example, "\\?\UNC\server\share", where "server" is the name of the computer and "share" is the name of the shared folder.
-These prefixes are not used as part of the path itself. 
+These prefixes are not used as part of the path itself.
 They indicate that the path should be passed to the system with minimal modification,
-which means that you cannot use forward slashes to represent path separators, 
+which means that you cannot use forward slashes to represent path separators,
 or a period to represent the current directory, or double dots to represent the parent directory.
-Because you cannot use the "\\?\" prefix with a relative path, 
+Because you cannot use the "\\?\" prefix with a relative path,
 relative paths are always limited to a total of MAX_PATH characters.
 
 There is no need to perform any Unicode normalization on path and file name strings for use by the Windows file I/O API functions because the file system treats path and file names as an opaque sequence of WCHARs.
@@ -832,19 +765,18 @@ Any normalization that your application requires should be performed with this i
 
 When using an API to create a directory, the specified path cannot be so long that you cannot append an 8.3 file name (that is, the directory name cannot exceed MAX_PATH minus 12).
 
-The shell and the file system have different requirements. 
+The shell and the file system have different requirements.
 It is possible to create a path with the Windows API that the shell user interface is not able to interpret properly.
 
 made by correy
 made at 2015.04.06
 */
 {
-    const wchar_t * head = L"\\\\?\\D:\\";    
-    const wchar_t * end = L".txt";    
+    const wchar_t * head = L"\\\\?\\D:\\";
+    const wchar_t * end = L".txt";
 
     //memset(lpPathBuffer, 0x0031, 32767);
-    for (int x = 0; x < 250; x++)
-    {
+    for (int x = 0; x < 250; x++) {
         lpPathBuffer[x] = 0x31;
     }
     lpPathBuffer[32767] = 0;
@@ -852,8 +784,7 @@ made at 2015.04.06
     lstrcpy(FilePath, head);
     lstrcat(FilePath, lpPathBuffer);
 
-    if (!CreateDirectory(FilePath, NULL))
-    {
+    if (!CreateDirectory(FilePath, NULL)) {
         printf("Could not create new directory.\n");
         return;
     }
@@ -869,8 +800,7 @@ made at 2015.04.06
                               CREATE_ALWAYS,         // existing file only
                               FILE_ATTRIBUTE_NORMAL, // normal file
                               NULL);                 // no attr. template 
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
+    if (hFile == INVALID_HANDLE_VALUE) {
         printf("Could not open file (error %d)\n", GetLastError());
         return;
     }

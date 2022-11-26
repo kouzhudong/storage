@@ -596,8 +596,7 @@ bool DelDir(TCHAR * path)
             PathAppend(sztemp, ffd.cFileName);
             bool b = DeleteFile(sztemp);
             if (b == 0) {
-                int x = GetLastError();
-                x = x;//查看x的值用的。
+                _tprintf(TEXT("LastError:%d.\n"), GetLastError());
             }
         }
     } while (FindNextFile(hFind, &ffd) != 0);
