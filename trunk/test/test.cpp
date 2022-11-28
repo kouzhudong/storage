@@ -5,6 +5,7 @@
 #include "encrypt.h"
 #include "Disk.h"
 #include "Folder.h"
+#include "File.h"
 
 
 #ifdef _WIN64  
@@ -38,10 +39,10 @@ int _cdecl main(_In_ int argc, _In_reads_(argc) CHAR * argv[])
         return GetLastError();
     }
 
-    DelDirTest(Args, Arglist);
+    //DelDirTest(Args, Arglist);
     //GetDriveGeometryTest(argc, argv);
 
-    //EnumProvidersByCrypt();
+    FileResourcesTest();
 
     LocalFree(Arglist);
 

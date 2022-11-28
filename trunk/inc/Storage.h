@@ -223,6 +223,9 @@ void WINAPI EnumProviderTypes();
 
 void WINAPI EnumCsp(int argc, _TCHAR * argv[]);
 
+void WINAPI GetFileVersion(PWCHAR FileName, VS_FIXEDFILEINFO * FileInfo);
+void WINAPI GetFileResourcesW(IN LPCWSTR FileName, IN LPCWSTR ResourceName);
+
 
 EXTERN_C_END
 

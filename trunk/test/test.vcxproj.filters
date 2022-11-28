@@ -27,6 +27,9 @@
     <ClCompile Include="Folder.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="File.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\inc\Storage.h">
@@ -39,6 +42,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Folder.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="File.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
