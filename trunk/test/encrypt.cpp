@@ -4,9 +4,9 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-int EnumProvidersTest(int argc, _TCHAR * argv[])
+int EnumProvidersTest(int argc, _TCHAR* argv[])
 /*
-²âÊÔÐ§¹û£º
+æµ‹è¯•æ•ˆæžœï¼š
  0. CNG: Microsoft Software Key Storage Provider
  1. CNG: Microsoft Passport Key Storage Provider
  2. CNG: Microsoft Smart Card Key Storage Provider

@@ -4,7 +4,7 @@
 
 //class Folder
 //{
-//um\ShlDisp.h(1661): message : 参见“Folder”的声明 
+//um\ShlDisp.h(1661): message : 鍙傝鈥淔older鈥濈殑澹版槑 
 //};
 
-int DelDirTest(int argc, TCHAR * argv[]);
+int DelDirTest(int argc, TCHAR* argv[]);

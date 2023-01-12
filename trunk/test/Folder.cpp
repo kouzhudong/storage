@@ -1,12 +1,12 @@
 #include "Folder.h"
 
 
-int DelDirTest(int argc, TCHAR * argv[])
+int DelDirTest(int argc, TCHAR* argv[])
 /*
-É¾³ıÎÄ¼ş¼ĞÓĞÁ½ÖÖ°ì·¨£º
-1.µİ¹é±éÀú¼ÓRemoveDirectory£¨ÒÆ³ı¿ÕÄ¿Â¼£©¡£Ö»¶ÁÊôĞÔĞèÒªÈ¥µô¡£
-2.SHFileOperationº¯ÊıµÄFO_DELETE¡£
-ĞŞ¸Ä×Ô£ºhttp://msdn.microsoft.com/en-us/library/windows/desktop/aa365200(v=vs.85).aspxµÈ¡£
+åˆ é™¤æ–‡ä»¶å¤¹æœ‰ä¸¤ç§åŠæ³•ï¼š
+1.é€’å½’éå†åŠ RemoveDirectoryï¼ˆç§»é™¤ç©ºç›®å½•ï¼‰ã€‚åªè¯»å±æ€§éœ€è¦å»æ‰ã€‚
+2.SHFileOperationå‡½æ•°çš„FO_DELETEã€‚
+ä¿®æ”¹è‡ªï¼šhttp://msdn.microsoft.com/en-us/library/windows/desktop/aa365200(v=vs.85).aspxç­‰ã€‚
 
 If you are writing a 32-bit application to list all the files in a directory and the application may be run on a 64-bit computer,
 you should call the Wow64DisableWow64FsRedirectionfunction before calling FindFirstFile and call Wow64RevertWow64FsRedirection after the last call to FindNextFile.
@@ -18,7 +18,7 @@ you should call the Wow64DisableWow64FsRedirectionfunction before calling FindFi
 
     bool b = DelDirByApi(path);
 
-    DelDirByShell((TCHAR *)L"e:\\test2");
+    DelDirByShell((TCHAR*)L"e:\\test2");
 
     return 0;
 }
