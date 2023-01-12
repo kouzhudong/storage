@@ -7,7 +7,7 @@
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-//Õâ¶Î´úÂëÕª×Ô£ºWindows-classic-samples\Samples\Win7Samples\winbase\io\enummount
+//è¿™æ®µä»£ç æ‘˜è‡ªï¼šWindows-classic-samples\Samples\Win7Samples\winbase\io\enummount
 
 
 /*
@@ -515,8 +515,8 @@ int CreatingMountedFolder(int argc, TCHAR * argv[])
 Creating a Mounted Folder
 2018/05/31
 
-argv[1]£ºÊÇ¸öÄ¿Â¼£¬±ØĞë´æÔÚ£¬±ØĞëÎª¿Õ¡£
-argv[2]£º
+argv[1]ï¼šæ˜¯ä¸ªç›®å½•ï¼Œå¿…é¡»å­˜åœ¨ï¼Œå¿…é¡»ä¸ºç©ºã€‚
+argv[2]ï¼š
 
 The following sample demonstrates how to create a mounted folder.
 For more information, see Creating Mounted Folders.
@@ -893,8 +893,8 @@ https://docs.microsoft.com/zh-cn/windows/win32/fileio/walking-a-buffer-of-change
 
 void ChangeJournalRecords2()
 /*
-ntfsµÄ±ùÉ½Ò»½Ç£ºChange Journal Records£¬¸ü¶àµÄ¹¦ÄÜÓĞ´ı·¢¾òºÍÀí½â¡£
-±¾ÎÄÉÔÎ¢ĞŞ¸Ä×Ô£ºhttp://msdn.microsoft.com/en-us/library/aa365736%28v=VS.85%29.aspx
+ntfsçš„å†°å±±ä¸€è§’ï¼šChange Journal Recordsï¼Œæ›´å¤šçš„åŠŸèƒ½æœ‰å¾…å‘æ˜å’Œç†è§£ã€‚
+æœ¬æ–‡ç¨å¾®ä¿®æ”¹è‡ªï¼šhttp://msdn.microsoft.com/en-us/library/aa365736%28v=VS.85%29.aspx
 */
 {
     HANDLE hVol = CreateFile(TEXT("\\\\.\\c:"),
@@ -907,7 +907,7 @@ ntfsµÄ±ùÉ½Ò»½Ç£ºChange Journal Records£¬¸ü¶àµÄ¹¦ÄÜÓĞ´ı·¢¾òºÍÀí½â¡£
         return;
     }
 
-    //»ñÈ¡JournalData½á¹¹¼°dwBytes¸öÊı¡£
+    //è·å–JournalDataç»“æ„åŠdwBytesä¸ªæ•°ã€‚
     DWORD dwBytes;
     USN_JOURNAL_DATA JournalData;
     if (!DeviceIoControl(hVol,
@@ -930,7 +930,7 @@ ntfsµÄ±ùÉ½Ò»½Ç£ºChange Journal Records£¬¸ü¶àµÄ¹¦ÄÜÓĞ´ı·¢¾òºÍÀí½â¡£
     for (int I = 0; I <= 10; I++) {
         CHAR Buffer[4096] = {0};
 
-        //dwBytesÓĞ·µ»ØÖµ¡£
+        //dwBytesæœ‰è¿”å›å€¼ã€‚
         if (!DeviceIoControl(hVol,
                              FSCTL_READ_USN_JOURNAL,
                              &ReadData,
@@ -1055,7 +1055,7 @@ int ClusterDiskDetails(int argc, WCHAR * argv[])
 * See http://www.microsoft.com/en-us/openness/licenses.aspx#MPL.
 * All other rights reserved.
 *
-* ¹¤³Ì³ö´¦£ºRetrieving Volume GUID for a cluster volume (CppClusterDiskDetails)
+* å·¥ç¨‹å‡ºå¤„ï¼šRetrieving Volume GUID for a cluster volume (CppClusterDiskDetails)
 *
 * THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND,
 * EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED

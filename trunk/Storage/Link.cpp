@@ -7,7 +7,7 @@
 
 void CreateHardLinkTest()
 /*
-ÌâÄ¿£ºÓ²Á´½ÓµÄ´´½¨¡£
+é¢˜ç›®ï¼šç¡¬é“¾æ¥çš„åˆ›å»ºã€‚
 
 Establishes a hard link between an existing file and a new file.
 This function is only supported on the NTFS file system, and only for files, not directories.
@@ -28,11 +28,11 @@ You cannot give a file different security descriptors on a per-hard-link basis.
 
 This function does not modify the security descriptor of the file to be linked to, even if security descriptor information is passed in the lpSecurityAttributes parameter.
 
-Ó²Á´½ÓÓĞ´´½¨ºÍÉ¾³ı£¬µ«ÊÇ²éÑ¯»¹µÃ×Ô¼ºĞ´¡£
+ç¡¬é“¾æ¥æœ‰åˆ›å»ºå’Œåˆ é™¤ï¼Œä½†æ˜¯æŸ¥è¯¢è¿˜å¾—è‡ªå·±å†™ã€‚
 
-ÆäÊµ£º
-Ó²Á´½ÓµÄ´´½¨¾ÍÊÇNtOpenFile+NtSetInformationFile(FileLinkInformation);Õâ¸öÔÚÇı¶¯ÖĞĞ´¸öº¯Êı£ºZwCreateHardLink¡£
-Ó²Á´½ÓµÄÉ¾³ıÄØ£¿ÒÔºóÔÙ·ÖÎö°É£¡
+å…¶å®ï¼š
+ç¡¬é“¾æ¥çš„åˆ›å»ºå°±æ˜¯NtOpenFile+NtSetInformationFile(FileLinkInformation);è¿™ä¸ªåœ¨é©±åŠ¨ä¸­å†™ä¸ªå‡½æ•°ï¼šZwCreateHardLinkã€‚
+ç¡¬é“¾æ¥çš„åˆ é™¤å‘¢ï¼Ÿä»¥åå†åˆ†æå§ï¼
 
 made by correy
 made at 2015.09.26
@@ -42,22 +42,22 @@ homepage:http://correy.webs.com
     DWORD d = 0;
 
     //The name of the new file.This parameter cannot specify the name of a directory.
-    LPCTSTR pszNewLinkName = L"f:\\HardLink.txt"; //±ØĞëÊÇ²»´æÔÚµÄÎÄ¼ş»òÓ²Á´½Ó¡£   
+    LPCTSTR pszNewLinkName = L"f:\\HardLink.txt"; //å¿…é¡»æ˜¯ä¸å­˜åœ¨çš„æ–‡ä»¶æˆ–ç¡¬é“¾æ¥ã€‚   
 
     //The name of the existing file.This parameter cannot specify the name of a directory.
-    LPCTSTR pszExistingFileName = L"f:\\test.txt";//ÒÑ¾­´æÔÚµÄÎÄ¼ş¡£
+    LPCTSTR pszExistingFileName = L"f:\\test.txt";//å·²ç»å­˜åœ¨çš„æ–‡ä»¶ã€‚
 
-    //Reserved; must be NULL.ËµÊÇÕâÑùËµÁË£¬ÄæÏò´úÂë»¹ÊÇÉèÖÃÁË¡£
+    //Reserved; must be NULL.è¯´æ˜¯è¿™æ ·è¯´äº†ï¼Œé€†å‘ä»£ç è¿˜æ˜¯è®¾ç½®äº†ã€‚
     LPSECURITY_ATTRIBUTES lpSecurityAttributes = NULL;
 
     BOOL fCreatedLink = CreateHardLink(pszNewLinkName, pszExistingFileName, NULL);
     if (fCreatedLink == FALSE) {
-        d = GetLastError();//0x000000B7:µ±ÎÄ¼şÒÑ´æÔÚÊ±£¬ÎŞ·¨´´½¨¸ÃÎÄ¼ş¡£ 
+        d = GetLastError();//0x000000B7:å½“æ–‡ä»¶å·²å­˜åœ¨æ—¶ï¼Œæ— æ³•åˆ›å»ºè¯¥æ–‡ä»¶ã€‚ 
     }
 
-    MessageBox(0, L"Çë¼ì²é£¡", L"Ó²Á´½Ó´´½¨³É¹¦£¡", 0);
+    MessageBox(0, L"è¯·æ£€æŸ¥ï¼", L"ç¡¬é“¾æ¥åˆ›å»ºæˆåŠŸï¼", 0);
 
-    //Ö»É¾³ıÓ²Á´½Ó£¬²¢Ã»ÓĞÉ¾³ıÊµ¼ÊµÄÎÄ¼ş¡£
+    //åªåˆ é™¤ç¡¬é“¾æ¥ï¼Œå¹¶æ²¡æœ‰åˆ é™¤å®é™…çš„æ–‡ä»¶ã€‚
     fCreatedLink = DeleteFile(pszNewLinkName);
     if (fCreatedLink == FALSE) {
         d = GetLastError();
@@ -276,8 +276,8 @@ https://docs.microsoft.com/en-us/windows/win32/shell/links
 
 int CreateLinkTest()
 {
-    wchar_t lpszPathObj[MAX_PATH] = L"C:\\Windows\\regedit.exe";//¿ÉÒÔÎªÎÄ¼şÒ²¿ÉÒÔÎªÎÄ¼ş¼Ğ
-    char lnk[MAX_PATH] = "c:\\regedit.lnk";//ÕâÀïµÄºó×ºÃû±ØĞëÊÇ.lnk£¬ÎŞºó×ºÃû»òÕß¸ÄÎªurlµÈÆäËûµÄ¶¼²»ĞĞ¡£
+    wchar_t lpszPathObj[MAX_PATH] = L"C:\\Windows\\regedit.exe";//å¯ä»¥ä¸ºæ–‡ä»¶ä¹Ÿå¯ä»¥ä¸ºæ–‡ä»¶å¤¹
+    char lnk[MAX_PATH] = "c:\\regedit.lnk";//è¿™é‡Œçš„åç¼€åå¿…é¡»æ˜¯.lnkï¼Œæ— åç¼€åæˆ–è€…æ”¹ä¸ºurlç­‰å…¶ä»–çš„éƒ½ä¸è¡Œã€‚
     CreateLink(lpszPathObj, lnk, L"made by correy");
 
     wchar_t temp[MAX_PATH] = {0};

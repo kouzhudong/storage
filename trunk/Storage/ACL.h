@@ -1,18 +1,18 @@
 /*
-����İ�ȫ��Ҫ��ָ�ļ���ȫ���ļ��İ�ȫ���Ҽ��ļ����ֵİ�ȫ��ǩ������Ҫ��ACL.
-ACL�ǵô��·�DACL��SACL����������ACE��ɵġ�
-ACE�ַֺö��࣬�磺�����ģ��ܾ��ģ���Ƶĵȣ�ACE����ACE_HEADER��ACCESS_MASK���ɵġ�
-���������SECURITY_DESCRIPTOR���������������SID��ACL��
-SID���û���
+这里的安全主要是指文件安全，文件的安全即右键文件出现的安全标签，这主要是ACL.
+ACL记得大致分DACL和SACL，具体是有ACE组成的。
+ACE又分好多类，如：允许的，拒绝的，审计的等，ACE是由ACE_HEADER和ACCESS_MASK构成的。
+宏观上是由SECURITY_DESCRIPTOR描述，这里包含了SID和ACL。
+SID即用户。
 
-���ԣ���ȫ���ǽ������������û����ļ������е��û�֮���ƥ�䡣
-��ʱ��ȫ�ĺ��ģ�Ҳ�ǹ����ĺ��ġ�
-ʵ�ְ취��
-1.�޸Ľ������������û�������Ȩ��
-2.�޸��ļ������е��û������۸ġ�
-3.���Ǽ��ģ��磺����Э�飬©���ȡ�
+所以，安全即是进程所代表的用户和文件所运行的用户之间的匹配。
+这时安全的核心，也是攻防的核心。
+实现办法：
+1.修改进程所代表的用户，即提权。
+2.修改文件所运行的用户，即篡改。
+3.都是简介的，如：网络协议，漏洞等。
 
-��Security����ȥ���ܻ�ӭ�����ǲ����ACLרҵ��
+叫Security看上去很受欢迎，但是不如叫ACL专业。
 */
 
 #pragma once

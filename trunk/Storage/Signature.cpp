@@ -269,7 +269,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-worki
     DWORD cbData;
     void * pvArg;         // Pass through argument.
     cbHash = 20;          // define cbHash to the size of a SHA1
-                         // string- there is no need for a 2 pass��call to determine size of cbHash.
+                         // string- there is no need for a 2 pass　call to determine size of cbHash.
 
     // Allocate memory for the pbHash buffer
     if (!(pbHash = (BYTE *)malloc(cbHash)))
@@ -723,7 +723,7 @@ https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-makin
     CertReqInfo.rgAttribute = NULL;
     CertReqInfo.dwVersion = CERT_REQUEST_V1;
 
-    //    Call CryptExportPublicKeyInfo to return an initialized��CERT_PUBLIC_KEY_INFO structure.
+    //    Call CryptExportPublicKeyInfo to return an initialized　CERT_PUBLIC_KEY_INFO structure.
     //    First, get a cryptographic provider.
     if (CryptAcquireContext(
         &hCryptProv,        // Address for handle to be returned.
@@ -1240,7 +1240,7 @@ The following example shows how to use the WinVerifyTrust API to verify the sign
 
 https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program--verifying-the-signature-of-a-pe-file
 
-ע�⣺�˺������ܼ��ǩ����Ϣ�������������ڱ𴦣���CAT�����ļ���
+注意：此函数不能检测签名信息不在自身，而在别处（如CAT）的文件。
 */
 {
     LONG lStatus;
@@ -1375,7 +1375,7 @@ The following example shows how to use the WinVerifyTrust API to verify the sign
 
 https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program--verifying-the-signature-of-a-pe-file
 
-ע�⣺�˺������ܼ��ǩ����Ϣ�������������ڱ𴦣���CAT�����ļ���
+注意：此函数不能检测签名信息不在自身，而在别处（如CAT）的文件。
 */
 {
     LONG lStatus;
@@ -1844,49 +1844,49 @@ other Crypto API functions to retrieve the PKCS7 signature and to decode the PKC
 The following sample c code demonstrates how to use these APIs.
 
 http://support.microsoft.com/kb/323809/zh-cn
-������ʹ�� WinVerifyTrust() API ����֤��֤��ǩ����ִ���ļ���
+您可以使用 WinVerifyTrust() API 以验证验证码签名可执行文件。
 
-��Ȼǩ��������֤��������ܻ���Ҫִ�����У�
-ȷ��ǩ����ִ���ļ���֤�����ϸ��Ϣ��
-ȷ�����ں�ʱ����������ļ�ʱ�䡣
-�������ļ�������� URL ���ӡ�
-����ʱ�����֤�顣
-������ʾ���ʹ�� CryptQueryObject() API ������֤��ǩ����ִ���ļ�����ϸ����Ϣ��
-Collapse image������Ϣ
-��֤��ǩ�����ǻ��� PKCS7 �����������ʹ�� CryptQueryObject ���������� API �����Լ��� PKCS7 ǩ�������� PKCS7 ���ԡ�
+虽然签名进行验证，程序可能还需要执行下列：
+确定签名可执行文件的证书的详细信息。
+确定日期和时间戳操作的文件时间。
+检索与文件相关联的 URL 链接。
+检索时间戳的证书。
+本文演示如何使用 CryptQueryObject() API 检索验证码签名可执行文件的详细的信息。
+Collapse image更多信息
+验证码签名都是基于 PKCS7 的因此您可以使用 CryptQueryObject 和其他加密 API 函数以检索 PKCS7 签名并解码 PKCS7 属性。
 
 https://docs.microsoft.com/en-US/troubleshoot/windows/win32/get-information-authenticode-signed-executables
 */
 
 /*
-�� Authenticode ǩ����ִ���ļ��л�ȡ��Ϣ(How To Get Information from Authenticode Signed Executables)
+从 Authenticode 签名可执行文件中获取信息(How To Get Information from Authenticode Signed Executables)
 2020/10/26
 
-���Ľ�����δ���֤��ǩ����ִ���ļ��л�ȡ��Ϣ��
+本文介绍如何从验证码签名可执行文件中获取信息。
 
-ԭʼ��Ʒ�汾��   Windows SDK
-ԭʼ KB ����   323809
+原始产品版本：   Windows SDK
+原始 KB 数：   323809
 
-ժҪ
-������ʹ�� WinVerifyTrust() API ��֤��֤��ǩ���Ŀ�ִ���ļ���
+摘要
+您可以使用 WinVerifyTrust() API 验证验证码签名的可执行文件。
 
-��Ȼ��֤��ǩ������������ܻ�����ִ�����²�����
+虽然验证了签名，但程序可能还必须执行以下操作：
 
-ȷ��ǩ���˿�ִ���ļ���֤�����ϸ��Ϣ��
-ȷ���ļ�ʱ��������ں�ʱ�䡣
-�������ļ������� URL ���ӡ�
-����ʱ���֤�顣
-������ʾ���ʹ�� CryptQueryObject() API ������֤��ǩ����ִ���ļ��е���ϸ��Ϣ��
+确定签名了可执行文件的证书的详细信息。
+确定文件时间戳的日期和时间。
+检索与文件关联的 URL 链接。
+检索时间戳证书。
+本文演示如何使用 CryptQueryObject() API 检索验证码签名可执行文件中的详细信息。
 
-������Ϣ
-��֤��ǩ���ǻ��� PKCS7 �ģ����������ʹ�� CryptQueryObject ������ Crypto API �������� PKCS7 ǩ���������Խ��н��� PKCS7 ��
+更多信息
+验证码签名是基于 PKCS7 的，因此您可以使用 CryptQueryObject 和其他 Crypto API 函数检索 PKCS7 签名并对属性进行解码 PKCS7 。
 
-�����ʾ�� c ������ʾ���ʹ����Щ Api��
+下面的示例 c 代码演示如何使用这些 Api。
 
 https://docs.microsoft.com/zh-CN/troubleshoot/windows/win32/get-information-authenticode-signed-executables
 */
 /*
-�˴�������ļ��Ǵ�ǩ�����ļ����磺��ǩ����PE������CAT�ļ�����������ǩ����Ϣ��CAT��PE�ļ���
+此代码检测的文件是带签名的文件，如：带签名的PE，或者CAT文件，但不能是签名信息在CAT的PE文件。
 */
 {
     WCHAR szFileName[MAX_PATH];
@@ -2370,7 +2370,7 @@ DWORD WINAPI VerifyEmbeddedSignatures(_In_ PCWSTR FileName,
 /*
 Verifies all embedded signatures of a file
 
-���ܣ��ҳ�ǩ�������������ų���ǩ���ģ����еĸ���ǩ������Ϣ��
+功能：找出签名在自身，且排除主签名的，所有的辅助签名的信息。
 */
 {
     DWORD Error = ERROR_SUCCESS;
@@ -2463,10 +2463,10 @@ DWORD WINAPI VerifyCatalogSignature(_In_ HANDLE FileHandle, _In_ bool UseStrongS
 /*
 Looks up a file by hash in the system catalogs.
 
-���ܣ��ҳ�һ���ļ��Ķ�Ӧ��CatalogFile���������ļ���CatalogFile�Ļ���
-      ע��һ���ļ����ܶ�Ӧ���CatalogFile��
+功能：找出一个文件的对应的CatalogFile，如果这个文件有CatalogFile的话。
+      注意一个文件可能对应多个CatalogFile。
 
-ע�ͣ�����ûǩ����ǩ�����������ļ�����������ⲻ����
+注释：对于没签名和签名在自身的文件，这个代码检测不出。
 */
 {
     DWORD Error = ERROR_SUCCESS;
@@ -2582,10 +2582,10 @@ DWORD WINAPI VerifyCatalogSignature(_In_ PCWSTR FileName,
 /*
 Looks up a file by hash in the system catalogs.
 
-���ܣ��ҳ�һ���ļ��Ķ�Ӧ��CatalogFile���������ļ���CatalogFile�Ļ���
-      ע��һ���ļ����ܶ�Ӧ���CatalogFile��
+功能：找出一个文件的对应的CatalogFile，如果这个文件有CatalogFile的话。
+      注意一个文件可能对应多个CatalogFile。
 
-ע�ͣ�����ûǩ����ǩ�����������ļ�����������ⲻ����
+注释：对于没签名和签名在自身的文件，这个代码检测不出。
 */
 {
     DWORD Error = ERROR_SUCCESS;
@@ -2716,9 +2716,9 @@ EXTERN_C
 __declspec(dllexport)
 int WINAPI SignatureVerification(_In_ unsigned int argc, _In_reads_(argc) PCWSTR wargv[])
 /*
-ժ�ԣ�
+摘自：
 Windows-classic-samples\Samples\Security\CodeSigning
-ͬʱ���������Ҳ�У�WinVerifyTrust signature verification sample
+同时，这个工程也叫：WinVerifyTrust signature verification sample
 */
 {
     DWORD Error = ERROR_SUCCESS;
@@ -2789,15 +2789,15 @@ Cleanup:
 //__declspec(dllexport)
 bool WINAPI VerifySignature(_In_ PCWSTR FileName, _Inout_ list<wstring> & SignatureFile)
 /*
-���ܣ�ͳ�õķ�����У��ǩ���ĺ�����
+功能：统用的防范的校验签名的函数。
 
-˼·��
-1.�Ȼ�ȡǩ����Ϣ���ڵ��ļ����е������������е���CAT�����ٻ�ȡ�����ǩ����Ϣ��
-2.�ȼ�������Ƿ���ǩ��������л�ȡ��Ϣ�����أ��ټ���Ƿ���CatalogFile��
+思路：
+1.先获取签名信息所在的文件（有的是在自身，有的在CAT）。再获取具体的签名信息。
+2.先检查自身是否有签名，如果有获取信息并返回，再检查是否有CatalogFile。
 
-������÷���2.
+这里采用方案2.
 
-ע�⣺һ���ļ������ж��CatalogFile��һ��ǩ���ļ������ж��ǩ����
+注意：一个文件可以有多个CatalogFile，一个签名文件可以有多个签名。
 */
 {
     LONG lStatus = VerifyEmbeddedSignatureEx(FileName);
@@ -3077,7 +3077,7 @@ void RemoveCertificate(_In_ LPCWSTR FileName)
 
 
 BOOL WINAPI DigestFunction(DIGEST_HANDLE refdata, PBYTE pData, DWORD dwLength)
-//����ᱻ���ö�Ρ�
+//这个会被调用多次。
 {
 
     return true;

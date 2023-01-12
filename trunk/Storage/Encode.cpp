@@ -1096,7 +1096,7 @@ To encrypt the signed message, a receiver's certificate including the receiver's
 To decrypt the message, the receiver's private key must be available.
 After the message is decrypted, the signature is verified using the public key from the certificate included in the encrypted message.
 
- ±¸×¢
+ ï¿½ï¿½×¢
 
 Not all of the certificates in a certificate store provide access to the private key associated with that certificate.
 When the message is signed and encrypted, a certificate belonging to the signer with access to the private key of that signer must be used.

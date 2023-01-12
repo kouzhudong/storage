@@ -7,13 +7,13 @@
 
 void zip(BSTR source, BSTR dest)
 /*
-source�������ļ�Ҳ�������ļ���.
-dest�ĺ�׺��������ZIP.
+source可以是文件也可以是文件夹.
+dest的后缀名必须是ZIP.
 
-ȱ�㣺��֪��ʱ������
+缺点：不知何时结束。
 */
 {
-    //ȷ��sourceĿ¼����.
+    //确保source目录存在.
     if (!PathFileExists(source)) {
         return;
     }
@@ -77,12 +77,12 @@ dest�ĺ�׺��������ZIP.
 
 void unzip(BSTR source, BSTR dest)
 /*
-��һ��ZIPѹ���ļ���ѹ��ָ�����ļ���.
+把一个ZIP压缩文件解压到指定的文件夹.
 
-ȱ�㣺��֪��ʱ������
+缺点：不知何时结束。
 */
 {
-    //ȷ��destĿ¼����.
+    //确保dest目录存在.
     if (!PathFileExists(dest)) {
         return;
     }
@@ -138,21 +138,21 @@ void unzip(BSTR source, BSTR dest)
 
 int TestZip()
 /*
-ѹ����һ��������㷨,�������Ǽ������ѧ.
-���ҵ���ä����ֹ��.
+压缩是一个高深的算法,可以是是计算机科学.
+令我等文盲望而止步.
 
-�ɱ���ҿɲ�֪ѹ��,������˶����õĿ�Դ���㷨(��).
+干编程且可不知压缩,大多数人都是用的开源的算法(库).
 
-���򲻵��Ѷ���֮,��ʵ��Ҳ������.
+这万不得已而用之,其实我也不想用.
 
-֪��WIN 8��ѹ���ĺ���.
+知道WIN 8有压缩的函数.
 
-ǰЩʱ�Ϸ���XPҲ��,ֻ��һCOM����ʽ�ṩ.
+前些时断发现XP也有,只是一COM的形式提供.
 
-����,���ǲ�֪��ɶʱ��ѻ����,
-���ǸĽ�֮��.
+不错,就是不知它啥时候把活干完,
+这是改进之处.
 
-�������д��Ľ�,�緵�ص�����,������ж�,����ʵ������ȷ�Ŀ��õ�.
+函数还有待改进,如返回的类型,错误的判断,但是实验是正确的可用的.
 
 made by correy
 made at 2013.12.23

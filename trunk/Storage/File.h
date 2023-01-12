@@ -1,9 +1,9 @@
 /*
 
-Ê¹ÓÃIDºÅÀ´´ò¿ªÎÄ¼þ£¨FILE_OPEN_BY_FILE_ID£©.
-ÆäÊµÕâ¸ö²»ÓÃÀ¹½ØµÄ£¬ÒòÎªÄãµÄÄÇ¸öID´ÓºÎ¶øÀ´£¬¿Ï¶¨»¹ÊÇµÃ´ò¿ª¡£
-²»¹ý£¬¶¼ÅÂÕâ´Î´ò¿ªºÍÉÏ´Î´ò¿ªµÃÈ¨ÏÞºÍ¹¦ÄÜ²»Ò»Ñù£¬ËùÒÔ»¹ÒªÀ¹½Ø£¬
-À¹½ØµÃ°ì·¨ÊÇ£º
+ä½¿ç”¨IDå·æ¥æ‰“å¼€æ–‡ä»¶ï¼ˆFILE_OPEN_BY_FILE_IDï¼‰.
+å…¶å®žè¿™ä¸ªä¸ç”¨æ‹¦æˆªçš„ï¼Œå› ä¸ºä½ çš„é‚£ä¸ªIDä»Žä½•è€Œæ¥ï¼Œè‚¯å®šè¿˜æ˜¯å¾—æ‰“å¼€ã€‚
+ä¸è¿‡ï¼Œéƒ½æ€•è¿™æ¬¡æ‰“å¼€å’Œä¸Šæ¬¡æ‰“å¼€å¾—æƒé™å’ŒåŠŸèƒ½ä¸ä¸€æ ·ï¼Œæ‰€ä»¥è¿˜è¦æ‹¦æˆªï¼Œ
+æ‹¦æˆªå¾—åŠžæ³•æ˜¯ï¼š
 
 Windows-driver-samples/blob/master/filesys/miniFilter/NameChanger/nccreate.c
 if (FlagOn( Data->Iopb->Parameters.Create.Options, FILE_OPEN_BY_FILE_ID )) {
@@ -11,9 +11,9 @@ if (FlagOn( Data->Iopb->Parameters.Create.Options, FILE_OPEN_BY_FILE_ID )) {
         goto NcPreCreateCleanup;
     }
 
-Windows-driver-samples/blob/master/filesys/miniFilter/delete/delete.cµÄDfDetectDeleteByFileId º¯Êý¡£
+Windows-driver-samples/blob/master/filesys/miniFilter/delete/delete.cçš„DfDetectDeleteByFileId å‡½æ•°ã€‚
 
-Äã¿´£¬Õâ¸ö¹¤³Ì¶¼·Å¹ýÁË£¬Õâ¸ö²Ù×÷£º
+ä½ çœ‹ï¼Œè¿™ä¸ªå·¥ç¨‹éƒ½æ”¾è¿‡äº†ï¼Œè¿™ä¸ªæ“ä½œï¼š
 Windows-driver-samples/blob/master/filesys/miniFilter/simrep/simrep.c
     //  Don't reparse an open by ID because it is not possible to determine create path intent.
     if (FlagOn( irpSp->Parameters.Create.Options, FILE_OPEN_BY_FILE_ID )) {

@@ -10,7 +10,7 @@ EXTERN_C
 __declspec(dllexport)
 int WINAPI GetMft(_In_ LPCWSTR VolumeName)
 /*
-¹¦ÄÜ£º¶¨Î»/»ñÈ¡Ò»¸öntfs/refs¾íÏÂµÄmftÔªÎÄ¼ş¡£
+åŠŸèƒ½ï¼šå®šä½/è·å–ä¸€ä¸ªntfs/refså·ä¸‹çš„mftå…ƒæ–‡ä»¶ã€‚
 */
 {
     BYTE inBuffer[512] = {0};

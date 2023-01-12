@@ -121,7 +121,7 @@ For more information, see GetTempPath.
 In the following example, an error is regarded as a terminal condition and the application exits after sending a descriptive message to standard output.
 However, many other options exist, such as prompting the user for a temporary directory or simply attempting to use the current directory.
 
- ±¸×¢
+ å¤‡æ³¨
 The GetTempFileName function does not require that the GetTempPath function be used.
 
 The following C++ example shows how to create a temporary file for data manipulation purposes.
@@ -719,18 +719,18 @@ wchar_t lpPathBuffer[32767 + 1] = {0};
 
 void CreateLongPathFile()
 /*
-ÎÄ¼şÂ·¾¶µÄ×î´ó³¤¶ÈµÄÊµÑé´úÂë
+æ–‡ä»¶è·¯å¾„çš„æœ€å¤§é•¿åº¦çš„å®éªŒä»£ç 
 
-¹¦ÄÜ£º´´½¨Ò»¸ö³¬³¤µÄÎÄ¼ş£¬³¤¶ÈÖÁÉÙÎªMAX_PATH.
-½á¹û£ºÒ»°ãµÄ³ÌĞòºÍÈí¼şÊÇ´ò²»¿ªµÄ£¬µ±È»Ò²ÎŞ·¨½øĞĞÆäËûµÄ²Ù×÷£¬Èç£º¸´ÖÆ£¬É¾³ı£¬¸ÄÃûµÈ¡£ÒÆ¶¯Ã»ÓĞ²âÊÔ¡£
-×¢Òâ£º1.³¬³¤ÎÄ¼ş»¹ÓĞÁíÒ»ÖÖ¿ÉÄÜ£¬ÈçÍøÂçÎÄ¼ş£¬ÍøÂç¹²ÏíµÈ¡£
-      2.ÎÄ¼şÃûºÍÄ¿Â¼µÄ³¤¶ÈÊÇ²»¿ÉÒÔ³¬¹ıMAX_PATHµÄ£¬
-        µ«ÊÇÈ«Â·¾¶ÊÇ²»¿ÉÒÔ³¬¹ı65536/2 = 32768µÄ¡£
-      3.Õâ¸ö×î´óÖµÊÇÔõÃ´ËãµÄ£¬°üÀ¨ÄÇĞ©¶«Î÷£¬ÈçÅÌ·û°üº¬²»£¿
-Ë¼¿¼£ºÒ»¸öÄ¿Â¼ÏÂÄÜÈİÄÉ¶àÉÙ¸öÎÄ¼ş/Ä¿Â¼¡£
-      ´ïµ½¼«ÏŞÁËÊÇ²»ÊÇ¾Í²»ÄÜÔÚ´´½¨ÁË£¬ÕâÑùÊÇ²»ÊÇ´ïµ½£º²»ÓÃÇı¶¯ºÍHOOKµÈ°ì·¨½ûÖ¹ÎÄ¼ş/Ä¿Â¼´´½¨µÄ¹¦ÄÜ¡£
+åŠŸèƒ½ï¼šåˆ›å»ºä¸€ä¸ªè¶…é•¿çš„æ–‡ä»¶ï¼Œé•¿åº¦è‡³å°‘ä¸ºMAX_PATH.
+ç»“æœï¼šä¸€èˆ¬çš„ç¨‹åºå’Œè½¯ä»¶æ˜¯æ‰“ä¸å¼€çš„ï¼Œå½“ç„¶ä¹Ÿæ— æ³•è¿›è¡Œå…¶ä»–çš„æ“ä½œï¼Œå¦‚ï¼šå¤åˆ¶ï¼Œåˆ é™¤ï¼Œæ”¹åç­‰ã€‚ç§»åŠ¨æ²¡æœ‰æµ‹è¯•ã€‚
+æ³¨æ„ï¼š1.è¶…é•¿æ–‡ä»¶è¿˜æœ‰å¦ä¸€ç§å¯èƒ½ï¼Œå¦‚ç½‘ç»œæ–‡ä»¶ï¼Œç½‘ç»œå…±äº«ç­‰ã€‚
+      2.æ–‡ä»¶åå’Œç›®å½•çš„é•¿åº¦æ˜¯ä¸å¯ä»¥è¶…è¿‡MAX_PATHçš„ï¼Œ
+        ä½†æ˜¯å…¨è·¯å¾„æ˜¯ä¸å¯ä»¥è¶…è¿‡65536/2 = 32768çš„ã€‚
+      3.è¿™ä¸ªæœ€å¤§å€¼æ˜¯æ€ä¹ˆç®—çš„ï¼ŒåŒ…æ‹¬é‚£äº›ä¸œè¥¿ï¼Œå¦‚ç›˜ç¬¦åŒ…å«ä¸ï¼Ÿ
+æ€è€ƒï¼šä¸€ä¸ªç›®å½•ä¸‹èƒ½å®¹çº³å¤šå°‘ä¸ªæ–‡ä»¶/ç›®å½•ã€‚
+      è¾¾åˆ°æé™äº†æ˜¯ä¸æ˜¯å°±ä¸èƒ½åœ¨åˆ›å»ºäº†ï¼Œè¿™æ ·æ˜¯ä¸æ˜¯è¾¾åˆ°ï¼šä¸ç”¨é©±åŠ¨å’ŒHOOKç­‰åŠæ³•ç¦æ­¢æ–‡ä»¶/ç›®å½•åˆ›å»ºçš„åŠŸèƒ½ã€‚
 
-²Î¿¼×ÊÁÏ£ºhttps://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx
+å‚è€ƒèµ„æ–™ï¼šhttps://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx
 
 Maximum Path Length Limitation
 In the Windows API (with some exceptions discussed in the following paragraphs), the maximum length for a path is MAX_PATH,
@@ -805,7 +805,7 @@ made at 2015.04.06
         return;
     }
 
-    //ÏÂÃæµÄ´úÂë¾Í²»Ğ´ÁË¡£
+    //ä¸‹é¢çš„ä»£ç å°±ä¸å†™äº†ã€‚
 }
 
 

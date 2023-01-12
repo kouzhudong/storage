@@ -10,11 +10,11 @@ WOW64 hides this difference by using a file system redirector.
 In most cases, whenever a 32-bit application attempts to access %windir%\System32, %windir%\lastgood\system32,
 or %windir%\regedit.exe, the access is redirected to an architecture-specific path.
 
- ±¸×¢
+ ï¿½ï¿½×¢
 These paths are provided for reference only. 
 For compatibility, applications should not use these paths directly. Instead, they should call the APIs described below.
 
-±í 1
+ï¿½ï¿½ 1
 Original Path	Redirected Path for 32-bit x86 Processes	Redirected Path for 32-bit ARM Processes
 %windir%\System32	%windir%\SysWOW64	%windir%\SysArm32
 %windir%\lastgood\system32	%windir%\lastgood\SysWOW64	%windir%\lastgood\SysArm32

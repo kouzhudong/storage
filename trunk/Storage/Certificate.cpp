@@ -44,13 +44,13 @@ void ListingCertificatesInStore(void)
 Example C Program: Listing the Certificates in a Store
 2018/05/31
 
-ÊäÈëµÄ²ÎÊı¿ÉÒÔÓĞ£º
-CA      ¶ÔÓ¦certmgr->ÖĞ¼äÖ¤Êé°ä·¢»ú¹¹->Ö¤Êé
-MY      ¶ÔÓ¦certmgr->¸öÈË->Ö¤Êé
-ROOT    ¶ÔÓ¦certmgr->ÊÜĞÅÈÎµÄ¸ùÖ¤Êé°ä·¢»ú¹¹->Ö¤Êé
-Trust   ¶ÔÓ¦certmgr->ÆóÒµĞÅÈÎ->Ö¤Êé
+è¾“å…¥çš„å‚æ•°å¯ä»¥æœ‰ï¼š
+CA      å¯¹åº”certmgr->ä¸­é—´è¯ä¹¦é¢å‘æœºæ„->è¯ä¹¦
+MY      å¯¹åº”certmgr->ä¸ªäºº->è¯ä¹¦
+ROOT    å¯¹åº”certmgr->å—ä¿¡ä»»çš„æ ¹è¯ä¹¦é¢å‘æœºæ„->è¯ä¹¦
+Trust   å¯¹åº”certmgr->ä¼ä¸šä¿¡ä»»->è¯ä¹¦
 
-ä¯ÀÀÆ÷µÄÏàÓ¦µÄÑ¡Ïî¿ÉÄÜÓĞËù¼õÉÙ¡£
+æµè§ˆå™¨çš„ç›¸åº”çš„é€‰é¡¹å¯èƒ½æœ‰æ‰€å‡å°‘ã€‚
 
 The following example code lists all of the certificates in a system certificate store and
 the name of the subject and all of the certificate context properties of each of those certificates.
@@ -2391,10 +2391,10 @@ void WINAPI EnumCatAttributes(_In_ LPWSTR FilePath)
 /*
 The following example shows the correct sequence of assignments for the pPrevAttr parameter (pAttr).
 
-²ÎÊıËµÃ÷£º
-A pointer to a null-terminated string that contains the path of the CDF file to open¡£
-Ò²¶¼ÊÇ.cdfÎÄ¼ş¡£
-ÕâÑùµÄÎÄ¼ş²»³£¼û£¬ËùÒÔÕâ¸öº¯ÊıÒ²²»³£ÓÃ¡£
+å‚æ•°è¯´æ˜ï¼š
+A pointer to a null-terminated string that contains the path of the CDF file to openã€‚
+ä¹Ÿéƒ½æ˜¯.cdfæ–‡ä»¶ã€‚
+è¿™æ ·çš„æ–‡ä»¶ä¸å¸¸è§ï¼Œæ‰€ä»¥è¿™ä¸ªå‡½æ•°ä¹Ÿä¸å¸¸ç”¨ã€‚
 
 https://docs.microsoft.com/en-us/windows/win32/api/mscat/nf-mscat-cryptcatcdfenumcatattributes
 */

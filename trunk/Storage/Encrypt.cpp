@@ -1901,7 +1901,7 @@ The following example shows a loop listing all available cryptographic service p
 https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptenumprovidersa
 */
 /*
-²âÊÔĞ§¹û£º¶Ô±ÈICspInformationsµÄÃ¶¾Ù£¬ÕâÀïÃ»ÓĞCNG£¬Ö»ÊÇLegacy¡£
+æµ‹è¯•æ•ˆæœï¼šå¯¹æ¯”ICspInformationsçš„æšä¸¾ï¼Œè¿™é‡Œæ²¡æœ‰CNGï¼Œåªæ˜¯Legacyã€‚
 Listing Available Providers:
 Provider type   Provider Name
 _____________   _____________________________________
@@ -1924,7 +1924,7 @@ Provider types and provider names have been listed.
     DWORD       cbName;
     DWORD       dwType;
     DWORD       dwIndex;
-    LPWSTR pszName = NULL;//Õâ¸öÓĞĞŞ¸Ä£¬ÀàĞÍ¶¨ÒåµÄ²»¶Ô¡£
+    LPWSTR pszName = NULL;//è¿™ä¸ªæœ‰ä¿®æ”¹ï¼Œç±»å‹å®šä¹‰çš„ä¸å¯¹ã€‚
 
     // Print header lines for providers.
     printf("Listing Available Providers:\n");
@@ -1965,7 +1965,7 @@ The following example shows a loop listing all available cryptographic service p
 https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptenumprovidertypesa
 */
 /*
-²âÊÔĞ§¹û£º
+æµ‹è¯•æ•ˆæœï¼š
 Listing Available Provider Types:
 Provider type   Provider Type Name
 _____________   _____________________________________
@@ -2056,7 +2056,7 @@ The following example shows enumerating CSPs and provider types.
 https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-enumerating-csp-providers-and-provider-types
 */
 /*
-²âÊÔĞ§¹û£º
+æµ‹è¯•æ•ˆæœï¼š
 Listing Available Provider Types.
 Provider type    Provider Type Name
 _____________    _____________________________________
@@ -2240,7 +2240,7 @@ The program completed without error.
             ptr += dwIncrement;
             dwNameLen = *(DWORD *)ptr;
             ptr += dwIncrement;
-            //strncpy_s(szName, (char *)ptr, sizeof(szName), dwNameLen);//Õâ¸ö°ÑµÚ¶ş¸öºÍµÚÈı¸ö²ÎÊıĞ´·´ÁË¡£
+            //strncpy_s(szName, (char *)ptr, sizeof(szName), dwNameLen);//è¿™ä¸ªæŠŠç¬¬äºŒä¸ªå’Œç¬¬ä¸‰ä¸ªå‚æ•°å†™åäº†ã€‚
             strncpy_s(szName, sizeof(szName), (char *)ptr, dwNameLen);
 
             // Determine the algorithm type.
@@ -3508,7 +3508,7 @@ To generate a Diffie-Hellman key, perform the following steps:
 Call the CryptAcquireContext function to get a handle to the Microsoft Diffie-Hellman Cryptographic Provider.
 
 Generate the new key.
-There are two ways to accomplish this¡ªby having CryptoAPI generate all new values for G, P,
+There are two ways to accomplish thisâ€”by having CryptoAPI generate all new values for G, P,
 and X or by using existing values for G and P, and generating a new value for X.
 
 To generate the key by generating all new values
@@ -3885,7 +3885,7 @@ ErrorExit:
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-//SslEnumCipherSuites ºÍ SslEnumProtocolProviders µÄÓÃ·¨Ê¾Àı¡£
+//SslEnumCipherSuites å’Œ SslEnumProtocolProviders çš„ç”¨æ³•ç¤ºä¾‹ã€‚
 
 
 EXTERN_C
@@ -3947,13 +3947,13 @@ https://learn.microsoft.com/en-us/windows/win32/seccng/sslenumciphersuites
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 /*
-BCryptEnumAlgorithms º¯Êı
-BCryptEnumContextFunctionProviders º¯Êı
-BCryptEnumContextFunctions º¯Êı
-BCryptEnumContexts º¯Êı
-BCryptEnumProviders º¯Êı  ÒÑ¾­ÓĞCryptEnumProvidersµÄÊ¾Àı¡£
-BCryptEnumRegisteredProviders º¯Êı
-µÄÓÃ·¨Ê¾Àı¡£
+BCryptEnumAlgorithms å‡½æ•°
+BCryptEnumContextFunctionProviders å‡½æ•°
+BCryptEnumContextFunctions å‡½æ•°
+BCryptEnumContexts å‡½æ•°
+BCryptEnumProviders å‡½æ•°  å·²ç»æœ‰CryptEnumProvidersçš„ç¤ºä¾‹ã€‚
+BCryptEnumRegisteredProviders å‡½æ•°
+çš„ç”¨æ³•ç¤ºä¾‹ã€‚
 */
 
 
@@ -3971,7 +3971,7 @@ CryptEnumProvidersA function
 CryptEnumProvidersW function
 CryptEnumProviderTypesA function
 CryptEnumProviderTypesW function
-µÄÓÃ·¨Ê¾Àı¡£
+çš„ç”¨æ³•ç¤ºä¾‹ã€‚
 */
 
 

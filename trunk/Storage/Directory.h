@@ -1,22 +1,22 @@
 /*
-���İ���Ŀ¼�ģ�
-1.������
-2.��ء�
-3.������
+本文包括目录的：
+1.遍历。
+2.监控。
+3.其他。
 */
 
 
 /*
-���Ŀ¼�ı仯�İ취�У�
-1.SHChangeNotifyRegister��SHChangeNotify����
-2.FindFirstChangeNotification��FindNextChangeNotificationû�б仯�����͡�
-3.ReadDirectoryChangesW��ʱ����©��Ϣ�����Խ��ʹ���������,i/o�˿ڣ�CreateIoCompletionPort�����첽���̴߳�ʩ��
-4.Change Journal��USN Journal��ֻ����NTFS��REFS�ϡ�
-5.�ļ�ϵͳ��������.
+监控目录的变化的办法有：
+1.SHChangeNotifyRegister（SHChangeNotify）。
+2.FindFirstChangeNotification和FindNextChangeNotification没有变化的类型。
+3.ReadDirectoryChangesW有时会遗漏信息，可以结合使用完成例程,i/o端口（CreateIoCompletionPort）等异步多线程措施。
+4.Change Journal（USN Journal）只能在NTFS，REFS上。
+5.文件系统过滤驱动.
 6.hook api and messages.
-7.�������籸��һ�ݣ����ڵıȽϣ�.
-8.ICopyHook�ӿڵĻص�����.
-9.������
+7.其他（如备份一份，周期的比较）.
+8.ICopyHook接口的回调函数.
+9.其他。
 */
 
 
@@ -38,7 +38,7 @@ class Directory
 #define MAX_BUFFER  4096
 
 
-typedef struct _PER_IO_CONTEXT {//�Զ���ṹ��������ɼ���(���������)
+typedef struct _PER_IO_CONTEXT {//自定义结构，即“完成键”(单句柄数据)
     OVERLAPPED  ol;
     HANDLE      hIocp;
     HANDLE      hDir;

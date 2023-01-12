@@ -1593,7 +1593,7 @@ Create a key to encrypt the data with. A key can be created by using any of the 
 
 BCryptGenerateKeyPair or BCryptImportKeyPair for asymmetric providers.
 BCryptGenerateSymmetricKey or BCryptImportKey for symmetric providers.
- ±¸×¢
+ ï¿½ï¿½×¢
 
 Data encryption and decryption with an asymmetric key is computationally intensive compared to symmetric key encryption.
 If you need to encrypt data with an asymmetric key, you should encrypt the data with a symmetric key,

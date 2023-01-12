@@ -17,11 +17,11 @@ A pointer to an ENUM_PAGE_FILE_INFORMATION structure.
 
 lpFilename
 The name of the pagefile.
-×¢Òâ£ºÕâ¸öÔÚMSDNµÄÍøÒ³ÉÏÏÔÊ¾µÄÊÂ´íÎóµÄ¡£
-µ«Í·ÎÄ¼şÊÇ¶ÔµÄ¡£
-Ö÷Òª¿´PENUM_PAGE_FILE_CALLBACKW»¹ÊÇPENUM_PAGE_FILE_CALLBACKA
-¼´EnumPageFilesW»¹ÊÇEnumPageFilesA¡£
-Õâ¸öÒ²¿ÉÄÜÊÇ¿í×Ö·ûÒ²¿ÉÄÜÊÇµ¥×Ö·û¡£
+æ³¨æ„ï¼šè¿™ä¸ªåœ¨MSDNçš„ç½‘é¡µä¸Šæ˜¾ç¤ºçš„äº‹é”™è¯¯çš„ã€‚
+ä½†å¤´æ–‡ä»¶æ˜¯å¯¹çš„ã€‚
+ä¸»è¦çœ‹PENUM_PAGE_FILE_CALLBACKWè¿˜æ˜¯PENUM_PAGE_FILE_CALLBACKA
+å³EnumPageFilesWè¿˜æ˜¯EnumPageFilesAã€‚
+è¿™ä¸ªä¹Ÿå¯èƒ½æ˜¯å®½å­—ç¬¦ä¹Ÿå¯èƒ½æ˜¯å•å­—ç¬¦ã€‚
 
 Return value
 To continue enumeration, the callback function must return TRUE.
@@ -42,7 +42,7 @@ int GetEnumPageFiles()
 
     BOOL B = EnumPageFilesW((PENUM_PAGE_FILE_CALLBACKW)EnumPageFileCallback, NULL);
 
-    //»Øµ½ÔËĞĞÍê±Ï£¬·Å×ßÕâÀï¡£
+    //å›åˆ°è¿è¡Œå®Œæ¯•ï¼Œæ”¾èµ°è¿™é‡Œã€‚
 
     return 0;
 }

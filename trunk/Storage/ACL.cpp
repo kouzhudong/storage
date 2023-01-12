@@ -2,11 +2,11 @@
 #include "ACL.h"
 
 /*
-Ê×ÏÈ½âÊÍ£¨·­Òë£©¼¸¸öÃû´Ê£º
-Owner£ºÓµÓĞÕß£¬ËùÓĞÕß¡£
-Ownership£ºËùÓĞÈ¨
-Authorization£ºÊÚÈ¨
-Authentication£ºÈÏÖ¤
+é¦–å…ˆè§£é‡Šï¼ˆç¿»è¯‘ï¼‰å‡ ä¸ªåè¯ï¼š
+Ownerï¼šæ‹¥æœ‰è€…ï¼Œæ‰€æœ‰è€…ã€‚
+Ownershipï¼šæ‰€æœ‰æƒ
+Authorizationï¼šæˆæƒ
+Authenticationï¼šè®¤è¯
 */
 
 
@@ -796,8 +796,8 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/creating-an-authorizatio
 void CreatingSQLServerStore(void)
 /*
 Creating a SQL Server Store
-Authorization Manager supports creating a Microsoft SQL Server¨Cbased authorization policy store.
-To create a SQL Server¨Cbased authorization store, use a URL that begins with the prefix MSSQL://.
+Authorization Manager supports creating a Microsoft SQL Serverâ€“based authorization policy store.
+To create a SQL Serverâ€“based authorization store, use a URL that begins with the prefix MSSQL://.
 The URL must contain a valid SQL connection string, a database name,
 and the name of the authorization policy store: **MSSQL://ConnectionString/DatabaseName/**PolicyStoreName.
 
@@ -1954,7 +1954,7 @@ https://docs.microsoft.com/en-us/windows/win32/secauthz/verifying-client-access-
 
 BOOL AddAccessRights(TCHAR * lpszFileName, TCHAR * lpszAccountName, DWORD dwAccessMask)
 /*
-¹¦ÄÜ£º¸øÒ»¸öÎÄ¼şÌí¼ÓÒ»¸öÓÃ»§¼´ÏàÓ¦µÄÈ¨ÏŞ¡£
+åŠŸèƒ½ï¼šç»™ä¸€ä¸ªæ–‡ä»¶æ·»åŠ ä¸€ä¸ªç”¨æˆ·å³ç›¸åº”çš„æƒé™ã€‚
 
 http://support.microsoft.com/kb/102102/zh-cn?wa=wsignin1.0
 */
@@ -2000,7 +2000,7 @@ http://support.microsoft.com/kb/102102/zh-cn?wa=wsignin1.0
 
     __try {
         // STEP 1: Get SID of the account name specified.
-        //·µ»ØÒ»Ğ©ĞèÒªµÄÄÚ´æ´óĞ¡¡£
+        //è¿”å›ä¸€äº›éœ€è¦çš„å†…å­˜å¤§å°ã€‚
         fAPISuccess = LookupAccountName(NULL, lpszAccountName, pUserSID, &cbUserSID, szDomain, &cbDomain, &snuType);
         if (fAPISuccess)
             __leave;
@@ -2009,19 +2009,19 @@ http://support.microsoft.com/kb/102102/zh-cn?wa=wsignin1.0
             __leave;
         }
 
-        pUserSID = myheapalloc(cbUserSID);//ÉêÇëÄÚ´æ¡£
+        pUserSID = myheapalloc(cbUserSID);//ç”³è¯·å†…å­˜ã€‚
         if (!pUserSID) {
             _tprintf(TEXT("HeapAlloc() failed. Error %d\n"), GetLastError());
             __leave;
         }
 
-        szDomain = (TCHAR *)myheapalloc(cbDomain * sizeof(TCHAR));//ÉêÇëÄÚ´æ¡£
+        szDomain = (TCHAR *)myheapalloc(cbDomain * sizeof(TCHAR));//ç”³è¯·å†…å­˜ã€‚
         if (!szDomain) {
             _tprintf(TEXT("HeapAlloc() failed. Error %d\n"), GetLastError());
             __leave;
         }
 
-        //ÔÙÀ´Ò»´Î¡£»ñÈ¡µ½ÁËÓòÃû ¡£
+        //å†æ¥ä¸€æ¬¡ã€‚è·å–åˆ°äº†åŸŸå ã€‚
         fAPISuccess = LookupAccountName(NULL, lpszAccountName, pUserSID, &cbUserSID, szDomain, &cbDomain, &snuType);
         if (!fAPISuccess) {
             _tprintf(TEXT("LookupAccountName() failed. Error %d\n"), GetLastError());
@@ -2029,7 +2029,7 @@ http://support.microsoft.com/kb/102102/zh-cn?wa=wsignin1.0
         }
 
         // STEP 2: Get security descriptor (SD) of the file specified.
-        fAPISuccess = GetFileSecurity(lpszFileName, secInfo, pFileSD, 0, &cbFileSD); //·µ»ØĞèÒªµÄ´óĞ¡¡£       
+        fAPISuccess = GetFileSecurity(lpszFileName, secInfo, pFileSD, 0, &cbFileSD); //è¿”å›éœ€è¦çš„å¤§å°ã€‚       
         if (fAPISuccess)
             __leave;
         else if (GetLastError() != ERROR_INSUFFICIENT_BUFFER) {// API should have failed with insufficient buffer.
@@ -2043,7 +2043,7 @@ http://support.microsoft.com/kb/102102/zh-cn?wa=wsignin1.0
             __leave;
         }
 
-        fAPISuccess = GetFileSecurity(lpszFileName, secInfo, pFileSD, cbFileSD, &cbFileSD); //ÕâÊ±³É¹¦ÁË¡£
+        fAPISuccess = GetFileSecurity(lpszFileName, secInfo, pFileSD, cbFileSD, &cbFileSD); //è¿™æ—¶æˆåŠŸäº†ã€‚
         if (!fAPISuccess) {
             _tprintf(TEXT("GetFileSecurity() failed. Error %d\n"), GetLastError());
             __leave;

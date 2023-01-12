@@ -1,8 +1,8 @@
 /*
 
-×¢Òâ£º
+æ³¨æ„ï¼š
 Windows-classic-samples\Samples\Win7Samples\winui\shell\appplatform\knownfolders
-Õâ¸ö¹¤³Ì¡£
+è¿™ä¸ªå·¥ç¨‹ã€‚
 */
 
 #pragma once

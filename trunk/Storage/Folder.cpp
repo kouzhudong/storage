@@ -456,9 +456,9 @@ EXTERN_C
 __declspec(dllexport)
 void WINAPI GetImageFilePath(_Out_ LPWSTR ImageFilePath, _In_ DWORD nSize)
 /*
-¹¦ÄÜ£º»ñÈ¡½ø³ÌËùÔÚµÄÄ¿Â¼¡£
+åŠŸèƒ½ï¼šè·å–è¿›ç¨‹æ‰€åœ¨çš„ç›®å½•ã€‚
 
-´ËÄ¿Â¼Çø±ğÓÚGetCurrentDirectory.
+æ­¤ç›®å½•åŒºåˆ«äºGetCurrentDirectory.
 */
 {
     GetModuleFileName(NULL, ImageFilePath, nSize);
@@ -474,7 +474,7 @@ void WINAPI GetImageFilePath(_Out_ LPWSTR ImageFilePath, _In_ DWORD nSize)
 
 void GetFolderPath()
 /*
-Ö»ÄÜÔËĞĞÔÚ·şÎñÖĞ¡£
+åªèƒ½è¿è¡Œåœ¨æœåŠ¡ä¸­ã€‚
 */
 {
     DWORD dwActiveSessionId = WTSGetActiveConsoleSessionId();
@@ -501,15 +501,15 @@ void GetFolderPath()
 
 int EnumDesktopFolder()
 /*
-ÎÄ¼şÃû:IShellFolder.Cpp
-¹¦ÄÜ:ÁĞ³ö×ÀÃæµÄËùÒÔµÄ(×Ó)ÎÄ¼şºÍ(×Ó)ÎÄ¼ş¼Ğ.
+æ–‡ä»¶å:IShellFolder.Cpp
+åŠŸèƒ½:åˆ—å‡ºæ¡Œé¢çš„æ‰€ä»¥çš„(å­)æ–‡ä»¶å’Œ(å­)æ–‡ä»¶å¤¹.
 
-ÖÁ½ñ·½ÖªÄ¿Â¼ºÍÎÄ¼ş¼ĞµÄÇø±ğ.
-Windows ShellÒ»Ö±ÊÇÒ»¸öÖªµÀµ«²»ÊìÏ¤µÄÃû×Ö.
+è‡³ä»Šæ–¹çŸ¥ç›®å½•å’Œæ–‡ä»¶å¤¹çš„åŒºåˆ«.
+Windows Shellä¸€ç›´æ˜¯ä¸€ä¸ªçŸ¥é“ä½†ä¸ç†Ÿæ‚‰çš„åå­—.
 
-Windows Shell¸ã¶®ÁË,ÔÙ¸ãCOMµÈ.
+Windows Shellææ‡‚äº†,å†æCOMç­‰.
 
-²Î¿¼Ê¾Àı:
+å‚è€ƒç¤ºä¾‹:
 http://msdn.microsoft.com/en-us/library/windows/desktop/bb776885(v=vs.85).aspx
 http://msdn.microsoft.com/en-us/library/windows/desktop/bb776889(v=vs.85).aspx
 
@@ -518,17 +518,17 @@ made at 2013.11.18
 */
 {
     IShellFolder * psfDeskTop = NULL;
-    HRESULT hr = SHGetDesktopFolder(&psfDeskTop);//»ñÈ¡¶ÔÏóµÄµØÖ·.
+    HRESULT hr = SHGetDesktopFolder(&psfDeskTop);//è·å–å¯¹è±¡çš„åœ°å€.
 
     LPENUMIDLIST ppenum = NULL;
-    hr = psfDeskTop->EnumObjects(NULL, SHCONTF_FOLDERS | SHCONTF_NONFOLDERS, &ppenum);//»ñÈ¡¶ÔÏóµÄµØÖ·.
+    hr = psfDeskTop->EnumObjects(NULL, SHCONTF_FOLDERS | SHCONTF_NONFOLDERS, &ppenum);//è·å–å¯¹è±¡çš„åœ°å€.
 
     ULONG celtFetched;
     LPITEMIDLIST pidlItems = NULL;
-    while (hr = ppenum->Next(1, &pidlItems, &celtFetched) == S_OK && (celtFetched) == 1) //»ñÈ¡pidlItems
+    while (hr = ppenum->Next(1, &pidlItems, &celtFetched) == S_OK && (celtFetched) == 1) //è·å–pidlItems
     {
         STRRET strDispName;
-        psfDeskTop->GetDisplayNameOf(pidlItems, SHGDN_INFOLDER, &strDispName);//»ñÈ¡strDispName
+        psfDeskTop->GetDisplayNameOf(pidlItems, SHGDN_INFOLDER, &strDispName);//è·å–strDispName
 
         printf("%ls\n", strDispName.pOleStr);
 
@@ -578,7 +578,7 @@ bool WINAPI DelDirByApi(_In_ LPCWSTR Dir)
             //_tprintf(TEXT("  %s   <DIR>\n"), ffd.cFileName);
             if (lstrcmpi(ffd.cFileName, L".") == 0 ||
                 lstrcmpi(ffd.cFileName, L"..") == 0) {
-                //ÕâÀï²»²Ù×÷¡£
+                //è¿™é‡Œä¸æ“ä½œã€‚
             } else {
                 TCHAR sztemp[MAX_PATH] = {0};
                 StringCchCopy(sztemp, MAX_PATH, Dir);//argv[1]
@@ -588,7 +588,7 @@ bool WINAPI DelDirByApi(_In_ LPCWSTR Dir)
                 /*_tprintf(TEXT("  %s   <DIR>\n"), ffd.cFileName);*/
             }
         } else {
-            //LARGE_INTEGER filesize;//Õâ¼¸ĞĞÏÔÊ¾ĞÅÏ¢ÓÃµÄ£¬ÎŞÊµ¼ÊÓÃÍ¾¡£
+            //LARGE_INTEGER filesize;//è¿™å‡ è¡Œæ˜¾ç¤ºä¿¡æ¯ç”¨çš„ï¼Œæ— å®é™…ç”¨é€”ã€‚
             //filesize.LowPart = ffd.nFileSizeLow;
             //filesize.HighPart = ffd.nFileSizeHigh;
             //_tprintf(TEXT("  %s   %ld bytes\n"), ffd.cFileName, filesize.QuadPart);
@@ -610,7 +610,7 @@ bool WINAPI DelDirByApi(_In_ LPCWSTR Dir)
 
     FindClose(hFind);
 
-    return RemoveDirectory(Dir);//ÀïÃæÓĞ¿ÕÎÄ¼ş¼ĞÒÀ¾ÉÈÎÎñÊÇ¿ÕÄ¿Â¼¡£·µ»Ø0Ê§°Ü¡£
+    return RemoveDirectory(Dir);//é‡Œé¢æœ‰ç©ºæ–‡ä»¶å¤¹ä¾æ—§ä»»åŠ¡æ˜¯ç©ºç›®å½•ã€‚è¿”å›0å¤±è´¥ã€‚
 }
 
 
@@ -641,7 +641,7 @@ void WINAPI DelDirByShell(_In_ LPCWSTR Dir)
 
     int err = SHFileOperation(&FileOp);
     if (0 != err) {
-        //Ê§°Ü¡£
+        //å¤±è´¥ã€‚
     }
 }
 
@@ -650,10 +650,10 @@ void WINAPI DelDirByShell(_In_ LPCWSTR Dir)
 
 
 /*
-;»ñÈ¡Ä³Ğ©Ä¿Â¼µÄÂ·¾¶¡£
-;SHGetFolderPathºÃÏñ±»SHGetKnownFolderPathºÍSHGetSpecialFolderPathÌæ´ú¡£
-;CSIDLºÃÏñÓÖ±»KNOWNFOLDERID´úÌæ¡£
-;±¾ÎÄÒÔSHGetSpecialFolderPathÎªÀıĞ´´úÂë¡£
+;è·å–æŸäº›ç›®å½•çš„è·¯å¾„ã€‚
+;SHGetFolderPathå¥½åƒè¢«SHGetKnownFolderPathå’ŒSHGetSpecialFolderPathæ›¿ä»£ã€‚
+;CSIDLå¥½åƒåˆè¢«KNOWNFOLDERIDä»£æ›¿ã€‚
+;æœ¬æ–‡ä»¥SHGetSpecialFolderPathä¸ºä¾‹å†™ä»£ç ã€‚
 .386
 .model flat,stdcall
 option casemap:none
@@ -800,9 +800,9 @@ szCSIDL_TEMPLATES db "FOLDERID_Templates:",0
 szCSIDL_WINDOWS db "FOLDERID_Windows:",0
 
 sz_enter db 13,10,0
-notice db "°´enter¼üÍË³ö£¡",13,10,0
+notice db "æŒ‰enteré”®é€€å‡ºï¼",13,10,0
 correy db "made by correy",0
-szsysdir db "ÏµÍ³ÅÌ",0 ;ÓĞ¼«ÉÙÊıµÄ¼¸¸öÃ»ÓĞ´øÅÌ·û£¬ËùÒÔ¼ÓÕâ¸ö¡£
+szsysdir db "ç³»ç»Ÿç›˜",0 ;æœ‰æå°‘æ•°çš„å‡ ä¸ªæ²¡æœ‰å¸¦ç›˜ç¬¦ï¼Œæ‰€ä»¥åŠ è¿™ä¸ªã€‚
 
 ShowSpecialFolderPath proc CSIDL,szCSIDL
   invoke RtlZeroMemory,addr buffer,sizeof buffer
@@ -831,7 +831,7 @@ invoke GetStdHandle,-11
 mov hstdout,eax
 
 invoke SetConsoleTitle,addr correy
-invoke SetConsoleScreenBufferSize,hstdout,01000099h;¸ß×ÖÊÇ¸ß¶È£¬µÍ×ÖÊÇ¿í¶È¡£
+invoke SetConsoleScreenBufferSize,hstdout,01000099h;é«˜å­—æ˜¯é«˜åº¦ï¼Œä½å­—æ˜¯å®½åº¦ã€‚
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 invoke SHGetSpecialFolderPathW,0,addr buffer,CSIDL_ADMINTOOLS,0
 invoke WriteFile,hstdout,addr szCSIDL_ADMINTOOLS,sizeof szCSIDL_ADMINTOOLS-1,addr x,0
@@ -846,7 +846,7 @@ invoke WriteFile,hstdout,addr path,eax,addr x,0
 
 invoke WriteFile,hstdout,addr sz_enter,sizeof sz_enter-1,addr x,0
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;±¾ÈËÃ»ÓĞÕÒµ½CSIDLµÄ¹æÂÉ£¬Èç¹ûÓĞÎÒÏëÒ»¸öÑ­»·Ó¦¸Ã¿ÉÒÔ½â¾ö¡£
+;æœ¬äººæ²¡æœ‰æ‰¾åˆ°CSIDLçš„è§„å¾‹ï¼Œå¦‚æœæœ‰æˆ‘æƒ³ä¸€ä¸ªå¾ªç¯åº”è¯¥å¯ä»¥è§£å†³ã€‚
 invoke ShowSpecialFolderPath,CSIDL_ALTSTARTUP,addr szCSIDL_ALTSTARTUP
 invoke ShowSpecialFolderPath,CSIDL_APPDATA,addr szCSIDL_APPDATA
 invoke ShowSpecialFolderPath,CSIDL_BITBUCKET ,addr szCSIDL_BITBUCKET
@@ -918,13 +918,13 @@ EXTERN_C
 __declspec(dllexport)
 void WINAPI GetSpecialFolderPath()
 /*
-ºËĞÄÊÇµ÷ÓÃSHGetFolderPathW£¬ÔÙ½øÒ»²½ÊÇ²éÑ¯HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptionsÏÂµÄ¶ÔÓ¦µÄGUIDµÄĞÅÏ¢¡£
+æ ¸å¿ƒæ˜¯è°ƒç”¨SHGetFolderPathWï¼Œå†è¿›ä¸€æ­¥æ˜¯æŸ¥è¯¢HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptionsä¸‹çš„å¯¹åº”çš„GUIDçš„ä¿¡æ¯ã€‚
 
-¼ÆËã»ú\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell FoldersÀïÊÇÒ»Ğ©CommonÄ¿Â¼¡£
-¼ÆËã»ú\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\User Shell FoldersÀïÊÇÒ»Ğ©CommonÄ¿Â¼£¨Â·¾¶Àï´ø»·¾³±äÁ¿£©¡£
+è®¡ç®—æœº\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Foldersé‡Œæ˜¯ä¸€äº›Commonç›®å½•ã€‚
+è®¡ç®—æœº\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\User Shell Foldersé‡Œæ˜¯ä¸€äº›Commonç›®å½•ï¼ˆè·¯å¾„é‡Œå¸¦ç¯å¢ƒå˜é‡ï¼‰ã€‚
 
-¼ÆËã»ú\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersionÏÂÓĞProgramFilesDirµÈÂ·¾¶¡£
-ÀàËÆ£º¼ÆËã»ú\HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion¡£
+è®¡ç®—æœº\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersionä¸‹æœ‰ProgramFilesDirç­‰è·¯å¾„ã€‚
+ç±»ä¼¼ï¼šè®¡ç®—æœº\HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersionã€‚
 */
 {
     WCHAR Path[MAX_PATH] = {};

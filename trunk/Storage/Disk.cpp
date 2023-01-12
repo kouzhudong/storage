@@ -63,11 +63,11 @@ int WINAPI ReadDiskSector(_In_ LPCWSTR lpFileName,
                           _In_ DWORD nNumberOfBytesToRead
 )
 /*
-¹¦ÄÜ£º¶ÁÈ¡MBR¡£
+åŠŸèƒ½ï¼šè¯»å–MBRã€‚
 
-²ÎÊıËµÃ÷£º
-lpFileName£º²»¿ÉÈ¡L"\\\\.\\PhysicalDriveX",¾¡¹ÜÕâÑùÒ²ÄÜ»ñÈ¡µ½Öµ£¬µ«ÊÇ²»ÊÇºÏ·¨µÄMBR£¬Ò²ºÍwinhexµÄ²»Ò»Ñù¡£
-            ½¨ÒéÈ¡£ºL"\\\\.\\x:"¡£
+å‚æ•°è¯´æ˜ï¼š
+lpFileNameï¼šä¸å¯å–L"\\\\.\\PhysicalDriveX",å°½ç®¡è¿™æ ·ä¹Ÿèƒ½è·å–åˆ°å€¼ï¼Œä½†æ˜¯ä¸æ˜¯åˆæ³•çš„MBRï¼Œä¹Ÿå’Œwinhexçš„ä¸ä¸€æ ·ã€‚
+            å»ºè®®å–ï¼šL"\\\\.\\x:"ã€‚
 
 http://technet.microsoft.com/en-us/library/cc781134(v=ws.10).aspx
 http://ntfs.com/ntfs-partition-boot-sector.htm
@@ -107,7 +107,7 @@ made at 2014.11.28
     
     DWORD nBytesRead = 0;
     bResult = ReadFile(hDevice, lpBuffer, nNumberOfBytesToRead, &nBytesRead, NULL);
-    if (bResult == 0) {//CreateFileWµÄµÚÒ»¸ö²ÎÊıÎª0£¬µ¼ÖÂÕâÀï£º5 ¾Ü¾ø·ÃÎÊ¡£
+    if (bResult == 0) {//CreateFileWçš„ç¬¬ä¸€ä¸ªå‚æ•°ä¸º0ï¼Œå¯¼è‡´è¿™é‡Œï¼š5 æ‹’ç»è®¿é—®ã€‚
         int x = GetLastError();
         CloseHandle(hDevice);
         return (FALSE);
@@ -139,13 +139,13 @@ EXTERN_C
 __declspec(dllexport)
 int WINAPI WriteMBR(_In_ LPCWSTR lpFileName)
 /*
-¹¦ÄÜ£ºĞ´MBR¡£
+åŠŸèƒ½ï¼šå†™MBRã€‚
 
-²ÎÊıËµÃ÷£º
-lpFileName£º²»¿ÉÈ¡L"\\\\.\\PhysicalDriveX",¾¡¹ÜÕâÑùÒ²ÄÜĞ´Ò»Ğ©£¬µ«ÊÇÓĞĞí¶àµÄÏŞÖÆ£¬¸ü¶àµÄÊÇÊ§°Ü¡£
-            ½¨ÒéÈ¡£ºL"\\\\.\\x:"¡£
+å‚æ•°è¯´æ˜ï¼š
+lpFileNameï¼šä¸å¯å–L"\\\\.\\PhysicalDriveX",å°½ç®¡è¿™æ ·ä¹Ÿèƒ½å†™ä¸€äº›ï¼Œä½†æ˜¯æœ‰è®¸å¤šçš„é™åˆ¶ï¼Œæ›´å¤šçš„æ˜¯å¤±è´¥ã€‚
+            å»ºè®®å–ï¼šL"\\\\.\\x:"ã€‚
 
-´Ëº¯ÊıÔÚWindows 10ÉÏ²âÊÔ³É¹¦£¬Ğ´Á½¸öÉÈÇø¡£
+æ­¤å‡½æ•°åœ¨Windows 10ä¸Šæµ‹è¯•æˆåŠŸï¼Œå†™ä¸¤ä¸ªæ‰‡åŒºã€‚
 */
 {
     //DebugBreak();
@@ -223,10 +223,10 @@ lpFileName£º²»¿ÉÈ¡L"\\\\.\\PhysicalDriveX",¾¡¹ÜÕâÑùÒ²ÄÜĞ´Ò»Ğ©£¬µ«ÊÇÓĞĞí¶àµÄÏŞÖÆ£
 
     SetFilePointer(hDevice, 0, 0, 0);
 
-    BYTE inBuffer[1024] = {0};//Ò»¸öÉÈÇøÒ»°ãÊÇ512×Ö½Ú¡£ÕâÀïÊÇÁ½¸öÉÈÇø¡£
+    BYTE inBuffer[1024] = {0};//ä¸€ä¸ªæ‰‡åŒºä¸€èˆ¬æ˜¯512å­—èŠ‚ã€‚è¿™é‡Œæ˜¯ä¸¤ä¸ªæ‰‡åŒºã€‚
     DWORD nBytesRead = 0;
     bResult = WriteFile(hDevice, &inBuffer, sizeof(inBuffer), &nBytesRead, NULL);
-    if (bResult == 0) {//CreateFileWµÄµÚÒ»¸ö²ÎÊıÎª0£¬µ¼ÖÂÕâÀï£º5 ¾Ü¾ø·ÃÎÊ¡£
+    if (bResult == 0) {//CreateFileWçš„ç¬¬ä¸€ä¸ªå‚æ•°ä¸º0ï¼Œå¯¼è‡´è¿™é‡Œï¼š5 æ‹’ç»è®¿é—®ã€‚
         printf("WriteFile LastError:%d", GetLastError());
         CloseHandle(hDevice);
         return (FALSE);
@@ -243,13 +243,13 @@ lpFileName£º²»¿ÉÈ¡L"\\\\.\\PhysicalDriveX",¾¡¹ÜÕâÑùÒ²ÄÜĞ´Ò»Ğ©£¬µ«ÊÇÓĞĞí¶àµÄÏŞÖÆ£
 
 DWORD GetPhysicalDriveSerialNumber(UINT nDriveNumber IN, CString & strSerialNumber OUT)
 /*
-¹¦ÄÜ£º»ñÈ¡´ÅÅÌµÄĞòÁĞºÅ¡£
+åŠŸèƒ½ï¼šè·å–ç£ç›˜çš„åºåˆ—å·ã€‚
 
-×¢ÊÍ£º
-ÔÚVMWAREÖĞÊÇÃ»ÓĞĞòÁĞºÅµÄ¡£
-ÕâÊÇ²»ÊÇ¼ì²éVMAREĞéÄâ»úµÄÒ»¸ö°ì·¨£¿
+æ³¨é‡Šï¼š
+åœ¨VMWAREä¸­æ˜¯æ²¡æœ‰åºåˆ—å·çš„ã€‚
+è¿™æ˜¯ä¸æ˜¯æ£€æŸ¥VMAREè™šæ‹Ÿæœºçš„ä¸€ä¸ªåŠæ³•ï¼Ÿ
 
-ÓÃ·¨Ê¾Àı£º
+ç”¨æ³•ç¤ºä¾‹ï¼š
     CString strSerialNumber;
     DWORD dwRet = GetPhysicalDriveSerialNumber(0, strSerialNumber);
     if (NO_ERROR != dwRet) {
@@ -257,11 +257,11 @@ DWORD GetPhysicalDriveSerialNumber(UINT nDriveNumber IN, CString & strSerialNumb
         strError.Format(_T("GetPhysicalDriveSerialNumber failed. Error: %u"), dwRet);
     }
 
-ÑéÖ¤ÃüÁî£º
+éªŒè¯å‘½ä»¤ï¼š
 wmic diskdrive get serialnumber
 wmic path win32_physicalmedia get SerialNumber
 wmic path Win32_DiskDrive get SerialNumber
-ÒÔÉÏÈı¸öÃüÁî¶¼ÊÇÒ»ÑùµÄ£¬¶¼ÊÇÏÔÊ¾ËùÓĞ´ÅÅÌµÄĞòÁĞºÅ¡£
+ä»¥ä¸Šä¸‰ä¸ªå‘½ä»¤éƒ½æ˜¯ä¸€æ ·çš„ï¼Œéƒ½æ˜¯æ˜¾ç¤ºæ‰€æœ‰ç£ç›˜çš„åºåˆ—å·ã€‚
 
 http://codexpert.ro/blog/2013/10/26/get-physical-drive-serial-number-part-1/
 */

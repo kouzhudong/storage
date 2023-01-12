@@ -1,11 +1,11 @@
 /*
-ÕâÀï¶¨Òå²Ù×÷´ÅÅÌ£¨ÎÄ¼şÏµÍ³£©µÄÒ»Ğ©Êı¾İ½á¹¹¡£
+è¿™é‡Œå®šä¹‰æ“ä½œç£ç›˜ï¼ˆæ–‡ä»¶ç³»ç»Ÿï¼‰çš„ä¸€äº›æ•°æ®ç»“æ„ã€‚
 
-FATÊÇ¿ªÔ´µÄ£¬¼û£ºWindows-driver-samples\filesys\fastfat\fat.h.
+FATæ˜¯å¼€æºçš„ï¼Œè§ï¼šWindows-driver-samples\filesys\fastfat\fat.h.
 
-ÕâÀïÖ÷ÒªÊÇÒ»Ğ©NTFSµÄ½á¹¹µÄ¶¨Òå£¬²Î¿¼£º\Win2K3\NT\base\fs\ntfs\ntfs.h
+è¿™é‡Œä¸»è¦æ˜¯ä¸€äº›NTFSçš„ç»“æ„çš„å®šä¹‰ï¼Œå‚è€ƒï¼š\Win2K3\NT\base\fs\ntfs\ntfs.h
 
-×¢Òâ£ºFATºÍNTFSµÄÒ»Ğ©½á¹¹»¹ÊÇ²»Ò»ÑùµÄ£¬±ÈÈç£º_PACKED_BOOT_SECTOR¡£
+æ³¨æ„ï¼šFATå’ŒNTFSçš„ä¸€äº›ç»“æ„è¿˜æ˜¯ä¸ä¸€æ ·çš„ï¼Œæ¯”å¦‚ï¼š_PACKED_BOOT_SECTORã€‚
 */
 
 
@@ -14,7 +14,7 @@ FATÊÇ¿ªÔ´µÄ£¬¼û£ºWindows-driver-samples\filesys\fastfat\fat.h.
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 /*
-Õª×Ô£º
+æ‘˜è‡ªï¼š
 NTFS_On_Disk_Structure.pdf
 https://www.installsetupconfig.com/win32programming/windowsvolumeapis1_22.html
 */
@@ -41,7 +41,7 @@ typedef struct {
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-//Õª×Ô£º\Win2K3\NT\base\fs\ntfs\ntfs.h
+//æ‘˜è‡ªï¼š\Win2K3\NT\base\fs\ntfs\ntfs.h
 
 
 typedef LONGLONG LCN;
@@ -117,7 +117,7 @@ typedef PACKED_BOOT_SECTOR * PPACKED_BOOT_SECTOR;
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-//Ò»ÏÂ½á¹¹ÊÇ×Ô¼º¶¨ÒåµÄ¡£
+//ä¸€ä¸‹ç»“æ„æ˜¯è‡ªå·±å®šä¹‰çš„ã€‚
 
 
 #pragma pack(1)
@@ -141,9 +141,9 @@ typedef struct _BPB { //BIOS parameter block (BPB)
     BYTE Not_used_5[3];
     BYTE Clusters_Per_Index_Buffer;
     BYTE Not_used_6[3];
-    BYTE VSN[8];//Volume Serial Number. The volume¡¯s serial number.
+    BYTE VSN[8];//Volume Serial Number. The volumeâ€™s serial number.
     BYTE Not_used_7[4];
-} BPB, * PBPB;//×Ü´óĞ¡ÊÇ£º25¡£
+} BPB, * PBPB;//æ€»å¤§å°æ˜¯ï¼š25ã€‚
 #pragma pack()
 
 
@@ -162,9 +162,9 @@ typedef struct _BPB1 { //BIOS parameter block (BPB)
     BYTE Not_used_3[3];
     BYTE Clusters_Per_Index_Buffer;
     BYTE Not_used_6[3];
-    BYTE VSN[8];//Volume Serial Number. The volume¡¯s serial number.
+    BYTE VSN[8];//Volume Serial Number. The volumeâ€™s serial number.
     BYTE Not_used_7[4];
-} BPB1, * PBPB1;//×Ü´óĞ¡ÊÇ£º25¡£
+} BPB1, * PBPB1;//æ€»å¤§å°æ˜¯ï¼š25ã€‚
 #pragma pack()
 
 
