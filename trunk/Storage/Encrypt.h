@@ -1,7 +1,7 @@
 /*
-�˼��ܷǲ���ϵͳ�Դ�����������Ĵ��̺��ļ����Ǹ�͸���ӽ��ܡ�
+此加密非操作系统自带的驱动级别的磁盘和文件的那个透明加解密。
 
-���������ļӽ��ܡ�
+而是正常的加解密。
 */
 
 #pragma once
@@ -15,7 +15,7 @@ class Encrypt
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-//SDK��û��Sslprovider.h��
+//SDK中没有Sslprovider.h。
 typedef SECURITY_STATUS (WINAPI * SslEnumProtocolProviders_fn)(
     _Out_ DWORD * pdwProviderCount,
     _Out_ NCryptProviderName ** ppProviderList,

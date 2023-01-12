@@ -2,7 +2,7 @@
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-//һЩϵͳ��ͷ�ļ��Ϳ�İ�����
+//一些系统的头文件和库的包含。
 
 
 //#define _WIN32_WINNT 0x0501
@@ -72,7 +72,7 @@
 #include <ws2spi.h>
 #include <comdef.h>
 
-#include <initguid.h> //ע��ǰ��˳�򡣾�̬����UUID�õģ�����error LNK2001��
+#include <initguid.h> //注意前后顺序。静态定义UUID用的，否则：error LNK2001。
 #include <usbioctl.h>
 #include <usbiodef.h>
 //#include <usbctypes.h>
