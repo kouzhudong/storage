@@ -9,9 +9,9 @@ EXTERN_C
 __declspec(dllexport)
 void WINAPI GetFileVersion(PWCHAR FileName, VS_FIXEDFILEINFO * FileInfo)
 /*
-¹¦ÄÜ£º»ñÈ¡ÎÄ¼şµÄ°æ±¾ĞÅÏ¢¡£
+åŠŸèƒ½ï¼šè·å–æ–‡ä»¶çš„ç‰ˆæœ¬ä¿¡æ¯ã€‚
 
-²Î¿¼£º\Windows-classic-samples\Samples\Win7Samples\sysmgmt\msi\setup.exe\utils.cppµÄGetFileVersionNumberº¯Êı¡£
+å‚è€ƒï¼š\Windows-classic-samples\Samples\Win7Samples\sysmgmt\msi\setup.exe\utils.cppçš„GetFileVersionNumberå‡½æ•°ã€‚
 */
 {
     DWORD lpdwHandle = 0;
@@ -23,7 +23,7 @@ void WINAPI GetFileVersion(PWCHAR FileName, VS_FIXEDFILEINFO * FileInfo)
 
     LPVOID lpData = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, D);
     if (NULL == lpData) {
-        //LOGA(ERROR_LEVEL, "ÉêÇëÄÚ´æÊ§°Ü");
+        //LOGA(ERROR_LEVEL, "ç”³è¯·å†…å­˜å¤±è´¥");
         return;
     }
 
@@ -53,11 +53,11 @@ EXTERN_C
 __declspec(dllexport)
 void WINAPI GetFileResourcesW(IN LPCWSTR FileName, IN LPCWSTR ResourceName)
 /*
-¹¦ÄÜ£º»ñÈ¡ÎÄ¼ş×ÊÔ´µÄÒ»Ğ©ĞÅÏ¢¡£
+åŠŸèƒ½ï¼šè·å–æ–‡ä»¶èµ„æºçš„ä¸€äº›ä¿¡æ¯ã€‚
 
-²ÎÊı£º
-FileName ÎÄ¼şÃû¡£×¢Òâ£ºÓĞÊ±»á´«µİ¹ıÀ´£º\SystemRoot\System32\smss.exe¡£
-ResourceName ×ÊÔ´Ãû£¬´ËÏî²»¿ÉÂÒĞ´£¬Ö§³ÖµÄÑ¡ÏîÓĞ£º
+å‚æ•°ï¼š
+FileName æ–‡ä»¶åã€‚æ³¨æ„ï¼šæœ‰æ—¶ä¼šä¼ é€’è¿‡æ¥ï¼š\SystemRoot\System32\smss.exeã€‚
+ResourceName èµ„æºåï¼Œæ­¤é¡¹ä¸å¯ä¹±å†™ï¼Œæ”¯æŒçš„é€‰é¡¹æœ‰ï¼š
     Comments
     InternalName
     ProductName
@@ -69,20 +69,20 @@ ResourceName ×ÊÔ´Ãû£¬´ËÏî²»¿ÉÂÒĞ´£¬Ö§³ÖµÄÑ¡ÏîÓĞ£º
     PrivateBuild
     FileVersion
     OriginalFilename
-    SpecialBuild¡£
-result ÏëÒªµÄ½á¹û£¬×¢Òâ×Ö·ûµÄ±àÂë£¬ÓĞµÄÊÇºº×Ö£¬ÓĞµÄÊÇÌØÊâ×Ö·û¡£
+    SpecialBuildã€‚
+result æƒ³è¦çš„ç»“æœï¼Œæ³¨æ„å­—ç¬¦çš„ç¼–ç ï¼Œæœ‰çš„æ˜¯æ±‰å­—ï¼Œæœ‰çš„æ˜¯ç‰¹æ®Šå­—ç¬¦ã€‚
 
-²Î¿¼£º
-1.\Windows-classic-samples\Samples\Win7Samples\sysmgmt\msi\setup.exe\utils.cppµÄGetFileVersionNumberº¯Êı¡£
+å‚è€ƒï¼š
+1.\Windows-classic-samples\Samples\Win7Samples\sysmgmt\msi\setup.exe\utils.cppçš„GetFileVersionNumberå‡½æ•°ã€‚
 2.https://docs.microsoft.com/en-us/windows/win32/api/winver/nf-winver-verqueryvaluea
 3.https://blog.csdn.net/Simon798/article/details/102836496
 
-ÒòÎª£ºÓĞÌØÊâ×Ö·û£¬ÇÒansi²»ÄÜ±íÊ¾ÌØÊâ×Ö·û£¬ËùÒÔ²»ÄÜÓĞA°æµÄ£¬Ö»ÓĞW°æ±¾µÄ¡£
+å› ä¸ºï¼šæœ‰ç‰¹æ®Šå­—ç¬¦ï¼Œä¸”ansiä¸èƒ½è¡¨ç¤ºç‰¹æ®Šå­—ç¬¦ï¼Œæ‰€ä»¥ä¸èƒ½æœ‰Aç‰ˆçš„ï¼Œåªæœ‰Wç‰ˆæœ¬çš„ã€‚
 */
 {
     DWORD lpdwHandle = 0;
     DWORD D = GetFileVersionInfoSize(FileName, &lpdwHandle);
-    if (!D) {//0x715 == ÕÒ²»µ½Ó³ÏñÎÄ¼şÖĞÖ¸¶¨µÄ×ÊÔ´ÀàĞÍ¡£
+    if (!D) {//0x715 == æ‰¾ä¸åˆ°æ˜ åƒæ–‡ä»¶ä¸­æŒ‡å®šçš„èµ„æºç±»å‹ã€‚
         DWORD LastError = GetLastError();
         if (ERROR_RESOURCE_TYPE_NOT_FOUND != LastError && ERROR_FILE_NOT_FOUND != LastError) {
             //LOGA(ERROR_LEVEL, "FileName:%ls, LastError:%#x", FileName, LastError);
@@ -92,7 +92,7 @@ result ÏëÒªµÄ½á¹û£¬×¢Òâ×Ö·ûµÄ±àÂë£¬ÓĞµÄÊÇºº×Ö£¬ÓĞµÄÊÇÌØÊâ×Ö·û¡£
 
     LPVOID lpData = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, D);
     if (NULL == lpData) {
-        //LOGA(ERROR_LEVEL, "ÉêÇëÄÚ´æÊ§°Ü");
+        //LOGA(ERROR_LEVEL, "ç”³è¯·å†…å­˜å¤±è´¥");
         return;
     }
 
@@ -114,7 +114,7 @@ result ÏëÒªµÄ½á¹û£¬×¢Òâ×Ö·ûµÄ±àÂë£¬ÓĞµÄÊÇºº×Ö£¬ÓĞµÄÊÇÌØÊâ×Ö·û¡£
     if (!B) {
         DWORD LastError = GetLastError();
         if (ERROR_RESOURCE_TYPE_NOT_FOUND == LastError || ERROR_FILE_NOT_FOUND == LastError) {
-            //DbgPrintA("¾¯¸æ£ºFileName:%ls, LastError:%#x", FileName, LastError);
+            //DbgPrintA("è­¦å‘Šï¼šFileName:%ls, LastError:%#x", FileName, LastError);
         } else {
             //LOGA(ERROR_LEVEL, "FileName:%ls, LastError:%#x", FileName, LastError);
         }
@@ -131,7 +131,7 @@ result ÏëÒªµÄ½á¹û£¬×¢Òâ×Ö·ûµÄ±àÂë£¬ÓĞµÄÊÇºº×Ö£¬ÓĞµÄÊÇÌØÊâ×Ö·û¡£
     }
 
     if (count > 1) {
-        //DbgPrintA("ÖØÒªĞÅÏ¢£ºFileName:%ls, ÎÄ¼şÊôĞÔÀïµÄ´úÂëÒ³/ÓïÑÔµÄÅäÖÃÖ§³Ö¶à¸ö, count:%#x", FileName, count);
+        //DbgPrintA("é‡è¦ä¿¡æ¯ï¼šFileName:%ls, æ–‡ä»¶å±æ€§é‡Œçš„ä»£ç é¡µ/è¯­è¨€çš„é…ç½®æ”¯æŒå¤šä¸ª, count:%#x", FileName, count);
     }
 
     for (int i = 0; i < count; i++) {
@@ -151,7 +151,7 @@ result ÏëÒªµÄ½á¹û£¬×¢Òâ×Ö·ûµÄ±àÂë£¬ÓĞµÄÊÇºº×Ö£¬ÓĞµÄÊÇÌØÊâ×Ö·û¡£
         VS_FIXEDFILEINFO * lpBuffer = NULL;
         unsigned          dwBytes;
         B = VerQueryValue(lpData, SubBlock, (LPVOID *)&lpBuffer, &dwBytes);
-        if (!B) {//YourPhoneServer.exe ºÍ YourPhone.exeÃ÷Ã÷ÓĞ×ÊÔ´È´·µ»Ø0x715¡£
+        if (!B) {//YourPhoneServer.exe å’Œ YourPhone.exeæ˜æ˜æœ‰èµ„æºå´è¿”å›0x715ã€‚
             DWORD LastError = GetLastError();
             if (ERROR_RESOURCE_TYPE_NOT_FOUND != LastError) {
                 //LOGA(ERROR_LEVEL, "FileName:%ls, LastError:%#x", FileName, LastError);

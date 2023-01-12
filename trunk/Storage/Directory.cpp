@@ -228,7 +228,7 @@ The example uses the FindFirstChangeNotification function to create two notifica
 Whenever a directory is created or deleted in the tree, the example should update the entire directory tree.
 Whenever a file is created or deleted in the directory, the example should refresh the directory.
 
- ±¸×¢
+ å¤‡æ³¨
 This simplistic example uses the ExitProcess function for termination and cleanup,
 but more complex applications should always use proper resource management such as FindCloseChangeNotification where appropriate.
 
@@ -332,7 +332,7 @@ void RefreshTree(LPTSTR lpDrive)
 
 int DirectoryChange(int argc, _TCHAR * argv[])
 /*
-Ä¿Â¼¼à¿ØµÄ×î¼òµ¥Ê¾Àı£ºReadDirectoryChangesWµÄÓÃ·¨¡£
+ç›®å½•ç›‘æ§çš„æœ€ç®€å•ç¤ºä¾‹ï¼šReadDirectoryChangesWçš„ç”¨æ³•ã€‚
 */
 {
     setlocale(LC_CTYPE, ".936");
@@ -374,19 +374,19 @@ int DirectoryChange(int argc, _TCHAR * argv[])
         do {
             switch (record->Action) {
             case FILE_ACTION_ADDED:
-                printf("Ìí¼Ó:");
+                printf("æ·»åŠ :");
                 break;
             case FILE_ACTION_REMOVED:
-                printf("ÒÆ³ı:");
+                printf("ç§»é™¤:");
                 break;
             case FILE_ACTION_MODIFIED:
-                printf("ĞŞ¸Ä:");
+                printf("ä¿®æ”¹:");
                 break;
             case FILE_ACTION_RENAMED_OLD_NAME:
-                printf("¾ÉÃû×Ö:");
+                printf("æ—§åå­—:");
                 break;
             case FILE_ACTION_RENAMED_NEW_NAME:
-                printf("ĞÂÃû×Ö:");
+                printf("æ–°åå­—:");
                 break;
             default:
                 break;
@@ -434,19 +434,19 @@ DWORD WINAPI DirectoryChangeThread(LPVOID lpParam)
             do {
                 switch (pfi->Action) {
                 case FILE_ACTION_ADDED:
-                    printf("Ìí¼Ó:");
+                    printf("æ·»åŠ :");
                     break;
                 case FILE_ACTION_REMOVED:
-                    printf("ÒÆ³ı:");
+                    printf("ç§»é™¤:");
                     break;
                 case FILE_ACTION_MODIFIED:
-                    printf("ĞŞ¸Ä:");
+                    printf("ä¿®æ”¹:");
                     break;
                 case FILE_ACTION_RENAMED_OLD_NAME:
-                    printf("¾ÉÃû×Ö:");
+                    printf("æ—§åå­—:");
                     break;
                 case FILE_ACTION_RENAMED_NEW_NAME:
-                    printf("ĞÂÃû×Ö:");
+                    printf("æ–°åå­—:");
                     break;
                 default:
                     break;
@@ -454,7 +454,7 @@ DWORD WINAPI DirectoryChangeThread(LPVOID lpParam)
                 wprintf(pfi->FileName);
                 printf("\r\n");
 
-                cbOffset = pfi->NextEntryOffset;//Ò»´ÎÏûÏ¢ÖĞ°üº¬ÁË¶à¸öÎÄ¼ş±ä»¯µÄĞÅÏ¢Âğ£¿
+                cbOffset = pfi->NextEntryOffset;//ä¸€æ¬¡æ¶ˆæ¯ä¸­åŒ…å«äº†å¤šä¸ªæ–‡ä»¶å˜åŒ–çš„ä¿¡æ¯å—ï¼Ÿ
                 pfi = (PFILE_NOTIFY_INFORMATION)((LPBYTE)pfi + cbOffset);
             } while (cbOffset);
         }
@@ -486,7 +486,7 @@ void DirectoryChangeUseIOCP()
                                          NULL);
         CreateIoCompletionPort(g_pIContext[i].hDir, g_pIContext[i].hIocp, (ULONG_PTR)&g_pIContext[i], 0);
 
-        HANDLE hThread = CreateThread(NULL, 0, DirectoryChangeThread, &g_pIContext[i], 0, NULL);//¿ÉÒÔ´´½¨¶à¸ö£¬ÈçCPU¸öÊıµÄÁ½±¶¡£
+        HANDLE hThread = CreateThread(NULL, 0, DirectoryChangeThread, &g_pIContext[i], 0, NULL);//å¯ä»¥åˆ›å»ºå¤šä¸ªï¼Œå¦‚CPUä¸ªæ•°çš„ä¸¤å€ã€‚
         _ASSERTE(hThread);
         CloseHandle(hThread);
 
@@ -497,7 +497,7 @@ void DirectoryChangeUseIOCP()
                                      MAX_BUFFER,
                                      TRUE,
                                      FILE_NOTIFY_CHANGE_FILE_NAME |
-                                     FILE_NOTIFY_CHANGE_SIZE,//Õâ¸ö²»»áÖØ¸´¡£FILE_NOTIFY_CHANGE_LAST_WRITE»áÖØ¸´¡£
+                                     FILE_NOTIFY_CHANGE_SIZE,//è¿™ä¸ªä¸ä¼šé‡å¤ã€‚FILE_NOTIFY_CHANGE_LAST_WRITEä¼šé‡å¤ã€‚
                                      &nBytes,
                                      (LPOVERLAPPED)&g_pIContext[i],
                                      NULL);
@@ -507,7 +507,7 @@ void DirectoryChangeUseIOCP()
         SleepEx(INFINITE, TRUE);
     }
 
-    //µÈ´ıÏß³Ì½áÊøµÄ´úÂë»¹Òª¼ÓÉÏ¡£
+    //ç­‰å¾…çº¿ç¨‹ç»“æŸçš„ä»£ç è¿˜è¦åŠ ä¸Šã€‚
 
     for (int i = 0; i < 9; i++) {
         PostQueuedCompletionStatus(g_pIContext[i].hIocp, 0, NULL, NULL);
@@ -533,7 +533,7 @@ VOID CALLBACK DirectoryChangesCompletionRoutine(DWORD dwErrorCode, DWORD dwNumbe
             break;
         }
 
-        //¿´¿´ÄÄ¸ö¼à¿ØÄ¿Â¼·¢Éú±ä»¯ÁË¡£
+        //çœ‹çœ‹å“ªä¸ªç›‘æ§ç›®å½•å‘ç”Ÿå˜åŒ–äº†ã€‚
         if (DirInfo[i].Overlapped.Internal == lpOverlapped->Internal &&
             DirInfo[i].Overlapped.InternalHigh == lpOverlapped->InternalHigh) {
             DWORD cbOffset;
@@ -551,7 +551,7 @@ VOID CALLBACK DirectoryChangesCompletionRoutine(DWORD dwErrorCode, DWORD dwNumbe
                     wprintf(L"ADDED: ");
                     break;
                 case FILE_ACTION_MODIFIED:
-                    wprintf(L"MODIFIED: ");//ÓĞÖØ¸´»áÁ½´Î¡£
+                    wprintf(L"MODIFIED: ");//æœ‰é‡å¤ä¼šä¸¤æ¬¡ã€‚
                     break;
                 default: wprintf(L"unknown event: ");
                     break;
@@ -595,7 +595,7 @@ VOID CALLBACK DirectoryChangesCompletionRoutine(DWORD dwErrorCode, DWORD dwNumbe
 
 int CreateDirectoryChangeThread()
 /*
-Ö§³ÖReadDirectoryChangesWÒì²½µÄ£¬CompletionRoutine£¬ÇÒ¶àÄ¿Â¼µÄ¡£
+æ”¯æŒReadDirectoryChangesWå¼‚æ­¥çš„ï¼ŒCompletionRoutineï¼Œä¸”å¤šç›®å½•çš„ã€‚
 */
 {
     lstrcpy(DirInfo[0].lpszDirName, L"e:\\test");
