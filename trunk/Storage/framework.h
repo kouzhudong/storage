@@ -49,8 +49,8 @@
 #define _WS2DEF_
 #include <mstcpip.h>
 #include <Intshcut.h>
-//#include <winternl.h>
-#include <SubAuth.h>
+#include <winternl.h>
+//#include <SubAuth.h>
 //#include <NTSecAPI.h>
 //#include <ntdef.h>
 //#include <netioapi.h>
