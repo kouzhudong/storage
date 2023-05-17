@@ -10,6 +10,11 @@
 #pragma warning(disable:26451)
 
 
+NtOpenFile_Fn g_NtOpenFile;
+NtQueryInformationFile_Fn NtQueryInformationFile;
+NtClose_Fn g_NtClose;
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 

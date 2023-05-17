@@ -147,6 +147,24 @@ typedef BOOL(WINAPI * SetSecurityDescriptorControlFnPtr)(IN PSECURITY_DESCRIPTOR
 //} FILE_INFORMATION_CLASS, * PFILE_INFORMATION_CLASS;
 
 
+//================ FileHardLinkInformation ====================================
+
+typedef struct _FILE_LINK_ENTRY_INFORMATION
+{
+    ULONG NextEntryOffset;
+    LONGLONG ParentFileId;
+    ULONG FileNameLength;
+    WCHAR FileName[1];
+} FILE_LINK_ENTRY_INFORMATION, * PFILE_LINK_ENTRY_INFORMATION;
+
+typedef struct _FILE_LINKS_INFORMATION
+{
+    ULONG BytesNeeded;
+    ULONG EntriesReturned;
+    FILE_LINK_ENTRY_INFORMATION Entry;
+} FILE_LINKS_INFORMATION, * PFILE_LINKS_INFORMATION;
+
+
 //\Windows Kits\10\Include\10.0.22621.0\um\winternl.h
 typedef
 NTSTATUS
@@ -185,6 +203,10 @@ NtClose_Fn)(
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+extern NtOpenFile_Fn g_NtOpenFile;
+extern NtQueryInformationFile_Fn NtQueryInformationFile;
+extern NtClose_Fn g_NtClose;
 
 void MyHandleError(LPCTSTR psz, int nErrorNumber);
 LPCTSTR ErrorMessage(DWORD error);

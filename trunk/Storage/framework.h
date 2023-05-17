@@ -52,7 +52,6 @@
 #include <winternl.h>
 //#include <SubAuth.h>
 //#include <NTSecAPI.h>
-//#include <ntdef.h>
 //#include <netioapi.h>
 #include <atlstr.h>
 #include <comutil.h>
