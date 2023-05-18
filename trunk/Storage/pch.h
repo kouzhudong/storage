@@ -23,6 +23,8 @@
 #define myheapalloc(x) (HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, x))
 #define myheapfree(x)  (HeapFree(GetProcessHeap(), 0, x))
 
+#define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
