@@ -8,3 +8,4 @@ class File
 #include "..\inc\Storage.h"
 
 void FileResourcesTest();
+void TestEnumFile();

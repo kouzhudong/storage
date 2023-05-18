@@ -43,6 +43,7 @@ int _cdecl main(_In_ int argc, _In_reads_(argc) CHAR * argv[])
     //GetDriveGeometryTest(argc, argv);
 
     GetFileHardLinkInformation(L"\\DosDevices\\C:\\Windows\\notepad.exe");
+    TestEnumFile();
 
     LocalFree(Arglist);
 
