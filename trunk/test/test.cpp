@@ -6,6 +6,7 @@
 #include "Disk.h"
 #include "Folder.h"
 #include "File.h"
+#include "Volume.h"
 
 
 #ifdef _WIN64  

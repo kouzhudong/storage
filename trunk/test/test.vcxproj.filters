@@ -30,6 +30,9 @@
     <ClCompile Include="File.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Volume.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\inc\Storage.h">
@@ -45,6 +48,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="File.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Volume.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
