@@ -25,7 +25,18 @@ int WINAPI TestFileCallBack(_In_ TCHAR * FullFileName, _In_ PWIN32_FIND_DATA ffd
 }
 
 
+int WINAPI ReparseFileCallBack(_In_ TCHAR * FullFileName, _In_ PWIN32_FIND_DATA ffd, _In_opt_ PVOID Context)
+{
+    if (FILE_ATTRIBUTE_REPARSE_POINT & ffd->dwFileAttributes) {
+        fprintf(stderr, "FullFileName:%ls.\r\n", FullFileName);
+        GetFileReparsePointInformation(FullFileName);
+    }
+
+    return 1;//¼ÌÐø¡£
+}
+
+
 void TestEnumFile()
 {
-    int ret = EnumFile(L"c:\\", TestFileCallBack, nullptr);
+    int ret = EnumFile(L"c:\\", ReparseFileCallBack, nullptr);
 }

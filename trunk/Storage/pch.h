@@ -167,6 +167,14 @@ typedef struct _FILE_LINKS_INFORMATION
 } FILE_LINKS_INFORMATION, * PFILE_LINKS_INFORMATION;
 
 
+//https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntifs/ns-ntifs-_file_reparse_point_information
+typedef struct _FILE_REPARSE_POINT_INFORMATION
+{
+    LONGLONG FileReference;
+    ULONG    Tag;
+} FILE_REPARSE_POINT_INFORMATION, * PFILE_REPARSE_POINT_INFORMATION;
+
+
 //\Windows Kits\10\Include\10.0.22621.0\um\winternl.h
 typedef
 NTSTATUS

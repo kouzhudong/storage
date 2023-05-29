@@ -188,6 +188,7 @@
     <ClInclude Include="Signature.h" />
     <ClInclude Include="SparseFile.h" />
     <ClInclude Include="Stream.h" />
+    <ClInclude Include="Transactional.h" />
     <ClInclude Include="Version.h" />
     <ClInclude Include="Volume.h" />
     <ClInclude Include="Zip.h" />
@@ -216,6 +217,7 @@
     <ClCompile Include="Signature.cpp" />
     <ClCompile Include="SparseFile.cpp" />
     <ClCompile Include="Stream.cpp" />
+    <ClCompile Include="Transactional.cpp" />
     <ClCompile Include="Version.cpp" />
     <ClCompile Include="Volume.cpp" />
     <ClCompile Include="Zip.cpp" />
