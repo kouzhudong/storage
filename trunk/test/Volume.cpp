@@ -3,6 +3,7 @@
 
 void TestVolume()
 {
-
-
+    EnumVolumes();
+    DisplayingVolumePaths();
+    EnumeratingVolumeGUIDPaths();
 }
