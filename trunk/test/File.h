@@ -1,11 +1,7 @@
 #pragma once
 
-class File
-{
-
-};
-
 #include "..\inc\Storage.h"
+#include "pch.h"
 
 void FileResourcesTest();
 void TestEnumFile();

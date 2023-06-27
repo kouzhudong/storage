@@ -93,6 +93,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <DisableSpecificWarnings>4819;4566</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -109,6 +110,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <DisableSpecificWarnings>4819;4566</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -125,6 +127,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <DisableSpecificWarnings>4819;4566</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -141,6 +144,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <DisableSpecificWarnings>4819;4566</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,19 +155,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="c.c" />
     <ClCompile Include="Disk.cpp" />
     <ClCompile Include="encrypt.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="Folder.cpp" />
+    <ClCompile Include="pch.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="Volume.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\inc\Storage.h" />
+    <ClInclude Include="c.h" />
     <ClInclude Include="Disk.h" />
     <ClInclude Include="encrypt.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="Folder.h" />
+    <ClInclude Include="pch.h" />
     <ClInclude Include="Volume.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

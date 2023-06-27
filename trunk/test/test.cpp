@@ -7,6 +7,7 @@
 #include "Folder.h"
 #include "File.h"
 #include "Volume.h"
+#include "c.h"
 
 
 #ifdef _WIN64  
@@ -44,7 +45,7 @@ int _cdecl main(_In_ int argc, _In_reads_(argc) CHAR * argv[])
     //GetDriveGeometryTest(argc, argv);
     
     TestEnumFile();
-    //TestVolume();
+    test_c();
 
     LocalFree(Arglist);
 
