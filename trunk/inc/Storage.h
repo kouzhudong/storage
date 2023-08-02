@@ -110,6 +110,9 @@ void WINAPI EnumVolumes();
 void WINAPI DisplayingVolumePaths(void);
 void WINAPI EnumeratingVolumeGUIDPaths(void);
 
+BOOL WINAPI MyEncryptFile(LPTSTR pszSourceFile, LPTSTR pszDestinationFile, LPTSTR pszPassword);
+BOOL WINAPI MyDecryptFile(LPTSTR pszSourceFile, LPTSTR pszDestinationFile, LPTSTR pszPassword);
+
 
 EXTERN_C_END
 
