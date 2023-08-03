@@ -130,6 +130,9 @@ NTSTATUS WINAPI EnumContexts_SelfAlloc();
 NTSTATUS WINAPI EnumContextFunctions();
 NTSTATUS WINAPI EnumContextFunctionProviders();
 
+VOID WINAPI RsaPrivateKeyDecrypt();
+VOID WINAPI RsaPublicKeyEncrypt();
+
 
 EXTERN_C_END
 
