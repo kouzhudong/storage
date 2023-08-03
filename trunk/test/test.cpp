@@ -49,8 +49,10 @@ int _cdecl main(_In_ int argc, _In_reads_(argc) CHAR * argv[])
     //RsaPublicKeyEncrypt();
     //RsaPrivateKeyDecrypt();
 
-    RsaPrivateKeyEncrypt();
-    RsaPublicKeyDecrypt();
+    //RsaPrivateKeyEncrypt();
+    //RsaPublicKeyDecrypt();
+
+    EnumStorageProviders();
 
     LocalFree(Arglist);
 

@@ -136,6 +136,8 @@ VOID WINAPI RsaPublicKeyEncrypt();
 VOID WINAPI RsaPublicKeyDecrypt();
 VOID WINAPI RsaPrivateKeyEncrypt();
 
+void WINAPI EnumStorageProviders();
+
 
 EXTERN_C_END
 
