@@ -128,6 +128,7 @@ NTSTATUS WINAPI EnumContexts_SystemAlloc();
 NTSTATUS WINAPI EnumContexts_SelfAlloc();
 
 NTSTATUS WINAPI EnumContextFunctions();
+NTSTATUS WINAPI EnumContextFunctionProviders();
 
 
 EXTERN_C_END
