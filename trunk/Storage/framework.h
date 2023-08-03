@@ -1,10 +1,19 @@
-﻿#pragma once
+﻿/*
+
+winnt.h和ntstatus.h冲突：有重复的定义。
+解决思路：先包含ntstatus.h，再定义WIN32_NO_STATUS，最后包含winnt.h。
+*/
+
+#pragma once
+
+#include <ntstatus.h>
 
 //#define _WIN32_WINNT 0x0501
 #define WIN32_LEAN_AND_MEAN             // 从 Windows 头文件中排除极少使用的内容
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #define _WIN32_DCOM
 #define STRICT
+#define WIN32_NO_STATUS
 
 #pragma warning(disable:28251)
 

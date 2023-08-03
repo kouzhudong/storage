@@ -43,9 +43,11 @@ int _cdecl main(_In_ int argc, _In_reads_(argc) CHAR * argv[])
 
     //DelDirTest(Args, Arglist);
     //GetDriveGeometryTest(argc, argv);
+
+    //test_c();
     
-    TestEnumFile();
-    test_c();
+    EnumProviders1();
+    EnumProviders2();    
 
     LocalFree(Arglist);
 

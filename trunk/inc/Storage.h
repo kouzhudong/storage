@@ -115,6 +115,9 @@ BOOL WINAPI MyDecryptFile(LPTSTR pszSourceFile, LPTSTR pszDestinationFile, LPTST
 
 void WINAPI EncryptingDataWithCNG(int argc, __in_ecount(argc) LPWSTR * wargv);
 
+void WINAPI EnumProviders1();
+void WINAPI EnumProviders2();
+
 
 EXTERN_C_END
 
