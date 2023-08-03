@@ -127,6 +127,8 @@ void WINAPI EnumProviders(_In_z_  LPCWSTR pszAlgId);
 NTSTATUS WINAPI EnumContexts_SystemAlloc();
 NTSTATUS WINAPI EnumContexts_SelfAlloc();
 
+NTSTATUS WINAPI EnumContextFunctions();
+
 
 EXTERN_C_END
 
