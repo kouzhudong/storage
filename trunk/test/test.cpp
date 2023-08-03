@@ -46,7 +46,7 @@ int _cdecl main(_In_ int argc, _In_reads_(argc) CHAR * argv[])
 
     //test_c();
     
-    EnumContextFunctionProviders();
+    EnumSslProtocolProviders();
 
     LocalFree(Arglist);
 
