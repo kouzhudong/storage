@@ -113,6 +113,8 @@ void WINAPI EnumeratingVolumeGUIDPaths(void);
 BOOL WINAPI MyEncryptFile(LPTSTR pszSourceFile, LPTSTR pszDestinationFile, LPTSTR pszPassword);
 BOOL WINAPI MyDecryptFile(LPTSTR pszSourceFile, LPTSTR pszDestinationFile, LPTSTR pszPassword);
 
+void WINAPI EncryptingDataWithCNG(int argc, __in_ecount(argc) LPWSTR * wargv);
+
 
 EXTERN_C_END
 
