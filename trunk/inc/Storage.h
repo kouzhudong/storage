@@ -118,6 +118,8 @@ void WINAPI EncryptingDataWithCNG(int argc, __in_ecount(argc) LPWSTR * wargv);
 void WINAPI EnumProviders1();
 void WINAPI EnumProviders2();
 
+void WINAPI EnumAlgorithms();
+
 
 EXTERN_C_END
 
