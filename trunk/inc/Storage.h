@@ -20,6 +20,9 @@
 #include <windows.h>
 #include <winioctl.h>
 
+//C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\shared\fltUserStructures.h
+typedef _Return_type_success_(return >= 0) LONG NTSTATUS;
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -119,6 +122,10 @@ void WINAPI EnumProviders1();
 void WINAPI EnumProviders2();
 
 void WINAPI EnumAlgorithms();
+void WINAPI EnumProviders(_In_z_  LPCWSTR pszAlgId);
+
+NTSTATUS WINAPI EnumContexts_SystemAlloc();
+NTSTATUS WINAPI EnumContexts_SelfAlloc();
 
 
 EXTERN_C_END
