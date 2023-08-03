@@ -133,6 +133,9 @@ NTSTATUS WINAPI EnumContextFunctionProviders();
 VOID WINAPI RsaPrivateKeyDecrypt();
 VOID WINAPI RsaPublicKeyEncrypt();
 
+VOID WINAPI RsaPublicKeyDecrypt();
+VOID WINAPI RsaPrivateKeyEncrypt();
+
 
 EXTERN_C_END
 
