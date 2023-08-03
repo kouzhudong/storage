@@ -75,7 +75,7 @@ int WINAPI RemoveFileZoneIdentifier(int argc, wchar_t ** argv);
 
 void WINAPI EnumCatAttributes(_In_ LPWSTR FilePath);
 
-HRESULT WINAPI EnumProviders(void);
+HRESULT WINAPI EnumInstalledProviders(void);
 
 void WINAPI ExportSessionKey(void);
 
