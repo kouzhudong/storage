@@ -13,3 +13,5 @@ int EnumProvidersTest(int argc, _TCHAR * argv[]);
 
 int EncryptingFileTest(int argc, _TCHAR * argv[]);
 int DecryptingFileTest(int argc, _TCHAR * argv[]);
+
+void TestRsa();
