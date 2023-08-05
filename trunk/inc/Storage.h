@@ -133,8 +133,8 @@ NTSTATUS WINAPI EnumContextFunctionProviders();
 VOID WINAPI RsaPrivateKeyDecrypt();
 VOID WINAPI RsaPublicKeyEncrypt();
 
-VOID WINAPI RsaPublicKeyDecrypt();
-VOID WINAPI RsaPrivateKeyEncrypt();
+VOID WINAPI RsaPublicKeyDecrypt(_In_reads_bytes_(PublicKeyLen) PUCHAR PublicKey, _In_ ULONG PublicKeyLen);
+VOID WINAPI RsaPrivateKeyEncrypt(_In_reads_bytes_(PrivateKeyLen) PUCHAR PrivateKey, _In_ ULONG PrivateKeyLen);
 
 void WINAPI EnumStorageProviders();
 
