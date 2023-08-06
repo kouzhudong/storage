@@ -134,27 +134,27 @@ VOID WINAPI RsaPublicKeyEncrypt(_In_reads_bytes_(PublicKeyLen) PUCHAR PublicKey,
                                 _In_ ULONG PublicKeyLen,
                                 _In_reads_bytes_opt_(PlainTextSize) PUCHAR PlainText,
                                 _In_ ULONG PlainTextSize,
-                                PUCHAR CipherText,
-                                ULONG CipherTextSize);
+                                _Out_writes_bytes_opt_(CipherTextSize) PUCHAR CipherText,
+                                _In_ ULONG CipherTextSize);
 VOID WINAPI RsaPrivateKeyDecrypt(_In_reads_bytes_(PrivateKeyLen) PUCHAR PrivateKey,
                                  _In_ ULONG PrivateKeyLen,
                                  _In_reads_bytes_opt_(CipherTextSize) PUCHAR CipherText,
                                  _In_ ULONG CipherTextSize,
-                                 PUCHAR PlainText,
-                                 ULONG PlainTextSize);
+                                 _Out_writes_bytes_opt_(PlainTextSize) PUCHAR PlainText,
+                                 _In_ ULONG PlainTextSize);
 
 VOID WINAPI RsaPrivateKeyEncrypt(_In_reads_bytes_(PrivateKeyLen) PUCHAR PrivateKey, 
                                  _In_ ULONG PrivateKeyLen,
                                 _In_reads_bytes_opt_(PlainTextSize) PUCHAR PlainText,
                                 _In_ ULONG PlainTextSize,
-                                PUCHAR CipherText,
-                                ULONG CipherTextSize);
+                                _Out_writes_bytes_opt_(CipherTextSize) PUCHAR CipherText,
+                                _In_ ULONG CipherTextSize);
 VOID WINAPI RsaPublicKeyDecrypt(_In_reads_bytes_(PublicKeyLen) PUCHAR PublicKey, 
                                 _In_ ULONG PublicKeyLen,
                                  _In_reads_bytes_opt_(CipherTextSize) PUCHAR CipherText,
                                  _In_ ULONG CipherTextSize,
-                                 PUCHAR PlainText,
-                                 ULONG PlainTextSize);
+                                 _Out_writes_bytes_opt_(PlainTextSize) PUCHAR PlainText,
+                                 _In_ ULONG PlainTextSize);
 
 void WINAPI EnumStorageProviders();
 
