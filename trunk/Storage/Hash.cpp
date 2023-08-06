@@ -323,7 +323,6 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-creat
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
 void Get_And_Print_Hash(HCRYPTHASH hHash);
 
 
@@ -483,9 +482,6 @@ void Get_And_Print_Hash(HCRYPTHASH hOHash)
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-#define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
 
 
 void EncodingAndDecodingHashedMessage(void)
@@ -771,9 +767,6 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
 
 // Copyright (C) Microsoft.  All rights reserved.
 // Example of signing a hash and verifying the hash signature.
-
-
-#define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
 
 
 void SigningHashAndVerifyingHashSignature(void)
@@ -1075,12 +1068,6 @@ Encrypting Data with CNG
 // Copyright (C) Microsoft. All rights reserved.
 
 
-static const BYTE rgbMsg[] =
-{
-    0x61, 0x62, 0x63
-};
-
-
 EXTERN_C
 __declspec(dllexport)
 void WINAPI HashDataByCNG(int argc, __in_ecount(argc) LPWSTR * wargv)
@@ -1161,6 +1148,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccng/creating-a-hash-with-cng
     DWORD                   cbData = 0, cbHash = 0, cbHashObject = 0;
     PBYTE                   pbHashObject = NULL;
     PBYTE                   pbHash = NULL;
+    static const BYTE rgbMsg[] = {0x61, 0x62, 0x63};
 
     UNREFERENCED_PARAMETER(argc);
     UNREFERENCED_PARAMETER(wargv);
@@ -1267,7 +1255,9 @@ Abstract:
 --*/
 
 
-void __cdecl SigningDataWithCNG(int argc, __in_ecount(argc) LPWSTR * wargv)
+EXTERN_C
+__declspec(dllexport)
+void WINAPI SigningDataWithCNG(int argc, __in_ecount(argc) LPWSTR * wargv)
 /*
 Signing Data with CNG
 2018/05/31

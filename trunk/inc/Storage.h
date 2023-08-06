@@ -59,6 +59,11 @@ void WINAPI DelDirByShell(_In_ LPCWSTR Dir);
 
 void WINAPI GetSpecialFolderPath();
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//签名和验签
+
+
 LONG WINAPI VerifyEmbeddedSignatureEx(LPCWSTR pwszSourceFile);
 
 void WINAPI ASN(void);
@@ -70,6 +75,12 @@ DWORD WINAPI VerifyEmbeddedSignatures(_In_ PCWSTR FileName,
                                       _In_ BOOL UseStrongSigPolicy);
 
 int WINAPI GetInformationFromAuthenticodeSignedExecutables(int argc, TCHAR * argv[]);
+
+void WINAPI SigningDataWithCNG(int argc, __in_ecount(argc) LPWSTR * wargv);
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 int WINAPI GetFileZoneIdentifier(int argc, wchar_t ** argv);
 int WINAPI MapFileZoneIdentifier(int argc, wchar_t ** argv);
@@ -112,6 +123,10 @@ int WINAPI EnumFile(const TCHAR * Directory, FileCallBack CallBack, _In_opt_ PVO
 void WINAPI EnumVolumes();
 void WINAPI DisplayingVolumePaths(void);
 void WINAPI EnumeratingVolumeGUIDPaths(void);
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//加解密
 
 BOOL WINAPI MyEncryptFile(LPTSTR pszSourceFile, LPTSTR pszDestinationFile, LPTSTR pszPassword);
 BOOL WINAPI MyDecryptFile(LPTSTR pszSourceFile, LPTSTR pszDestinationFile, LPTSTR pszPassword);
@@ -157,6 +172,9 @@ VOID WINAPI RsaPublicKeyDecrypt(_In_reads_bytes_(PublicKeyLen) PUCHAR PublicKey,
                                  _In_ ULONG PlainTextSize);
 
 void WINAPI EnumStorageProviders();
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 EXTERN_C_END
