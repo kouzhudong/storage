@@ -20,6 +20,8 @@
 
 #define STATUS_UNSUCCESSFUL         ((NTSTATUS)0xC0000001L)
 
+#define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
+
 #define myheapalloc(x) (HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, x))
 #define myheapfree(x)  (HeapFree(GetProcessHeap(), 0, x))
 

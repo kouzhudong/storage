@@ -30,7 +30,6 @@ typedef struct _ENUM_ARG {
 
 // Copyright (C) Microsoft.  All rights reserved.
 // This example demonstrates how to create and encode a certificate request. 
-#define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
 
 
 //   This program use this additional #define statement. 

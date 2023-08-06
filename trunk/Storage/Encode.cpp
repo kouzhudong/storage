@@ -47,8 +47,6 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/signing-data
 //   Copyright (C) Microsoft.  All rights reserved.
 
 
-#define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
-
 //   Define the name of a certificate subject.
 //   To use this program, the definition of SIGNER_NAME
 //   must be changed to the name of the subject of a certificate that has access to a private key.
@@ -1533,9 +1531,6 @@ void ShowBytes(BYTE * s, DWORD len)
 // Reads a signed and encrypted message, then decrypts and verifies the message.
 
 
-#define MY_ENCODING_TYPE (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
-
-
 BYTE * DecryptAndVerify(DWORD cbBlob, BYTE * pbBlob)
 {
     //  Declare and initialize local variables.
@@ -2178,8 +2173,6 @@ exit_VerifyCosignedMessage:
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
-
 //   Define the names of two certificate subjects.
 //   To use this program, the definitions of SIGNER_NAME and 
 //   COUNTER_SIGNER_NAME must be changed to the names of 
@@ -2607,9 +2600,6 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-encod
 
 // Copyright (C) Microsoft.  All rights reserved.
 // Example of encoding and decoding a message.
-
-
-#define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
 
 
 void EncodingAndDecodingData(void)

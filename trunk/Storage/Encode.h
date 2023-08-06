@@ -6,9 +6,6 @@ class Encode
 };
 
 
-#define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
-
-
 // Define the name of the store where the needed certificate can be found. 
 #define CERT_STORE_NAME  L"MY"
 

@@ -231,9 +231,6 @@ ErrorExit:
 //  CreateAndHashSessionKey.cpp : Defines the entry point for the application.
 
 
-#define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
-
-
 void CreatingHashingSessionKey()
 /*
 Example C Program: Creating and Hashing a Session Key
