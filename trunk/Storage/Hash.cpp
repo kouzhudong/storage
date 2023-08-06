@@ -320,7 +320,54 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-creat
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-void Get_And_Print_Hash(HCRYPTHASH hHash);
+void Get_And_Print_Hash(HCRYPTHASH hOHash)
+// Define the function Get_And_Print_Hash.
+{
+    // Declare and initialize local variables.
+    HCRYPTHASH   hHash;
+    BYTE * pbHash;
+    DWORD        dwHashLen;
+    DWORD        dwHashLenSize = sizeof(DWORD);
+    DWORD        i;
+
+    // Duplicate the hash passed in.
+    // The hash is duplicated to leave the original hash intact.
+    if (CryptDuplicateHash(hOHash, NULL, 0, &hHash)) {
+        // It worked. Do nothing.
+    } else {
+        MyHandleError("Error during CryptDuplicateHash.");
+    }
+
+    if (CryptGetHashParam(hHash, HP_HASHSIZE, (BYTE *)&dwHashLen, &dwHashLenSize, 0)) {
+        // It worked. Do nothing.
+    } else {
+        MyHandleError("CryptGetHashParam failed to get size.");
+    }
+
+    if (pbHash = (BYTE *)malloc(dwHashLen)) {
+        // It worked. Do nothing.
+    } else {
+        MyHandleError("Allocation failed.");
+    }
+
+    if (CryptGetHashParam(hHash, HP_HASHVAL, pbHash, &dwHashLen, 0)) {
+        // Print the hash value.
+        printf("The hash is:  ");
+        for (i = 0; i < dwHashLen; i++) {
+            printf("%02x ", pbHash[i]);
+        }
+        printf("\n");
+    } else {
+        MyHandleError("Error during reading hash value.");
+    }
+
+    free(pbHash);
+    if (CryptDestroyHash(hHash)) {
+        // It worked. Do nothing.
+    } else {
+        MyHandleError("ERROR - CryptDestroyHash");
+    }
+} // end Get_And_Print_Hash
 
 
 void DuplicatingHash(void)
@@ -426,56 +473,6 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program-dupli
 
     printf("The program ran to completion without error. \n");
 }
-
-
-void Get_And_Print_Hash(HCRYPTHASH hOHash)
-// Define the function Get_And_Print_Hash.
-{
-    // Declare and initialize local variables.
-    HCRYPTHASH   hHash;
-    BYTE * pbHash;
-    DWORD        dwHashLen;
-    DWORD        dwHashLenSize = sizeof(DWORD);
-    DWORD        i;
-
-    // Duplicate the hash passed in.
-    // The hash is duplicated to leave the original hash intact.
-    if (CryptDuplicateHash(hOHash, NULL, 0, &hHash)) {
-        // It worked. Do nothing.
-    } else {
-        MyHandleError("Error during CryptDuplicateHash.");
-    }
-
-    if (CryptGetHashParam(hHash, HP_HASHSIZE, (BYTE *)&dwHashLen, &dwHashLenSize, 0)) {
-        // It worked. Do nothing.
-    } else {
-        MyHandleError("CryptGetHashParam failed to get size.");
-    }
-
-    if (pbHash = (BYTE *)malloc(dwHashLen)) {
-        // It worked. Do nothing.
-    } else {
-        MyHandleError("Allocation failed.");
-    }
-
-    if (CryptGetHashParam(hHash, HP_HASHVAL, pbHash, &dwHashLen, 0)) {
-        // Print the hash value.
-        printf("The hash is:  ");
-        for (i = 0; i < dwHashLen; i++) {
-            printf("%02x ", pbHash[i]);
-        }
-        printf("\n");
-    } else {
-        MyHandleError("Error during reading hash value.");
-    }
-
-    free(pbHash);
-    if (CryptDestroyHash(hHash)) {
-        // It worked. Do nothing.
-    } else {
-        MyHandleError("ERROR - CryptDestroyHash");
-    }
-} // end Get_And_Print_Hash
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1048,6 +1045,113 @@ Cleanup:
     if (pbHash) {
         HeapFree(GetProcessHeap(), 0, pbHash);
     }
+}
+
+
+EXTERN_C
+__declspec(dllexport)
+BOOL WINAPI CngHashData(_In_z_ LPCWSTR pszAlgId,
+                        _In_reads_bytes_(DataSize) PUCHAR Data,
+                        _In_ ULONG DataSize,
+                        _Out_writes_bytes_all_(*HashSize) PUCHAR * Hash,
+                        _In_ ULONG * HashSize
+)
+/*++
+
+Hash需要由调用者调用HeapFree释放。
+
+https://docs.microsoft.com/zh-cn/windows/win32/seccng/creating-a-hash-with-cng
+--*/
+{
+    BCRYPT_ALG_HANDLE       hAlg = NULL;
+    BCRYPT_HASH_HANDLE      hHash = NULL;
+    NTSTATUS                status = STATUS_UNSUCCESSFUL;
+    DWORD                   cbData = 0, cbHashObject = 0;
+    PBYTE                   pbHashObject = NULL;
+    BOOL                    ret = FALSE;
+
+    //open an algorithm handle
+    if (!NT_SUCCESS(status = BCryptOpenAlgorithmProvider(&hAlg, pszAlgId, NULL, 0))) {
+        wprintf(L"**** Error 0x%x returned by BCryptOpenAlgorithmProvider\n", status);
+        goto Cleanup;
+    }
+
+    //calculate the size of the buffer to hold the hash object
+    if (!NT_SUCCESS(status = BCryptGetProperty(hAlg,
+                                               BCRYPT_OBJECT_LENGTH,
+                                               (PBYTE)&cbHashObject,
+                                               sizeof(DWORD),
+                                               &cbData,
+                                               0))) {
+        wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
+        goto Cleanup;
+    }
+
+    //allocate the hash object on the heap
+    pbHashObject = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbHashObject);
+    if (NULL == pbHashObject) {
+        wprintf(L"**** memory allocation failed\n");
+        goto Cleanup;
+    }
+
+    //calculate the length of the hash
+    if (!NT_SUCCESS(status = BCryptGetProperty(hAlg,
+                                               BCRYPT_HASH_LENGTH,
+                                               (PBYTE)HashSize,
+                                               sizeof(DWORD),
+                                               &cbData,
+                                               0))) {
+        wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
+        goto Cleanup;
+    }
+
+    //allocate the hash buffer on the heap
+    * Hash = (PBYTE)HeapAlloc(GetProcessHeap(), 0, * HashSize);
+    if (NULL == * Hash) {
+        wprintf(L"**** memory allocation failed\n");
+        goto Cleanup;
+    }
+
+    //create a hash
+    if (!NT_SUCCESS(status = BCryptCreateHash(hAlg, &hHash, pbHashObject, cbHashObject, NULL, 0, 0))) {
+        wprintf(L"**** Error 0x%x returned by BCryptCreateHash\n", status);
+        goto Cleanup;
+    }
+
+
+    //hash some data
+    if (!NT_SUCCESS(status = BCryptHashData(hHash, Data, DataSize, 0))) {
+        wprintf(L"**** Error 0x%x returned by BCryptHashData\n", status);
+        goto Cleanup;
+    }
+
+    //close the hash
+    if (!NT_SUCCESS(status = BCryptFinishHash(hHash, * Hash, * HashSize, 0))) {
+        wprintf(L"**** Error 0x%x returned by BCryptFinishHash\n", status);
+        goto Cleanup;
+    }
+
+    ret = TRUE;
+
+Cleanup:
+
+    if (hAlg) {
+        BCryptCloseAlgorithmProvider(hAlg, 0);
+    }
+
+    if (hHash) {
+        BCryptDestroyHash(hHash);
+    }
+
+    if (pbHashObject) {
+        HeapFree(GetProcessHeap(), 0, pbHashObject);
+    }
+
+    //if (*Hash) {
+    //    HeapFree(GetProcessHeap(), 0, *Hash);
+    //}
+
+    return ret;
 }
 
 

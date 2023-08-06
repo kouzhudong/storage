@@ -80,6 +80,18 @@ void WINAPI SigningDataWithCNG(int argc, __in_ecount(argc) LPWSTR * wargv);
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+//哈希
+
+
+BOOL WINAPI CngHashData(_In_z_ LPCWSTR pszAlgId,
+                        _In_reads_bytes_(DataSize) PUCHAR Data,
+                        _In_ ULONG DataSize,
+                        _Out_writes_bytes_all_(*HashSize) PUCHAR * Hash,
+                        _In_ ULONG * HashSize
+);
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 int WINAPI GetFileZoneIdentifier(int argc, wchar_t ** argv);

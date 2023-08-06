@@ -148,3 +148,6 @@ class pch
 {
 
 };
+
+
+void PrintBytes(IN BYTE * pbPrintData, IN DWORD cbDataLen);

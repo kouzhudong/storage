@@ -8,6 +8,7 @@
 #include "File.h"
 #include "Volume.h"
 #include "c.h"
+#include "Hash.h"
 
 
 #ifdef _WIN64  
@@ -41,7 +42,7 @@ int _cdecl main(_In_ int argc, _In_reads_(argc) CHAR * argv[])
         return GetLastError();
     }
 
-    SigningDataWithCNG(Args, Arglist);
+    //SigningDataWithCNG(Args, Arglist);
     //GetDriveGeometryTest(argc, argv);
 
     //test_c();    
@@ -55,6 +56,7 @@ int _cdecl main(_In_ int argc, _In_reads_(argc) CHAR * argv[])
     //EnumStorageProviders();
 
     //TestRsa();
+    HashTest();
 
     LocalFree(Arglist);
 

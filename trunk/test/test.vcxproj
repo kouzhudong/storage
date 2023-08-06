@@ -160,6 +160,7 @@
     <ClCompile Include="encrypt.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="Folder.cpp" />
+    <ClCompile Include="Hash.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="Volume.cpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="encrypt.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="Folder.h" />
+    <ClInclude Include="Hash.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Volume.h" />
   </ItemGroup>
