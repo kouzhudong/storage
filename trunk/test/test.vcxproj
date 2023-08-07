@@ -162,6 +162,7 @@
     <ClCompile Include="Folder.cpp" />
     <ClCompile Include="Hash.cpp" />
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Signature.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="Volume.cpp" />
   </ItemGroup>
@@ -174,6 +175,7 @@
     <ClInclude Include="Folder.h" />
     <ClInclude Include="Hash.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Signature.h" />
     <ClInclude Include="Volume.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

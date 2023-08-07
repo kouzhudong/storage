@@ -1163,11 +1163,7 @@ DWORD WINAPI GetFileHash(_In_ LPCWSTR lpFileName,
                          _In_ ULONG * HashSize
 )
 /*
-Example C Program: Creating an MD5 Hash from File Content
-2018/05/31
 
-The following example demonstrates using CryptoAPI to compute the MD5 hash of the contents of a file.
-This example performs the computation on the contents of a file specified at run time.
 
 https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program--creating-an-md-5-hash-from-file-content?redirectedfrom=MSDN
 */
