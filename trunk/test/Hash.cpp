@@ -13,5 +13,17 @@ void HashTest()
 
     if (Hash) {
         HeapFree(GetProcessHeap(), 0, Hash);
+        Hash = nullptr;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+
+    DWORD Status = GetFileHash(L"C:\\Windows\\notepad.exe", BCRYPT_SHA256_ALGORITHM, &Hash, &HashSize);
+    if (NT_SUCCESS(Status) && Hash) {
+        PrintBytes(Hash, HashSize);
+    }
+
+    if (Hash) {
+        HeapFree(GetProcessHeap(), 0, Hash);
     }
 }

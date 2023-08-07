@@ -896,15 +896,15 @@ If any of the data changes, the hash value will change appropriately.
 
 Hashes are not useful for encrypting data because they are not intended to be used to reproduce the original data from the hash value.
 Hashes are most useful to verify the integrity of the data when used with an asymmetric signing algorithm.
-For example, if you hashed a text message, signed the hash, 
+For example, if you hashed a text message, signed the hash,
 and included the signed hash value with the original message,
 the recipient could verify the signed hash, create the hash value for the received message,
 and then compare this hash value with the signed hash value included with the original message.
-If the two hash values are identical, 
+If the two hash values are identical,
 the recipient can be reasonably sure that the original message has not been modified.
 
 The size of the hash value is fixed for a particular hashing algorithm.
-What this means is that no matter how large or small the data block is, 
+What this means is that no matter how large or small the data block is,
 the hash value will always be the same size.
 As an example, the SHA256 hashing algorithm has a hash value size of 256 bits.
 
@@ -916,7 +916,7 @@ To create a hash using CNG, perform the following steps:
 
 Open an algorithm provider that supports the desired algorithm.
 Typical hashing algorithms include MD2, MD4, MD5, SHA-1, and SHA256.
-Call the BCryptOpenAlgorithmProvider function and 
+Call the BCryptOpenAlgorithmProvider function and
 specify the appropriate algorithm identifier in the pszAlgId parameter.
 The function returns a handle to the provider.
 
@@ -944,7 +944,7 @@ If you will not be creating any more hash objects,
 close the algorithm provider by passing the provider handle to the BCryptCloseAlgorithmProvider function.
 
 If you will be creating more hash objects,
-we suggest you reuse the algorithm provider rather than creating and 
+we suggest you reuse the algorithm provider rather than creating and
 destroying the same type of algorithm provider many times.
 
 When you have finished using the hash value memory, free it.
@@ -1106,8 +1106,8 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccng/creating-a-hash-with-cng
     }
 
     //allocate the hash buffer on the heap
-    * Hash = (PBYTE)HeapAlloc(GetProcessHeap(), 0, * HashSize);
-    if (NULL == * Hash) {
+    *Hash = (PBYTE)HeapAlloc(GetProcessHeap(), 0, *HashSize);
+    if (NULL == *Hash) {
         wprintf(L"**** memory allocation failed\n");
         goto Cleanup;
     }
@@ -1126,7 +1126,7 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccng/creating-a-hash-with-cng
     }
 
     //close the hash
-    if (!NT_SUCCESS(status = BCryptFinishHash(hHash, * Hash, * HashSize, 0))) {
+    if (!NT_SUCCESS(status = BCryptFinishHash(hHash, *Hash, *HashSize, 0))) {
         wprintf(L"**** Error 0x%x returned by BCryptFinishHash\n", status);
         goto Cleanup;
     }
@@ -1152,6 +1152,141 @@ Cleanup:
     //}
 
     return ret;
+}
+
+
+EXTERN_C
+__declspec(dllexport)
+DWORD WINAPI GetFileHash(_In_ LPCWSTR lpFileName,
+                         _In_z_ LPCWSTR pszAlgId,
+                         _Out_writes_bytes_all_(*HashSize) PUCHAR * Hash,
+                         _In_ ULONG * HashSize
+)
+/*
+Example C Program: Creating an MD5 Hash from File Content
+2018/05/31
+
+The following example demonstrates using CryptoAPI to compute the MD5 hash of the contents of a file.
+This example performs the computation on the contents of a file specified at run time.
+
+https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program--creating-an-md-5-hash-from-file-content?redirectedfrom=MSDN
+*/
+{
+    DWORD dwStatus = 0;
+    BOOL bResult = FALSE;
+    HCRYPTPROV hProv = 0;
+    HANDLE hFile = NULL;
+    BYTE rgbFile[BUFSIZE];
+    DWORD cbRead = 0;
+    DWORD cbHash = 0;
+    CHAR rgbDigits[] = "0123456789abcdef";
+    BCRYPT_ALG_HANDLE       hAlg = NULL;
+    BCRYPT_HASH_HANDLE      hHash = NULL;
+    NTSTATUS                status = STATUS_UNSUCCESSFUL;
+    DWORD                   cbData = 0, cbHashObject = 0;
+    PBYTE                   pbHashObject = NULL;
+
+    // Logic to check usage goes here.
+
+    hFile = CreateFile(lpFileName,
+                       GENERIC_READ,
+                       FILE_SHARE_READ,
+                       NULL,
+                       OPEN_EXISTING,
+                       FILE_FLAG_SEQUENTIAL_SCAN,
+                       NULL);
+    if (INVALID_HANDLE_VALUE == hFile) {
+        dwStatus = GetLastError();
+        printf("Error opening file %ls\nError: %d\n", lpFileName, dwStatus);
+        return dwStatus;
+    }
+
+        //open an algorithm handle
+    if (!NT_SUCCESS(status = BCryptOpenAlgorithmProvider(&hAlg, pszAlgId, NULL, 0))) {
+        wprintf(L"**** Error 0x%x returned by BCryptOpenAlgorithmProvider\n", status);
+        goto Cleanup;
+    }
+
+    //calculate the size of the buffer to hold the hash object
+    if (!NT_SUCCESS(status = BCryptGetProperty(hAlg,
+                                               BCRYPT_OBJECT_LENGTH,
+                                               (PBYTE)&cbHashObject,
+                                               sizeof(DWORD),
+                                               &cbData,
+                                               0))) {
+        wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
+        goto Cleanup;
+    }
+
+    //allocate the hash object on the heap
+    pbHashObject = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbHashObject);
+    if (NULL == pbHashObject) {
+        wprintf(L"**** memory allocation failed\n");
+        goto Cleanup;
+    }
+
+    //calculate the length of the hash
+    if (!NT_SUCCESS(status = BCryptGetProperty(hAlg,
+                                               BCRYPT_HASH_LENGTH,
+                                               (PBYTE)HashSize,
+                                               sizeof(DWORD),
+                                               &cbData,
+                                               0))) {
+        wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
+        goto Cleanup;
+    }
+
+    //allocate the hash buffer on the heap
+    *Hash = (PBYTE)HeapAlloc(GetProcessHeap(), 0, *HashSize);
+    if (NULL == *Hash) {
+        wprintf(L"**** memory allocation failed\n");
+        goto Cleanup;
+    }
+
+    //create a hash
+    if (!NT_SUCCESS(status = BCryptCreateHash(hAlg, &hHash, pbHashObject, cbHashObject, NULL, 0, 0))) {
+        wprintf(L"**** Error 0x%x returned by BCryptCreateHash\n", status);
+        goto Cleanup;
+    }
+
+    while (bResult = ReadFile(hFile, rgbFile, BUFSIZE, &cbRead, NULL)) {
+        if (0 == cbRead) {
+            break;
+        }
+
+        if (!NT_SUCCESS(status = BCryptHashData(hHash, rgbFile, cbRead, 0))) {
+            wprintf(L"**** Error 0x%x returned by BCryptHashData\n", status);
+            goto Cleanup;
+        }
+    }
+
+    if (!bResult) {
+        dwStatus = GetLastError();
+        return dwStatus;
+    }
+
+    if (!NT_SUCCESS(status = BCryptFinishHash(hHash, *Hash, *HashSize, 0))) {//close the hash
+        wprintf(L"**** Error 0x%x returned by BCryptFinishHash\n", status);
+        goto Cleanup;
+    }
+
+Cleanup:
+
+    if (hAlg) {
+        BCryptCloseAlgorithmProvider(hAlg, 0);
+    }
+
+    if (hHash) {
+        BCryptDestroyHash(hHash);
+    }
+
+    if (pbHashObject) {
+        HeapFree(GetProcessHeap(), 0, pbHashObject);
+    }
+
+    CloseHandle(hFile);
+
+    return dwStatus;
 }
 
 
