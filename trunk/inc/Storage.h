@@ -50,6 +50,8 @@ int WINAPI ReadMBR(_In_ LPCWSTR lpFileName,
 int WINAPI GetMft(_In_ LPCWSTR lpFileName);
 int WINAPI WriteMBR(_In_ LPCWSTR lpFileName);
 
+void WINAPI TestGetDiskFreeSpaceEx();
+
 int WINAPI CppShellKnownFolders(int argc, wchar_t * argv[]);
 
 void WINAPI GetImageFilePath(_Out_ LPWSTR ImageFilePath, _In_ DWORD nSize);
