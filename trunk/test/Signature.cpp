@@ -79,6 +79,8 @@ void TestSignature()
 
     VerifySignature((PUCHAR)PublicKey, PublicKeyLen, (PUCHAR)Data, DataSize, Sign, SignSize);
 
+    HeapFree(GetProcessHeap(), 0, Sign);
+
     //////////////////////////////////////////////////////////////////////////////////////////////
 
     HeapFree(GetProcessHeap(), 0, PublicKey);
