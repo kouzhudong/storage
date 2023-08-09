@@ -8,8 +8,4 @@ class Signature
 
 };
 
-void TestSignature(BCRYPT_RSAKEY_BLOB * PublicKey, 
-                   ULONG PublicKeyLen, 
-                   BCRYPT_RSAKEY_BLOB * PrivateKey,                   
-                   ULONG PrivateKeyLen
-);
+void TestSignature();

@@ -9,6 +9,7 @@
 #include "Volume.h"
 #include "c.h"
 #include "Hash.h"
+#include "Signature.h"
 
 
 #ifdef _WIN64  
@@ -47,8 +48,9 @@ int _cdecl main(_In_ int argc, _In_reads_(argc) CHAR * argv[])
 
     //test_c();    
     
-    TestRsa();
-    //HashTest();
+    TestSignature();
+    //EnumVolumes();
+    //TestGetDiskFreeSpaceEx();
 
     LocalFree(Arglist);
 
