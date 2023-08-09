@@ -96,7 +96,7 @@ void TestEcdsaSignature()
 功能：签名和验签的测试。
 
 心得：
-1.签名的哈希不能是BCRYPT_SHA256_ALGORITHM，只能是BCRYPT_SHA1_ALGORITHM。
+1.
 2.签名的算法不能是BCRYPT_RSA_ALGORITHM和BCRYPT_RSA_SIGN_ALGORITHM。
 3.签名算法测试成功的有BCRYPT_DSA_ALGORITHM（3072和2048失败）和BCRYPT_ECDSA_P256_ALGORITHM。
 
@@ -107,7 +107,7 @@ void TestEcdsaSignature()
 */
 {
     BCRYPT_ALG_HANDLE hAlgorithm = nullptr;
-    LPCWSTR AlgId = BCRYPT_ECDSA_P256_ALGORITHM;
+    LPCWSTR AlgId = BCRYPT_ECDSA_P521_ALGORITHM;
     LPCWSTR Implementation = nullptr;
     ULONG   Flags = 0;
     NTSTATUS NtStatus = BCryptOpenAlgorithmProvider(&hAlgorithm, AlgId, Implementation, Flags);
@@ -117,7 +117,7 @@ void TestEcdsaSignature()
     }
 
     BCRYPT_KEY_HANDLE hKey = nullptr;
-    ULONG   Length = 256;
+    ULONG   Length = 521;
     NtStatus = BCryptGenerateKeyPair(hAlgorithm, &hKey, Length, 0);
     if (STATUS_SUCCESS != NtStatus) {
         BCryptCloseAlgorithmProvider(hAlgorithm, 0);
@@ -135,7 +135,7 @@ void TestEcdsaSignature()
     NtStatus = BCryptExportKey(hKey, NULL, BCRYPT_ECCPRIVATE_BLOB, NULL, 0, &PrivateKeyLen, 0);
     _ASSERTE(STATUS_SUCCESS == NtStatus);
 
-    PBCRYPT_DSA_KEY_BLOB PrivateKey = (PBCRYPT_DSA_KEY_BLOB)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, PrivateKeyLen);
+    PBCRYPT_ECCKEY_BLOB PrivateKey = (PBCRYPT_ECCKEY_BLOB)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, PrivateKeyLen);
     _ASSERTE(PrivateKey);
 
     NtStatus = BCryptExportKey(hKey, NULL, BCRYPT_ECCPRIVATE_BLOB, (PUCHAR)PrivateKey, PrivateKeyLen, &PrivateKeyLen, 0);
@@ -149,7 +149,7 @@ void TestEcdsaSignature()
     NtStatus = BCryptExportKey(hKey, NULL, BCRYPT_ECCPUBLIC_BLOB, NULL, 0, &PublicKeyLen, 0);
     _ASSERTE(STATUS_SUCCESS == NtStatus);
 
-    PBCRYPT_DSA_KEY_BLOB PublicKey = (PBCRYPT_DSA_KEY_BLOB)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, PublicKeyLen);
+    PBCRYPT_ECCKEY_BLOB PublicKey = (PBCRYPT_ECCKEY_BLOB)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, PublicKeyLen);
     _ASSERTE(PublicKey);
 
     NtStatus = BCryptExportKey(hKey, NULL, BCRYPT_ECCPUBLIC_BLOB, (PUCHAR)PublicKey, PublicKeyLen, &PublicKeyLen, 0);
