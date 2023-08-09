@@ -2,6 +2,19 @@
 
 
 void TestSignature()
+/*
+功能：签名和验签的测试。
+
+心得：
+1.签名的哈希不能是BCRYPT_SHA256_ALGORITHM，只能是BCRYPT_SHA1_ALGORITHM。
+2.签名的算法不能是BCRYPT_RSA_ALGORITHM和BCRYPT_RSA_SIGN_ALGORITHM。
+3.签名算法测试成功的有BCRYPT_DSA_ALGORITHM（3072和2048失败）和BCRYPT_ECDSA_P256_ALGORITHM。
+
+参考：
+1.https://docs.microsoft.com/zh-cn/windows/win32/seccng/signing-data-with-cng
+2.Windows-classic-samples\Samples\Security\SignHashAndVerifySignature
+3.ProcessHacker
+*/
 {
     BCRYPT_ALG_HANDLE hAlgorithm = nullptr;
     LPCWSTR AlgId = BCRYPT_DSA_ALGORITHM;//BCRYPT_ECDSA_P521_ALGORITHM BCRYPT_RSA_SIGN_ALGORITHM
@@ -14,7 +27,7 @@ void TestSignature()
     }
 
     BCRYPT_KEY_HANDLE hKey = nullptr;
-    ULONG   Length = 1024;//16384
+    ULONG   Length = 1024;
     NtStatus = BCryptGenerateKeyPair(hAlgorithm, &hKey, Length, 0);
     if (STATUS_SUCCESS != NtStatus) {
         BCryptCloseAlgorithmProvider(hAlgorithm, 0);
@@ -23,22 +36,8 @@ void TestSignature()
 
     //NtStatus = BCryptSetProperty
 
-    NtStatus = BCryptFinalizeKeyPair(hKey, 0);//这个还是很费时的，特别是16384时。
+    NtStatus = BCryptFinalizeKeyPair(hKey, 0);//这个还是很费时的。
     _ASSERTE(STATUS_SUCCESS == NtStatus);
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
-
-    //ULONG KeyPairLen = 0;
-    //NtStatus = BCryptExportKey(hKey, NULL, BCRYPT_RSAFULLPRIVATE_BLOB, NULL, 0, &KeyPairLen, 0);
-    //_ASSERTE(STATUS_SUCCESS == NtStatus);
-
-    //BCRYPT_RSAKEY_BLOB * RsaKeyPair = (BCRYPT_RSAKEY_BLOB *)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, KeyPairLen);
-    //_ASSERTE(RsaKeyPair);//前四个字节是：RSA3
-
-    //NtStatus = BCryptExportKey(hKey, NULL, BCRYPT_RSAFULLPRIVATE_BLOB, (PUCHAR)RsaKeyPair, KeyPairLen, &KeyPairLen, 0);
-    //_ASSERTE(STATUS_SUCCESS == NtStatus);
-
-    //printf("Key Pair Len;%d\n", KeyPairLen);
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -46,8 +45,8 @@ void TestSignature()
     NtStatus = BCryptExportKey(hKey, NULL, BCRYPT_DSA_PRIVATE_BLOB, NULL, 0, &PrivateKeyLen, 0);
     _ASSERTE(STATUS_SUCCESS == NtStatus);
 
-    BCRYPT_RSAKEY_BLOB * PrivateKey = (BCRYPT_RSAKEY_BLOB *)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, PrivateKeyLen);
-    _ASSERTE(PrivateKey);//前四个字节是：RSA2
+    PBCRYPT_DSA_KEY_BLOB PrivateKey = (PBCRYPT_DSA_KEY_BLOB)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, PrivateKeyLen);
+    _ASSERTE(PrivateKey);
 
     NtStatus = BCryptExportKey(hKey, NULL, BCRYPT_DSA_PRIVATE_BLOB, (PUCHAR)PrivateKey, PrivateKeyLen, &PrivateKeyLen, 0);
     _ASSERTE(STATUS_SUCCESS == NtStatus);
@@ -60,21 +59,13 @@ void TestSignature()
     NtStatus = BCryptExportKey(hKey, NULL, BCRYPT_DSA_PUBLIC_BLOB, NULL, 0, &PublicKeyLen, 0);
     _ASSERTE(STATUS_SUCCESS == NtStatus);
 
-    BCRYPT_RSAKEY_BLOB * PublicKey = (BCRYPT_RSAKEY_BLOB *)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, PublicKeyLen);
-    _ASSERTE(PublicKey);//前四个字节是：RSA1
+    PBCRYPT_DSA_KEY_BLOB PublicKey = (PBCRYPT_DSA_KEY_BLOB)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, PublicKeyLen);
+    _ASSERTE(PublicKey);
 
     NtStatus = BCryptExportKey(hKey, NULL, BCRYPT_DSA_PUBLIC_BLOB, (PUCHAR)PublicKey, PublicKeyLen, &PublicKeyLen, 0);
     _ASSERTE(STATUS_SUCCESS == NtStatus);
 
     printf("Public Key Len;%d\n", PublicKeyLen);
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
-
-    //DWORD BlockLength = 0;
-    //ULONG Result;
-    //NtStatus = BCryptGetProperty(
-    //    hKey, BCRYPT_BLOCK_LENGTH, (PUCHAR)&BlockLength, sizeof(BlockLength), &Result, 0);
-    //_ASSERTE(STATUS_SUCCESS == NtStatus);
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -92,7 +83,6 @@ void TestSignature()
 
     HeapFree(GetProcessHeap(), 0, PublicKey);
     HeapFree(GetProcessHeap(), 0, PrivateKey);
-    //HeapFree(GetProcessHeap(), 0, RsaKeyPair);
 
     NtStatus = BCryptDestroyKey(hKey);
     NtStatus = BCryptCloseAlgorithmProvider(hAlgorithm, 0);
