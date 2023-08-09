@@ -8,4 +8,4 @@ class Signature
 
 };
 
-void TestSignature();
+void TestDsaSignature();

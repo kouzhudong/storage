@@ -80,7 +80,7 @@ int WINAPI GetInformationFromAuthenticodeSignedExecutables(int argc, TCHAR * arg
 
 void WINAPI SigningDataWithCNG(int argc, __in_ecount(argc) LPWSTR * wargv);
 
-void WINAPI SignHash(_In_reads_bytes_(PrivateKeyLen) PUCHAR PrivateKey,
+void WINAPI DsaSignHash(_In_reads_bytes_(PrivateKeyLen) PUCHAR PrivateKey,
                      _In_ ULONG PrivateKeyLen,
                      _In_reads_bytes_(DataSize) PUCHAR Data,
                      _In_ ULONG DataSize,
@@ -88,7 +88,7 @@ void WINAPI SignHash(_In_reads_bytes_(PrivateKeyLen) PUCHAR PrivateKey,
                      _In_ ULONG * SignSize
 );
 
-void WINAPI VerifySignature(_In_reads_bytes_(PublicKeyLen) PUCHAR PublicKey,
+void WINAPI DsaVerifySignature(_In_reads_bytes_(PublicKeyLen) PUCHAR PublicKey,
                             _In_ ULONG PublicKeyLen,
                             _In_reads_bytes_(DataSize) PUCHAR Data,
                             _In_ ULONG DataSize,

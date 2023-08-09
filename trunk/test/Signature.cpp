@@ -1,7 +1,7 @@
 #include "Signature.h"
 
 
-void TestSignature()
+void TestDsaSignature()
 /*
 功能：签名和验签的测试。
 
@@ -17,7 +17,7 @@ void TestSignature()
 */
 {
     BCRYPT_ALG_HANDLE hAlgorithm = nullptr;
-    LPCWSTR AlgId = BCRYPT_DSA_ALGORITHM;//BCRYPT_ECDSA_P521_ALGORITHM BCRYPT_RSA_SIGN_ALGORITHM
+    LPCWSTR AlgId = BCRYPT_DSA_ALGORITHM;
     LPCWSTR Implementation = nullptr;
     ULONG   Flags = 0;
     NTSTATUS NtStatus = BCryptOpenAlgorithmProvider(&hAlgorithm, AlgId, Implementation, Flags);
@@ -75,9 +75,9 @@ void TestSignature()
     PUCHAR Sign = nullptr;
     ULONG SignSize = 0;
 
-    SignHash((PUCHAR)PrivateKey, PrivateKeyLen, (PUCHAR)Data, DataSize, &Sign, &SignSize);
+    DsaSignHash((PUCHAR)PrivateKey, PrivateKeyLen, (PUCHAR)Data, DataSize, &Sign, &SignSize);
 
-    VerifySignature((PUCHAR)PublicKey, PublicKeyLen, (PUCHAR)Data, DataSize, Sign, SignSize);
+    DsaVerifySignature((PUCHAR)PublicKey, PublicKeyLen, (PUCHAR)Data, DataSize, Sign, SignSize);
 
     HeapFree(GetProcessHeap(), 0, Sign);
 
