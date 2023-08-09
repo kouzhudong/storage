@@ -9,3 +9,4 @@ class Signature
 };
 
 void TestDsaSignature();
+void TestEcdsaSignature();
