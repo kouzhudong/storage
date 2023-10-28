@@ -390,6 +390,7 @@ FILE_ALLOCATED_RANGE_BUFFER * CSparseStream::QueryAllocatedRanges(PDWORD pdwNumE
     DWORD cb = 100 * sizeof(FILE_ALLOCATED_RANGE_BUFFER);
     FILE_ALLOCATED_RANGE_BUFFER * pfarb = (FILE_ALLOCATED_RANGE_BUFFER *)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, cb);
     BOOL fOk = DeviceIoControl(m_hstream, FSCTL_QUERY_ALLOCATED_RANGES, &farb, sizeof(farb), pfarb, cb, &cb, NULL);
+    DBG_UNREFERENCED_LOCAL_VARIABLE(fOk);
     (void)GetLastError();
     *pdwNumEntries = cb / sizeof(*pfarb);
     return(pfarb);

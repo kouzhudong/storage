@@ -99,8 +99,13 @@ Notices: Copyright (c) 1998 Jeffrey Richter
     LPCTSTR pszFile = __TEXT("D:\\StreamTest.tst");
     LPCTSTR pszFirstStream = __TEXT("D:\\StreamTest.tst:FirstStream");
     LPCTSTR pszCopyStream = __TEXT("D:\\StreamTest.tst:CopyStream");
-    LPCTSTR pszRenameStream = __TEXT("D:\\StreamTest.tst:RenameStream");
-    LPCTSTR pszMoveStream = __TEXT("D:\\StreamTest.tst:MoveStream");
+    //LPCTSTR pszRenameStream = __TEXT("D:\\StreamTest.tst:RenameStream");
+    //LPCTSTR pszMoveStream = __TEXT("D:\\StreamTest.tst:MoveStream");
+
+    UNREFERENCED_PARAMETER(hinstExe);
+    UNREFERENCED_PARAMETER(hinstPrev);
+    UNREFERENCED_PARAMETER(pszCmdLine);
+    UNREFERENCED_PARAMETER(nCmdShow);
 
     char szDataToWrite[] = "This is some data";
     char szDataToRead[100] = {0};
@@ -131,6 +136,7 @@ Notices: Copyright (c) 1998 Jeffrey Richter
     // Get the size of the named stream
     hfile = CreateFile(pszFirstStream, 0, 0, NULL, OPEN_EXISTING, 0, NULL);
     DWORD dwSize = GetFileSize(hfile, NULL);
+    DBG_UNREFERENCED_LOCAL_VARIABLE(dwSize);
     CloseHandle(hfile);
     // TEST: dwSize should be the correct number of bytes
 
@@ -342,7 +348,7 @@ int WINAPI GetFileZoneIdentifier(int argc, wchar_t ** argv)
     CComPtr<IZoneIdentifier> spzi;
 
     spzi.CoCreateInstance(CLSID_PersistentZoneIdentifier);
-    DWORD dwZone;//精确类型是URLZONE。
+    DWORD dwZone{};//精确类型是URLZONE。
     if (SUCCEEDED(CComQIPtr<IPersistFile>(spzi)->Load(argv[1], STGM_READ)) &&
         SUCCEEDED(spzi->GetId(&dwZone))) {
         printf("Zone identifier is %d\n", dwZone); 

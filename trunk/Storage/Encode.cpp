@@ -123,7 +123,7 @@ bool SignMessage(CRYPT_DATA_BLOB * pSignedMessageBlob)
     HCERTSTORE hCertStore = NULL;
     PCCERT_CONTEXT pSignerCert = NULL;
     CRYPT_SIGN_MESSAGE_PARA  SigParams;
-    DWORD cbSignedMessageBlob;
+    DWORD cbSignedMessageBlob{};
     BYTE * pbSignedMessageBlob = NULL;
 
     // Initialize the output pointer.
@@ -469,7 +469,7 @@ BOOL EncodeMessage(PCRYPT_DATA_BLOB pEncodedBlob, LPWSTR pwszSignerName)
 
     PCCERT_CONTEXT pSignerCert;//    The signer's certificate.    
     char pszNameString[MAX_NAME];//    Buffer to hold the name of the subject of a certificate.    
-    DWORD cbData = sizeof(DWORD);//  The following variables are used only in the decoding phase.
+    //DWORD cbData = sizeof(DWORD);//  The following variables are used only in the decoding phase.
 
     //  Begin processing. Display the original message.
     rgpbToBeSigned[0] = pbContent;
@@ -577,10 +577,12 @@ void DecodeMessage(PCRYPT_DATA_BLOB pEncodedBlob, LPWSTR pwszSignerName)
     //    Buffer to hold the name of the subject of a certificate.
     char pszNameString[MAX_NAME];
 
+    UNREFERENCED_PARAMETER(pwszSignerName);
+
     //  The following variables are used only in the decoding phase.
     HCRYPTMSG hMsg;
     HCERTSTORE hStoreHandle;           // certificate store handle
-    DWORD cbData = sizeof(DWORD);
+    //DWORD cbData = sizeof(DWORD);
     DWORD cbDecoded;
     BYTE * pbDecoded;
     DWORD cbSignerCertInfo;
@@ -798,6 +800,8 @@ BOOL WINAPI EncodeCallback(const void * pvArg, BYTE * pbData, DWORD cbData, BOOL
     DWORD dwWrittenBytes = 0;
     HANDLE hFileToWrite = INVALID_HANDLE_VALUE;
 
+    UNREFERENCED_PARAMETER(fFinal);
+
     hFileToWrite = *((HANDLE *)pvArg);
     if (!WriteFile(hFileToWrite, pbData, cbData, &dwWrittenBytes, NULL) ||
         (dwWrittenBytes != cbData)) {
@@ -811,6 +815,9 @@ BOOL WINAPI EncodeCallback(const void * pvArg, BYTE * pbData, DWORD cbData, BOOL
 BOOL WINAPI DecodeCallback(const void * pvArg, BYTE * pbData, DWORD cbData, BOOL fFinal)
 // Callback function used for decoding streamed Signing.
 {
+    UNREFERENCED_PARAMETER(fFinal);
+    UNREFERENCED_PARAMETER(pvArg);
+
     if (pbData != NULL && cbData > 0) {
         *(pbData + cbData) = 0;
         printf("%s", (char *)pbData);
@@ -2181,7 +2188,7 @@ exit_VerifyCosignedMessage:
 //   property set for the contexts to provide access to private signature keys.
 
 
-int EncodingAndDecodingCountersignedMessage(int argc, _TCHAR * argv[])
+int EncodingAndDecodingCountersignedMessage()
 /*
 Example C Program: Encoding and Decoding a Countersigned Message
 2018/05/31

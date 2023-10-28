@@ -219,6 +219,7 @@ void LogApiErrMsg(PCSTR Api)
     lpvMessageBuffer[x - 2] = 0;
 
     //LOGA(ERROR_LEVEL, "API:%s, LastError:%#x, Message:%ls", Api, GetLastError(), lpvMessageBuffer);
+    printf("API:%s, LastError:%#x, Message:%ls", Api, GetLastError(), lpvMessageBuffer);
 
     LocalFree(lpvMessageBuffer);
 }
@@ -443,7 +444,7 @@ void ByteToStr(DWORD cb, void * pv, LPSTR sz)
     //  Declare and initialize local variables.
     BYTE * pb = (BYTE *)pv; // local pointer to a BYTE in the BYTE array
     DWORD i;               // local loop counter
-    int b;                 // local variable
+    CHAR b;                 // local variable
 
     //  Begin processing loop.
     for (i = 0; i < cb; i++) {

@@ -52,7 +52,7 @@ int WINAPI WriteMBR(_In_ LPCWSTR lpFileName);
 
 void WINAPI TestGetDiskFreeSpaceEx();
 
-int WINAPI CppShellKnownFolders(int argc, wchar_t * argv[]);
+int WINAPI CppShellKnownFolders();
 
 void WINAPI GetImageFilePath(_Out_ LPWSTR ImageFilePath, _In_ DWORD nSize);
 
@@ -173,7 +173,7 @@ void WINAPI EnumProvidersByCrypt();
 
 void WINAPI EnumProviderTypes();
 
-void WINAPI EnumCsp(int argc, wchar_t * argv[]);
+void WINAPI EnumCsp();
 
 void WINAPI GetFileVersion(PWCHAR FileName, VS_FIXEDFILEINFO * FileInfo);
 void WINAPI GetFileResourcesW(IN LPCWSTR FileName, IN LPCWSTR ResourceName);

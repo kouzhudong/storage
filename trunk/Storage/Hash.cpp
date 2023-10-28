@@ -1170,12 +1170,12 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program--crea
 {
     DWORD dwStatus = 0;
     BOOL bResult = FALSE;
-    HCRYPTPROV hProv = 0;
+    //HCRYPTPROV hProv = 0;
     HANDLE hFile = NULL;
     BYTE rgbFile[BUFSIZE];
     DWORD cbRead = 0;
-    DWORD cbHash = 0;
-    CHAR rgbDigits[] = "0123456789abcdef";
+    //DWORD cbHash = 0;
+    //CHAR rgbDigits[] = "0123456789abcdef";
     BCRYPT_ALG_HANDLE       hAlg = NULL;
     BCRYPT_HASH_HANDLE      hHash = NULL;
     NTSTATUS                status = STATUS_UNSUCCESSFUL;
