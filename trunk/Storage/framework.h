@@ -79,6 +79,7 @@ winnt.h和ntstatus.h冲突：有重复的定义。
 #include <signal.h>
 #include <urlmon.h>
 #include <certenroll.h>
+#include <srrestoreptapi.h>
 
 //几个USB相关的头文件。
 #include <initguid.h> //注意前后顺序。

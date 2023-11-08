@@ -141,7 +141,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
-      <DisableSpecificWarnings>4819;4566</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4819;4566;4706</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
