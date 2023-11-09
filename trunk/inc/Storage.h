@@ -61,6 +61,9 @@ void WINAPI DelDirByShell(_In_ LPCWSTR Dir);
 
 void WINAPI GetSpecialFolderPath();
 
+int __cdecl CreateRestorePoint(int argc, WCHAR * *argv);
+int __cdecl CreateAndDeleteRestorePoint(int argc, WCHAR * *argv);
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //签名和验签

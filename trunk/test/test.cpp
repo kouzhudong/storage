@@ -32,7 +32,7 @@
 
 int _cdecl main(_In_ int argc, _In_reads_(argc) CHAR * argv[])
 {
-    //__debugbreak();
+    __debugbreak();
 
     setlocale(LC_CTYPE, ".936");
 
@@ -43,14 +43,12 @@ int _cdecl main(_In_ int argc, _In_reads_(argc) CHAR * argv[])
         return GetLastError();
     }
 
-    //SigningDataWithCNG(Args, Arglist);
+    CreateAndDeleteRestorePoint(Args, Arglist);
     //GetDriveGeometryTest(argc, argv);
 
     //test_c();    
     
-    TestEcdsaSignature();
-    //EnumVolumes();
-    //TestGetDiskFreeSpaceEx();
+    //TestEcdsaSignature();
 
     LocalFree(Arglist);
 
