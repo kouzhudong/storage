@@ -972,12 +972,8 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccng/creating-a-hash-with-cng
     }
 
     //calculate the size of the buffer to hold the hash object
-    if (!NT_SUCCESS(status = BCryptGetProperty(hAlg,
-                                               BCRYPT_OBJECT_LENGTH,
-                                               (PBYTE)&cbHashObject,
-                                               sizeof(DWORD),
-                                               &cbData,
-                                               0))) {
+    status = BCryptGetProperty(hAlg, BCRYPT_OBJECT_LENGTH, (PBYTE)&cbHashObject, sizeof(DWORD), &cbData, 0);
+    if (!NT_SUCCESS(status)) {
         wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
         goto Cleanup;
     }
@@ -990,12 +986,8 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccng/creating-a-hash-with-cng
     }
 
     //calculate the length of the hash
-    if (!NT_SUCCESS(status = BCryptGetProperty(hAlg,
-                                               BCRYPT_HASH_LENGTH,
-                                               (PBYTE)&cbHash,
-                                               sizeof(DWORD),
-                                               &cbData,
-                                               0))) {
+    status = BCryptGetProperty(hAlg, BCRYPT_HASH_LENGTH, (PBYTE)&cbHash, sizeof(DWORD), &cbData, 0);
+    if (!NT_SUCCESS(status)) {
         wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
         goto Cleanup;
     }
@@ -1077,12 +1069,8 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccng/creating-a-hash-with-cng
     }
 
     //calculate the size of the buffer to hold the hash object
-    if (!NT_SUCCESS(status = BCryptGetProperty(hAlg,
-                                               BCRYPT_OBJECT_LENGTH,
-                                               (PBYTE)&cbHashObject,
-                                               sizeof(DWORD),
-                                               &cbData,
-                                               0))) {
+    status = BCryptGetProperty(hAlg, BCRYPT_OBJECT_LENGTH, (PBYTE)&cbHashObject, sizeof(DWORD), &cbData, 0);
+    if (!NT_SUCCESS(status)) {
         wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
         goto Cleanup;
     }
@@ -1095,12 +1083,8 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccng/creating-a-hash-with-cng
     }
 
     //calculate the length of the hash
-    if (!NT_SUCCESS(status = BCryptGetProperty(hAlg,
-                                               BCRYPT_HASH_LENGTH,
-                                               (PBYTE)HashSize,
-                                               sizeof(DWORD),
-                                               &cbData,
-                                               0))) {
+    status = BCryptGetProperty(hAlg, BCRYPT_HASH_LENGTH, (PBYTE)HashSize, sizeof(DWORD), &cbData, 0);
+    if (!NT_SUCCESS(status)) {
         wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
         goto Cleanup;
     }
@@ -1117,7 +1101,6 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccng/creating-a-hash-with-cng
         wprintf(L"**** Error 0x%x returned by BCryptCreateHash\n", status);
         goto Cleanup;
     }
-
 
     //hash some data
     if (!NT_SUCCESS(status = BCryptHashData(hHash, Data, DataSize, 0))) {
@@ -1204,12 +1187,8 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program--crea
     }
 
     //calculate the size of the buffer to hold the hash object
-    if (!NT_SUCCESS(status = BCryptGetProperty(hAlg,
-                                               BCRYPT_OBJECT_LENGTH,
-                                               (PBYTE)&cbHashObject,
-                                               sizeof(DWORD),
-                                               &cbData,
-                                               0))) {
+    status = BCryptGetProperty(hAlg, BCRYPT_OBJECT_LENGTH, (PBYTE)&cbHashObject, sizeof(DWORD), &cbData, 0);
+    if (!NT_SUCCESS(status)) {
         wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
         goto Cleanup;
     }
@@ -1222,12 +1201,8 @@ https://docs.microsoft.com/zh-cn/windows/win32/seccrypto/example-c-program--crea
     }
 
     //calculate the length of the hash
-    if (!NT_SUCCESS(status = BCryptGetProperty(hAlg,
-                                               BCRYPT_HASH_LENGTH,
-                                               (PBYTE)HashSize,
-                                               sizeof(DWORD),
-                                               &cbData,
-                                               0))) {
+    status = BCryptGetProperty(hAlg, BCRYPT_HASH_LENGTH, (PBYTE)HashSize, sizeof(DWORD), &cbData, 0);
+    if (!NT_SUCCESS(status)) {
         wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
         goto Cleanup;
     }
