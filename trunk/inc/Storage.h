@@ -64,6 +64,8 @@ void WINAPI GetSpecialFolderPath();
 int __cdecl CreateRestorePoint(int argc, WCHAR * *argv);
 int __cdecl CreateAndDeleteRestorePoint(int argc, WCHAR * *argv);
 
+void WINAPI TestSystemFirmwareTable(void);
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //签名和验签

@@ -43,12 +43,12 @@ int _cdecl main(_In_ int argc, _In_reads_(argc) CHAR * argv[])
         return GetLastError();
     }
 
-    CreateAndDeleteRestorePoint(Args, Arglist);
+    //CreateAndDeleteRestorePoint(Args, Arglist);
     //GetDriveGeometryTest(argc, argv);
 
     //test_c();    
     
-    //TestEcdsaSignature();
+    TestSystemFirmwareTable();
 
     LocalFree(Arglist);
 
